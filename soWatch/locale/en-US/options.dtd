@@ -1,0 +1,18 @@
+<!ENTITY sowatch-auto "Automatic Update Players">
+<!ENTITY sowatch-auto-desc "Use local directory to synchronize players">
+<!ENTITY sowatch-period "Period">
+<!ENTITY sowatch-period-desc "Day">
+<!ENTITY sowatch-directory "Local Directory">
+
+<!ENTITY sowatch-remote "Access Remote Server">
+<!ENTITY sowatch-remote-desc "Will disable autoupdate">
+
+<!ENTITY sowatch-server "Defined Remote Server">
+<!ENTITY sowatch-override "Remote Server Override">
+<!ENTITY sowatch-override-desc "Only access defined remote server">
+<!ENTITY sowatch-bitbucket-desc "Players modified by 15536900">
+
+<!ENTITY sowatch-interface "Enhanced Toolbar Control UI">
+
+<!ENTITY sowatch-enable "Enabled">
+<!ENTITY sowatch-disable "Disabled">

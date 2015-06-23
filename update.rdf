@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:em="http://www.mozilla.org/2004/em-rdf#">
+  <Description about="urn:mozilla:extension:sowatch@jc3213.github">
+    <em:updates>
+    <Seq>
+      <li>
+      <Description>
+        <em:version>1.0</em:version>
+        <em:targetApplication><!-- Firefox -->
+          <Description>
+            <em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
+            <em:minVersion>29.0</em:minVersion>
+            <em:maxVersion>42.0a1</em:maxVersion>
+            <em:updateLink>https://github.com/jc3213/soWatch/raw/master/binary/sowatch-1.0-fx.xpi</em:updateLink>
+          </Description>
+        </em:targetApplication>
+      </Description>
+      </li>
+    </Seq>
+    </em:updates>
+  </Description>
+  <Description about="urn:mozilla:extension:sowatchmk2@jc3213.github">
+    <em:updates>
+    <Seq>
+      <li>
+      <Description>
+        <em:version>1.0</em:version>
+        <em:targetApplication><!-- Firefox -->
+          <Description>
+            <em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
+            <em:minVersion>10.0</em:minVersion>
+            <em:maxVersion>42.0a1</em:maxVersion>
+            <em:updateLink>https://github.com/jc3213/soWatch/raw/master/binary/sowatchmk2-1.0-fx.xpi</em:updateLink>
+          </Description>
+        </em:targetApplication>
+      </Description>
+      </li>
+    </Seq>
+    </em:updates>
+  </Description>
+</RDF>

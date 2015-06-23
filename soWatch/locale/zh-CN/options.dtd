@@ -1,0 +1,18 @@
+<!ENTITY sowatch-auto "自动更新播放器">
+<!ENTITY sowatch-auto-desc "使用本地文件夹储存并同步播放器">
+<!ENTITY sowatch-period "更新间隔">
+<!ENTITY sowatch-period-desc "天">
+<!ENTITY sowatch-directory "本地文件夹">
+
+<!ENTITY sowatch-remote "加载远程播放器">
+<!ENTITY sowatch-remote-desc "将关闭自动更新">
+
+<!ENTITY sowatch-server "自定义服务器">
+<!ENTITY sowatch-override "无视其他服务器">
+<!ENTITY sowatch-override-desc "仅访问用户指定的远程服务器">
+<!ENTITY sowatch-bitbucket-desc "保管着15536900修改的播放器">
+
+<!ENTITY sowatch-interface "工具栏控制界面">
+
+<!ENTITY sowatch-enable "启用">
+<!ENTITY sowatch-disable "禁止">
