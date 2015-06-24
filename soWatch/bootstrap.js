@@ -487,15 +487,8 @@ var RuleResolver = {
       PlayerRules['iqiyi5'] = null;
       PlayerRules['iqiyi_out'] = null;
     },
-    filterOn: function () {
-      FilterRules['iqiyi'] = {
-        'object': 'http://api.cupid.iqiyi.com',
-        'target': /http:\/\/api\.cupid\.iqiyi\.com\/(show2|etx)\?.+/i,
-      };
-    },
-    filterOff: function () {
-      FilterRules['iqiyi'] = null;
-    },
+    filterOn: function () {},
+    filterOff: function () {},
     refererOn: function () {
       RefererRules['iqiyi'] = {
         'object': 'http://www.iqiyi.com/',

@@ -272,8 +272,10 @@ var Preferences = {
 
     for (var i in RuleResolver) {
       if (PrefValue[i].get() == 'player') {
+        if (i == 'qq' || i == '163' || i == 'sina') continue;
         RuleResolver[i].playerOn();
       } else if (PrefValue[i].get() == 'filter') {
+        if (i == 'iqiyi') continue;
         RuleResolver[i].playerOff();
         RuleResolver[i].filterOn();
       } else if (PrefValue[i].get() == 'none'){
@@ -449,8 +451,8 @@ var Toolbar = {
           'iqiyi': {
             label: Utilities.GetStringFromName('iqiyiSiteLabel'),
             tooltiptext: 'http://www.iqiyi.com/',
-            target: /http:\/\/www\.iqiyi\.com\/.+player.+\.swf/i,
-            url: /https?:\/\/[^\/]+(iqiyi\.com|pps\.tv)\//i,
+            target: /http:\/\/www\.iqiyi\.com\/.+\/(Main|Share|Enjoy)Player.+\.swf/i,
+            url: /https?:\/\/[^\/]+(iqiyi\.com)\//i,
           },
           'letv': {
             label: Utilities.GetStringFromName('letvSiteLabel'),
@@ -553,6 +555,7 @@ var Toolbar = {
             nItem.setAttribute('type', 'radio');
             nItem.setAttribute('name', x);
             if ((x == 'qq' || x == '163' || x == 'sina') && n == 'player') nItem.setAttribute('disabled', 'true');
+            if ((x == 'iqiyi') && n == 'filter') nItem.setAttribute('disabled', 'true');
             xPopup.appendChild(nItem);
           }
         }
@@ -737,15 +740,8 @@ var RuleResolver = {
       PlayerRules['iqiyi5'] = null;
       PlayerRules['iqiyi_out'] = null;
     },
-    filterOn: function () {
-      FilterRules['iqiyi'] = {
-        'object': 'http://api.cupid.iqiyi.com',
-        'target': /http:\/\/api\.cupid\.iqiyi\.com\/(show2|etx)\?.+/i,
-      };
-    },
-    filterOff: function () {
-      FilterRules['iqiyi'] = null;
-    },
+    filterOn: function () {},
+    filterOff: function () {},
     refererOn: function () {
       RefererRules['iqiyi'] = {
         'object': 'http://www.iqiyi.com/',
