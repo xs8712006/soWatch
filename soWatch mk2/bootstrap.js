@@ -247,14 +247,14 @@ var Preferences = {
       FileIO.server = 'https://github.com/jc3213/soWatch/raw/master/player/';
     }
 
-    if (PrefValue['override'].get()) FileIO.link = FileIO.server;
+    if (PrefValue['override'].get()) FileIO.link = PrefValue['server'].get();
     else FileIO.link = PrefValue['bitbucket'].get()
 
     if (PrefValue['autoupdate'].get()) {
-      FileIO.path = OS.Path.toFileURI(FileIO.extDir) + '/';
+      FileIO.path = OS.Path.toFileURI(PrefValue['directory'].get()) + '/';
       if (PrefValue['lastdate'].get() + PrefValue['period'].get() * 86400 < Date.now() / 1000) QueryFiles.start(0);
     } else {
-      FileIO.path = FileIO.chrome;
+      FileIO.path = PrefValue['chrome'].get();
     }
   },
   resolver: function () {
@@ -697,7 +697,7 @@ var RuleResolver = {
         'target': /http:\/\/js\.tudouui\.com\/bin\/lingtong\/PortalPlayer.*\.swf/i,
       };
       FilterRules['tudou_css'] = {
-        'object': 'https://raw.githubusercontent.com/jc3213/noname/master/Misc/tudou_play_88.css',
+        'object': 'https://raw.githubusercontent.com/jc3213/soWatch/master/misc/tudou_play_88.css',
         'target': /http:\/\/css\.tudouui\.com\/v3\/dist\/css\/play\/play.+\.css/i,
       };
       PlayerRules['tudou_olc'] = {
