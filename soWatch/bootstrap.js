@@ -368,9 +368,15 @@ var Toolbar = {
           else PrefValue['autoupdate'].set(true);
         }
 
-        if (aEvent.target.id == 'sowatch-checkupdate') QueryFiles.start(0);
+        if (aEvent.target.id == 'sowatch-checkupdate') {
+          if (PrefValue['remote'].get()) return;
+          QueryFiles.start(0);
+        }
 
-        if (aEvent.target.id == 'sowatch-forceupdate') QueryFiles.start(1);
+        if (aEvent.target.id == 'sowatch-forceupdate') {
+          if (PrefValue['remote'].get()) return;
+          QueryFiles.start(1);
+        }
       },
       onPopup: function (aEvent) {
         if (aEvent.target.id == 'sowatch-popup') {

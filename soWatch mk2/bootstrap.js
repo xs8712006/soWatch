@@ -464,7 +464,7 @@ var Toolbar = {
             label: Utilities.GetStringFromName('sohuSiteLabel'),
             tooltiptext: 'http://tv.sohu.com/',
             target: /http:\/\/tv\.sohu\.com\/.+main\.swf/i,
-            url: /https?:\/\/[^\/]+(sohu|56)\.com\//i,
+            url: /https?:\/\/(tv\.sohu|[^\/]+56)\.com\//i,
           },
           'pptv': {
             label: Utilities.GetStringFromName('pptvSiteLabel'),
@@ -476,19 +476,19 @@ var Toolbar = {
             label: Utilities.GetStringFromName('qqSiteLabel'),
             tooltiptext: 'http://v.qq.com/',
             target: /http:\/\/imgcache\.qq\.com\/.+mediaplugin\.swf/i,
-            url: /https?:\/\/[^\/]+qq\.com\//i,
+            url: /https?:\/\/v\.qq\.com\//i,
           },
           '163': {
             label: Utilities.GetStringFromName('163SiteLabel'),
             tooltiptext: 'http://v.163.com/',
             target: /http:\/\/v\.163\.com\/.+player.+\.swf/i,
-            url: /https?:\/\/[^\/]+163\.com\//i,
+            url: /https?:\/\/v\.163\.com\//i,
           },
           'sina': {
             label: Utilities.GetStringFromName('sinaSiteLabel'),
             tooltiptext: 'http://video.sina.com.cn/',
             target: /http:\/\/[^/]+\.sina\.com\.cn\/.+player.+\.swf/i,
-            url: /https?:\/\/[^\/]+sina\.com\.cn\//i,
+            url: /https?:\/\/v\.+sina\.com\.cn\//i,
           },
         };
 
@@ -575,14 +575,24 @@ var Toolbar = {
           else PrefValue['autoupdate'].set(true);
         }
 
-        if (aEvent.target.id == 'sowatchmk2-checkupdate') QueryFiles.start(0);
+        if (aEvent.target.id == 'sowatchmk2-checkupdate') {
+          if (PrefValue['remote'].get()) return;
+          QueryFiles.start(0);
+        }
 
-        if (aEvent.target.id == 'sowatchmk2-forceupdate') QueryFiles.start(1);
+        if (aEvent.target.id == 'sowatchmk2-forceupdate') {
+          if (PrefValue['remote'].get()) return;
+          QueryFiles.start(1);
+        }
 
         for (var x in SiteLists) {
-          if (aEvent.target.id == 'sowatchmk2-' + x + '-player') PrefValue[x].set('player');
-          else if (aEvent.target.id == 'sowatchmk2-' + x + '-filter') PrefValue[x].set('filter');
-          else if (aEvent.target.id == 'sowatchmk2-' + x + '-none') PrefValue[x].set('none');
+          if (aEvent.target.id == 'sowatchmk2-' + x + '-player') {
+            if (x == 'qq' || i == '163' || i == 'sina') return;
+            PrefValue[x].set('player');
+          } else if (aEvent.target.id == 'sowatchmk2-' + x + '-filter') {
+            if (x == 'iqiyi') return;
+            PrefValue[x].set('filter');
+          } else if (aEvent.target.id == 'sowatchmk2-' + x + '-none') PrefValue[x].set('none');
         }
       },
       onPopup: function (aEvent) {
