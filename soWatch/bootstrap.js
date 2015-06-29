@@ -534,7 +534,7 @@ var RuleResolver = {
     playerOn: function () {
       PlayerRules['sohu'] = {
         'object': FileIO.path + 'sohu_live.swf',
-        'target': /http:\/\/(tv\.sohu\.com\/upload\/swf\/(p2p\/)?\d+|(\d+\.){3}\d+\/webplayer)\/Main\.swf/i,
+        'target': /http:\/\/(tv\.sohu\.com\/upload\/swf\/(p2p\/|56\/)?\d+|(\d+\.){3}\d+\/webplayer)\/Main\.swf/i,
       };
     },
     playerOff: function () {

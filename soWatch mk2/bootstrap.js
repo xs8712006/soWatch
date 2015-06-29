@@ -587,7 +587,7 @@ var Toolbar = {
 
         for (var x in SiteLists) {
           if (aEvent.target.id == 'sowatchmk2-' + x + '-player') {
-            if (x == 'qq' || i == '163' || i == 'sina') return;
+            if (x == 'qq' || x == '163' || x == 'sina') return;
             PrefValue[x].set('player');
           } else if (aEvent.target.id == 'sowatchmk2-' + x + '-filter') {
             if (x == 'iqiyi') return;
@@ -791,7 +791,7 @@ var RuleResolver = {
     playerOn: function () {
       PlayerRules['sohu'] = {
         'object': FileIO.path + 'sohu_live.swf',
-        'target': /http:\/\/(tv\.sohu\.com\/upload\/swf\/(p2p\/)?\d+|(\d+\.){3}\d+\/webplayer)\/Main\.swf/i,
+        'target': /http:\/\/(tv\.sohu\.com\/upload\/swf\/(p2p\/|56\/)?\d+|(\d+\.){3}\d+\/webplayer)\/Main\.swf/i,
       };
     },
     playerOff: function () {
