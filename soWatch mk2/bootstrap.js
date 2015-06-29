@@ -488,7 +488,7 @@ var Toolbar = {
             label: Utilities.GetStringFromName('sinaSiteLabel'),
             tooltiptext: 'http://video.sina.com.cn/',
             target: /http:\/\/[^/]+\.sina\.com\.cn\/.+player.+\.swf/i,
-            url: /https?:\/\/v\.+sina\.com\.cn\//i,
+            url: /https?:\/\/video\.+sina\.com\.cn\//i,
           },
         };
 
