@@ -6,7 +6,7 @@ Cu.import('resource://gre/modules/osfile.jsm'); //Require Gecko 27 and later
 Cu.import('resource://gre/modules/Downloads.jsm'); //Require Gecko 26 and later
 Cu.import('resource://gre/modules/NetUtil.jsm'); //Promise chain that require Gecko 25 and later
 
-var Utilities = {}, RemoteURLs = {}, SiteLists = {},PlayerRules = {}, FilterRules = {}, RefererRules = {};
+var Utilities = {}, RemoteURLs = {}, SiteLists = {}, PlayerRules = {}, FilterRules = {}, RefererRules = {};
 
 var Services = {
   io: Cc['@mozilla.org/network/io-service;1'].getService(Ci.nsIIOService),
@@ -16,9 +16,14 @@ var Services = {
   strings: Cc['@mozilla.org/intl/stringbundle;1'].getService(Ci.nsIStringBundleService),
 };
 
-var aURI = 'chrome://sowatchmk2/content/';  //文件存放在content/soWatch文件夹中
-var aURL = aURI; //用户可以自己指定远程服务器的链接
-var aORG = 'https://bitbucket.org/kafan15536900/haoutil/src/master/player/testmod/'; // bitbucket链接
+var FileIO = {
+  addFolder: function () {
+    OS.File.makeDir(this.extDir);
+  },
+  delFolder: function () {
+    OS.File.removeDir(this.extDir);
+  },
+};
 
 var PrefBranch = Services.prefs.getBranch('extensions.sowatchmk2.');
 var PrefValue = {
@@ -291,15 +296,6 @@ var Preferences = {
   },
 };
 
-var FileIO = {
-  addFolder: function () {
-    OS.File.makeDir(this.extDir);
-  },
-  delFolder: function () {
-    OS.File.removeDir(this.extDir);
-  },
-};
-
 var QueryFiles = {
   loopCast: function () {
     RemoteURLs = {
@@ -338,11 +334,14 @@ var QueryFiles = {
   hash: function (aMode, aLink, aFile, aName) {
     var aClient = Cc['@mozilla.org/xmlextras/xmlhttprequest;1'].createInstance(Ci.nsIXMLHttpRequest);
     aClient.open('HEAD', aLink, true);
-    aClient.timeout = 30000;
+    aClient.timeout = 10000;
     aClient.send();
     aClient.onload = function () {
       var aSize = new Number(aClient.getResponseHeader('Content-Length'));
-      if (aSize < 5000) return;
+      if (aSize < 5000) {
+        if (FileIO.link == PrefValue['bitbucket'].get()) QueryFiles.hash(aMode, aLink, aFile, aName);
+        else return;
+      }
       var aHash = aSize.toString(16);
       if (aMode == 0) QueryFiles.check(aLink, aFile, aName, aHash);
       if (aMode == 1) QueryFiles.fetch(aLink, aFile, aName, aHash);

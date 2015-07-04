@@ -16,6 +16,15 @@ var Services = {
   strings: Cc['@mozilla.org/intl/stringbundle;1'].getService(Ci.nsIStringBundleService),
 };
 
+var FileIO = {
+  addFolder: function () {
+    OS.File.makeDir(this.extDir);
+  },
+  delFolder: function () {
+    OS.File.removeDir(this.extDir);
+  },
+};
+
 var PrefBranch = Services.prefs.getBranch('extensions.sowatch.');
 var PrefValue = {
   'autoupdate': {
@@ -88,7 +97,7 @@ var PrefValue = {
       PrefBranch.setCharPref('remote.server.bitbucket', 'https://bitbucket.org/kafan15536900/haoutil/src/master/player/testmod/');
     },
   },
-  'gplayer': {
+  'player': {
     get: function () {
       return PrefBranch.getBoolPref('general.player.enabled');
     },
@@ -96,7 +105,7 @@ var PrefValue = {
       PrefBranch.setBoolPref('general.player.enabled', true);
     },
   },
-  'gfilter': {
+  'filter': {
     get: function () {
       return PrefBranch.getBoolPref('general.filter.enabled');
     },
@@ -104,7 +113,7 @@ var PrefValue = {
       PrefBranch.setBoolPref('general.filter.enabled', true);
     },
   },
-  'greferer': {
+  'referer': {
     get: function () {
       return PrefBranch.getBoolPref('general.referer.enabled');
     },
@@ -192,15 +201,6 @@ var Preferences = {
   },
 };
 
-var FileIO = {
-  addFolder: function () {
-    OS.File.makeDir(this.extDir);
-  },
-  delFolder: function () {
-    OS.File.removeDir(this.extDir);
-  },
-};
-
 var QueryFiles = {
   loopCast: function () {
     RemoteURLs = {
@@ -239,11 +239,14 @@ var QueryFiles = {
   hash: function (aMode, aLink, aFile, aName) {
     var aClient = Cc['@mozilla.org/xmlextras/xmlhttprequest;1'].createInstance(Ci.nsIXMLHttpRequest);
     aClient.open('HEAD', aLink, true);
-    aClient.timeout = 30000;
+    aClient.timeout = 10000;
     aClient.send();
     aClient.onload = function () {
       var aSize = new Number(aClient.getResponseHeader('Content-Length'));
-      if (aSize < 5000) return;
+      if (aSize < 5000) {
+        if (FileIO.link == PrefValue['bitbucket'].get()) QueryFiles.hash(aMode, aLink, aFile, aName);
+        else return;
+      }
       var aHash = aSize.toString(16);
       if (aMode == 0) QueryFiles.check(aLink, aFile, aName, aHash);
       if (aMode == 1) QueryFiles.fetch(aLink, aFile, aName, aHash);
@@ -639,7 +642,7 @@ var RuleExecution = {
     return Cr.NS_ERROR_NO_INTERFACE;
   },
   referer: function (aSubject) {
-    if (!PrefValue['greferer'].get()) return;
+    if (!PrefValue['referer'].get()) return;
 
     var httpChannel = aSubject.QueryInterface(Ci.nsIHttpChannel);
 
@@ -651,7 +654,7 @@ var RuleExecution = {
     }
   },
   filter: function (aSubject) {
-    if (!PrefValue['gfilter'].get()) return;
+    if (!PrefValue['filter'].get()) return;
 
     var httpChannel = aSubject.QueryInterface(Ci.nsIHttpChannel);
 
@@ -673,7 +676,7 @@ var RuleExecution = {
     }
   },
   player: function (aSubject) {
-    if (!PrefValue['gplayer'].get()) return;
+    if (!PrefValue['player'].get()) return;
 
     var httpChannel = aSubject.QueryInterface(Ci.nsIHttpChannel);
 
