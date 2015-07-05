@@ -333,15 +333,11 @@ var QueryFiles = {
   },
   hash: function (aMode, aLink, aFile, aName) {
     var aClient = Cc['@mozilla.org/xmlextras/xmlhttprequest;1'].createInstance(Ci.nsIXMLHttpRequest);
-    aClient.open('HEAD', aLink, true);
-    aClient.timeout = 10000;
+    aClient.open('HEAD', aLink, false);
     aClient.send();
     aClient.onload = function () {
       var aSize = new Number(aClient.getResponseHeader('Content-Length'));
-      if (aSize < 5000) {
-        if (FileIO.link == PrefValue['bitbucket'].get()) QueryFiles.hash(aMode, aLink, aFile, aName);
-        else return;
-      }
+      if (aSize < 5000) return;
       var aHash = aSize.toString(16);
       if (aMode == 0) QueryFiles.check(aLink, aFile, aName, aHash);
       if (aMode == 1) QueryFiles.fetch(aLink, aFile, aName, aHash);
