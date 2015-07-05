@@ -1,7 +1,7 @@
 'use strict';
 
 const {classes: Cc, interfaces: Ci, results: Cr, utils: Cu} = Components;
-Cu.import("resource:///modules/CustomizableUI.jsm"); //Require Gecko 29 and later
+Cu.import('resource:///modules/CustomizableUI.jsm'); //Require Gecko 29 and later
 Cu.import('resource://gre/modules/osfile.jsm'); //Require Gecko 27 and later
 Cu.import('resource://gre/modules/Downloads.jsm'); //Require Gecko 26 and later
 Cu.import('resource://gre/modules/NetUtil.jsm'); //Promise chain that require Gecko 25 and later
@@ -294,6 +294,7 @@ var QueryFiles = {
 var Toolbar = {
   css: Services.io.newURI('chrome://sowatch/skin/toolbar.css', null, null),
   addIcon: function () {
+    if (this.buttonOn) return;
     CustomizableUI.createWidget({
       id: 'sowatch-button',
       type: 'custom',
@@ -329,7 +330,6 @@ var Toolbar = {
         aMenu.setAttribute('class', 'toolbarbutton-1');
         aMenu.setAttribute('type', 'menu');
         aMenu.setAttribute('label', 'soWatch! ');
-        aMenu.setAttribute('tooltiptext', Utilities.GetStringFromName('extTooltip'));
 
         var aPopup = aDocument.createElement('menupopup');
         aPopup.setAttribute('id', 'sowatch-popup');
