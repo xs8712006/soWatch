@@ -6,7 +6,7 @@ Cu.import('resource://gre/modules/osfile.jsm'); //Require Gecko 27 and later
 Cu.import('resource://gre/modules/Downloads.jsm'); //Require Gecko 26 and later
 Cu.import('resource://gre/modules/NetUtil.jsm'); //Promise chain that require Gecko 25 and later
 
-var Utilities = {}, RemoteURLs = {}, PlayerRules = {}, FilterRules = {}, RefererRules = {};
+var Utilities = {}, PlayerRules = {}, FilterRules = {}, RefererRules = {};
 
 var Services = {
   io: Cc['@mozilla.org/network/io-service;1'].getService(Ci.nsIIOService),
@@ -188,12 +188,14 @@ var Preferences = {
     }
   },
   resolver: function () {
-    QueryFiles.loopCast();
+    RuleManager.player();
+    RuleManager.filter();
+    RuleManager.referer();
 
     for (var i in RuleResolver) {
-      if (RuleResolver[i].playerOn) RuleResolver[i].playerOn();
-      if (RuleResolver[i].filterOn) RuleResolver[i].filterOn();
-      if (RuleResolver[i].refererOn) RuleResolver[i].refererOn();
+      RuleResolver[i].playerOn();
+      RuleResolver[i].filterOn();
+      RuleResolver[i].refererOn();
     }
 
     if (PrefValue['toolbar'].get()) Toolbar.addIcon();
@@ -202,40 +204,6 @@ var Preferences = {
 };
 
 var QueryFiles = {
-  loopCast: function () {
-    RemoteURLs = {
-      'youku_loader': {
-        'object': FileIO.link + 'loader.swf',
-      },
-      'youku_player': {
-        'object': FileIO.link + 'player.swf',
-      },
-      'tudou_portal': {
-        'object': FileIO.link + 'tudou.swf',
-      },
-      'tudou_social': {
-        'object': FileIO.link + 'sp.swf',
-      },
-      'iqiyi5': {
-        'object': FileIO.link + 'iqiyi5.swf',
-      },
-      'iqiyi_out': {
-        'object': FileIO.link + 'iqiyi_out.swf',
-      },
-      'letv': {
-        'object': FileIO.link + 'letv.swf',
-      },
-      'sohu': {
-        'object': FileIO.link + 'sohu_live.swf',
-      },
-      'pptv': {
-        'object': FileIO.link + 'player4player2.swf',
-      },
-      'pptv_live': {
-        'object': FileIO.server + 'pptv.in.Live.swf',
-      },
-    };
-  },
   hash: function (aMode, aLink, aFile, aName) {
     var aClient = Cc['@mozilla.org/xmlextras/xmlhttprequest;1'].createInstance(Ci.nsIXMLHttpRequest);
     aClient.open('HEAD', aLink, false);
@@ -279,9 +247,9 @@ var QueryFiles = {
   },
   start: function (aMode) {
     FileIO.addFolder();
-    for (var i in RemoteURLs) {
-      if (PlayerRules[i]) {
-        var aLink = RemoteURLs[i]['object'];
+    for (var i in PlayerRules) {
+      if (PlayerRules[i]['remote']) {
+        var aLink = PlayerRules[i]['remote'];
         var aFile = OS.Path.fromFileURI(PlayerRules[i]['object']);
         var aName = OS.Path.split(aFile).components[OS.Path.split(aFile).components.length - 1];
         QueryFiles.hash(aMode, aLink, aFile, aName);
@@ -407,217 +375,233 @@ var Toolbar = {
   },
 };
 
+var RuleManager = {
+  player: function () {
+    PlayerRules['youku_loader'] = {
+      'object': FileIO.path + 'loader.swf',
+      'remote': FileIO.link + 'loader.swf',
+    };
+    PlayerRules['youku_player'] = {
+      'object': FileIO.path + 'player.swf',
+      'remote': FileIO.link + 'player.swf',
+    };
+    PlayerRules['tudou_portal'] = {
+      'object': FileIO.path + 'tudou.swf',
+      'remote': FileIO.link + 'tudou.swf',
+    };
+    PlayerRules['tudou_olc'] = {
+      'object': 'http://js.tudouui.com/bin/player2/olc.swf',
+    };
+    PlayerRules['tudou_social'] = {
+      'object': FileIO.path + 'sp.swf',
+      'remote': FileIO.link + 'sp.swf',
+    };
+    PlayerRules['iqiyi5'] = {
+      'object': FileIO.path + 'iqiyi5.swf',
+      'remote': FileIO.link + 'iqiyi5.swf',
+    };
+    PlayerRules['iqiyi_out'] = {
+      'object': FileIO.path + 'iqiyi_out.swf',
+      'remote': FileIO.link + 'iqiyi_out.swf',
+    };
+    PlayerRules['letv'] = {
+      'object': FileIO.path + 'letv.swf',
+      'remote': FileIO.link + 'letv.swf',
+    };
+    PlayerRules['letv_skin'] = {
+      'object': 'http://player.letvcdn.com/p/201407/24/15/newplayer/1/SSLetvPlayer.swf',
+    };
+    PlayerRules['sohu'] = {
+      'object': FileIO.path + 'sohu_live.swf',
+	  'remote': FileIO.link + 'sohu_live.swf',
+    };
+    PlayerRules['pptv'] = {
+      'object': FileIO.path + 'player4player2.swf',
+	  'remote': FileIO.link + 'player4player2.swf',
+    };
+    PlayerRules['pptv_live'] = {
+      'object': FileIO.path + 'pptv.in.Live.swf',
+	  'remote': FileIO.server + 'pptv.in.Live.swf',
+    };
+  },
+  filter: function () {
+    FilterRules['youku_tudou'] = {
+      'object': 'http://valf.atm.youku.com/vf',
+    };
+    FilterRules['tudou_css'] = {
+      'object': 'https://raw.githubusercontent.com/jc3213/soWatch/master/misc/tudou_play_88.css',
+    };
+    FilterRules['letv'] = {
+      'object': 'http://ark.letv.com/s',
+    };
+    FilterRules['sohu'] = {
+      'object': 'http://v.aty.sohu.com/v',
+    };
+    FilterRules['pptv'] = {
+      'object': 'http://de.as.pptv.com/ikandelivery/vast/draft',
+    };
+    FilterRules['qq'] = {
+      'object': 'http://livep.l.qq.com/livemsg',
+    };
+    FilterRules['163'] = {
+      'object': 'http://v.163.com',
+    };
+    FilterRules['sina'] = {
+      'object': 'http://sax.sina.com.cn/video/newimpress',
+    };
+  },
+  referer: function () {
+    RefererRules['referer-youku'] = {
+      'object': 'http://www.youku.com/',
+    };
+    RefererRules['referer-iqiyi'] = {
+      'object': 'http://www.iqiyi.com/',
+    };
+  },
+};
 var RuleResolver = {
   'youku': {
     playerOn: function () {
-      PlayerRules['youku_loader'] = {
-        'object': FileIO.path + 'loader.swf',
-        'target': /http:\/\/static\.youku\.com\/.*\/v\/swf\/loaders?\.swf/i,
-      };
-      PlayerRules['youku_player'] = {
-        'object': FileIO.path + 'player.swf',
-        'target': /http:\/\/static\.youku\.com\/.*\/v\/swf\/q?player.*\.swf/i,
-      };
+      PlayerRules['youku_loader']['target'] = /http:\/\/static\.youku\.com\/.*\/v\/swf\/loaders?\.swf/i;
+      PlayerRules['youku_player']['target'] = /http:\/\/static\.youku\.com\/.*\/v\/swf\/q?player.*\.swf/i;
     },
     playerOff: function () {
-      PlayerRules['youku_loader'] = null;
-      PlayerRules['youku_player'] = null;
+      PlayerRules['youku_loader']['target'] = null;
+      PlayerRules['youku_player']['target'] = null;
     },
     filterOn: function () {
-      FilterRules['youku_tudou'] = {
-        'object': 'http://valf.atm.youku.com/vf',
-        'target': /http:\/\/val[fcopb]\.atm\.youku\.com\/v[fcopb]/i,
-      };
+      FilterRules['youku_tudou']['target'] = /http:\/\/val[fcopb]\.atm\.youku\.com\/v[fcopb]/i;
     },
     filterOff: function () {
-      FilterRules['youku_tudou'] = null;
+      FilterRules['youku_tudou']['target'] = null;
     },
     refererOn: function () {
-      RefererRules['youku'] = {
-        'object': 'http://www.youku.com/',
-        'target': /http:\/\/.*\.youku\.com/i,
-      };
+      RefererRules['referer-youku']['target'] = /http:\/\/.*\.youku\.com/i;
     },
     refererOff: function () {
-      RefererRules['youku'] = null;
+      RefererRules['referer-youku']['target'] = null;
     },
   },
   'tudou': {
     playerOn: function () {
-      PlayerRules['tudou_portal'] = {
-        'object': FileIO.path + 'tudou.swf',
-        'target': /http:\/\/js\.tudouui\.com\/bin\/lingtong\/PortalPlayer.*\.swf/i,
-      };
-      FilterRules['tudou_css'] = {
-        'object': 'https://raw.githubusercontent.com/jc3213/soWatch/master/misc/tudou_play_88.css',
-        'target': /http:\/\/css\.tudouui\.com\/v3\/dist\/css\/play\/play.+\.css/i,
-      };
-      PlayerRules['tudou_olc'] = {
-        'object': 'http://js.tudouui.com/bin/player2/olc.swf',
-        'target': /http:\/\/js\.tudouui\.com\/bin\/player2\/olc.+\.swf/i,
-      };
-      PlayerRules['tudou_social'] = {
-        'object': FileIO.path + 'sp.swf',
-        'target': /http:\/\/js\.tudouui\.com\/bin\/lingtong\/SocialPlayer.*\.swf/i,
-      };
+      PlayerRules['tudou_portal']['target'] = /http:\/\/js\.tudouui\.com\/bin\/lingtong\/PortalPlayer.*\.swf/i;
+      FilterRules['tudou_css']['target'] = /http:\/\/css\.tudouui\.com\/v3\/dist\/css\/play\/play.+\.css/i;
+      PlayerRules['tudou_olc']['target'] = /http:\/\/js\.tudouui\.com\/bin\/player2\/olc.+\.swf/i;
+      PlayerRules['tudou_social']['target'] = /http:\/\/js\.tudouui\.com\/bin\/lingtong\/SocialPlayer.*\.swf/i;
     },
     playerOff: function () {
-      PlayerRules['tudou_portal'] = null;
-      FilterRules['tudou_css'] = null;
-      PlayerRules['tudou_olc'] = null;
-      PlayerRules['tudou_social'] = null;
+      PlayerRules['tudou_portal']['target'] = null;
+      FilterRules['tudou_css']['target'] = null;
+      PlayerRules['tudou_olc']['target'] = null;
+      PlayerRules['tudou_social']['target'] = null;
     },
     filterOn: function () {
-      FilterRules['youku_tudou'] = {
-        'object': 'http://valf.atm.youku.com/vf',
-        'target': /http:\/\/val[fcopb]\.atm\.youku\.com\/v[fcopb]/i,
-      };
+      FilterRules['youku_tudou']['target'] = /http:\/\/val[fcopb]\.atm\.youku\.com\/v[fcopb]/i;
     },
     filterOff: function () {
-      FilterRules['youku_tudou'] = null;
+      FilterRules['youku_tudou']['target'] = null;
     },
   },
   'iqiyi': {
     playerOn: function () {
-      PlayerRules['iqiyi5'] = {
-        'object': FileIO.path + 'iqiyi5.swf',
-        'target': /http:\/\/www\.iqiyi\.com\/common\/flashplayer\/\d+\/MainPlayer.*\.swf/i,
-      };
-      PlayerRules['iqiyi_out'] = {
-        'object': FileIO.path + 'iqiyi_out.swf',
-        'target': /https?:\/\/www\.iqiyi\.com\/(common\/flash)?player\/\d+\/(Share|Enjoy)?Player.*\.swf/i,
-      };
+      PlayerRules['iqiyi5']['target'] = /http:\/\/www\.iqiyi\.com\/common\/flashplayer\/\d+\/MainPlayer.*\.swf/i;
+      PlayerRules['iqiyi_out']['target'] = /https?:\/\/www\.iqiyi\.com\/(common\/flash)?player\/\d+\/(Share|Enjoy)?Player.*\.swf/i;
     },
     playerOff: function () {
-      PlayerRules['iqiyi5'] = null;
-      PlayerRules['iqiyi_out'] = null;
+      PlayerRules['iqiyi5']['target'] = null;
+      PlayerRules['iqiyi_out']['target'] = null;
     },
     filterOn: function () {},
     filterOff: function () {},
     refererOn: function () {
-      RefererRules['iqiyi'] = {
-        'object': 'http://www.iqiyi.com/',
-        'target': /http:\/\/.*\.qiyi\.com/i,
-      };
+      RefererRules['referer-iqiyi']['target'] = /http:\/\/.*\.qiyi\.com/i;
     },
     refererOff: function () {
-      RefererRules['iqiyi'] = null;
+      RefererRules['referer-iqiyi']['target'] = null;
     },
   },
   'letv': {
     playerOn: function () {
-      PlayerRules['letv'] = {
-        'object': FileIO.path + 'letv.swf',
-        'target': /http:\/\/.*\.letv(cdn)?\.com\/.*(new)?player\/((SDK)?Letv|swf)Player\.swf/i,
-      };
-      PlayerRules['letv_skin'] = {
-        'object': 'http://player.letvcdn.com/p/201407/24/15/newplayer/1/SSLetvPlayer.swf',
-        'target': /http:\/\/player\.letvcdn\.com\/p\/((?!15)\d+\/){3}newplayer\/1\/S?SLetvPlayer\.swf/i,
-      };
+      PlayerRules['letv']['target'] = /http:\/\/.*\.letv(cdn)?\.com\/.*(new)?player\/((SDK)?Letv|swf)Player\.swf/i;
+      PlayerRules['letv_skin']['target'] = /http:\/\/player\.letvcdn\.com\/p\/((?!15)\d+\/){3}newplayer\/1\/S?SLetvPlayer\.swf/i;
     },
     playerOff: function () {
-      PlayerRules['letv'] = null;
-      PlayerRules['letv_skin'] = null;
+      PlayerRules['letv']['target'] = null;
+      PlayerRules['letv_skin']['target'] = null;
     },
     filterOn: function () {
-      FilterRules['letv'] = {
-        'object': 'http://ark.letv.com/s',
-        'target': /http:\/\/(ark|fz)\.letv\.com\/s\?ark/i,
-      };
+      FilterRules['letv']['target'] = /http:\/\/(ark|fz)\.letv\.com\/s\?ark/i;
     },
     filterOff: function () {
-      FilterRules['letv'] = null;
+      FilterRules['letv']['target'] = null;
     },
   },
   'sohu': {
     playerOn: function () {
-      PlayerRules['sohu'] = {
-        'object': FileIO.path + 'sohu_live.swf',
-        'target': /http:\/\/(tv\.sohu\.com\/upload\/swf\/(p2p\/|56\/)?\d+|(\d+\.){3}\d+\/webplayer)\/Main\.swf/i,
-      };
+      PlayerRules['sohu']['target'] = /http:\/\/(tv\.sohu\.com\/upload\/swf\/(p2p\/|56\/)?\d+|(\d+\.){3}\d+\/webplayer)\/Main\.swf/i;
     },
     playerOff: function () {
-      PlayerRules['sohu'] = null;
+      PlayerRules['sohu']['target'] = null;
     },
     filterOn: function () {
-      FilterRules['sohu'] = {
-        'object': 'http://v.aty.sohu.com/v',
-        'target': /http:\/\/v\.aty\.sohu\.com\/v\?/i,
-      };
+      FilterRules['sohu']['target'] = /http:\/\/v\.aty\.sohu\.com\/v\?/i;
     },
     filterOff: function () {
-      FilterRules['sohu'] = null;
+      FilterRules['sohu']['target'] = null;
     },
   },
   'pptv': {
     playerOn: function () {
-      PlayerRules['pptv'] = {
-        'object': FileIO.path + 'player4player2.swf',
-        'target': /http:\/\/player.pplive.cn\/ikan\/.*\/player4player2\.swf/i,
-      };
-      PlayerRules['pptv_live'] = {
-        'object': FileIO.path + 'pptv.in.Live.swf',
-        'target': /http:\/\/player.pplive.cn\/live\/.*\/player4live2\.swf/i,
-      };
+      PlayerRules['pptv']['target'] = /http:\/\/player.pplive.cn\/ikan\/.*\/player4player2\.swf/i;
+      PlayerRules['pptv_live']['target'] = /http:\/\/player.pplive.cn\/live\/.*\/player4live2\.swf/i;
     },
     playerOff: function () {
-      PlayerRules['pptv'] = null;
-      PlayerRules['pptv_live'] = null;
+      PlayerRules['pptv']['target'] = null;
+      PlayerRules['pptv_live']['target'] = null;
     },
     filterOn: function () {
-      FilterRules['pptv'] = {
-        'object': 'http://de.as.pptv.com/ikandelivery/vast/draft',
-        'target': /http:\/\/de\.as\.pptv\.com\/ikandelivery\/vast\/.+draft/i,
-      };
+      FilterRules['pptv']['target'] = /http:\/\/de\.as\.pptv\.com\/ikandelivery\/vast\/.+draft/i;
     },
     filterOff: function () {
-      FilterRules['pptv'] = null;
+      FilterRules['pptv']['target'] = null;
     },
   },
   'qq': {
     playerOn: function () {},
     playerOff: function () {},
     filterOn: function () {
-      FilterRules['qq'] = {
-        'object': 'http://livep.l.qq.com/livemsg',
-        'target': /http:\/\/livew\.l\.qq\.com\/livemsg\?/i,
-      };
+      FilterRules['qq']['target'] = /http:\/\/livew\.l\.qq\.com\/livemsg\?/i;
     },
     filterOff: function () {
-      FilterRules['qq'] = null;
+      FilterRules['qq']['target'] = null;
     },
   },
   '163': {
     playerOn: function () {},
     playerOff: function () {},
     filterOn: function () {
-      FilterRules['163'] = {
-        'object': 'http://v.163.com',
-        'target': /http:\/\/v\.163\.com\/special\/.*\.xml/i,
-      };
+      FilterRules['163']['target'] = /http:\/\/v\.163\.com\/special\/.*\.xml/i
     },
     filterOff: function () {
-      FilterRules['163'] = null;
+      FilterRules['163']['target'] = null;
     },
   },
   'sina': {
     playerOn: function () {},
     playerOff: function () {},
     filterOn: function () {
-      FilterRules['sina'] = {
-        'object': 'http://sax.sina.com.cn/video/newimpress',
-        'target': /http:\/\/sax\.sina\.com\.cn\/video\/newimpress/i,
-      };
+      FilterRules['sina']['target'] = /http:\/\/sax\.sina\.com\.cn\/video\/newimpress/i;
     },
     filterOff: function () {
-      FilterRules['sina'] = null;
+      FilterRules['sina']['target'] = null;
     },
   },
 };
 
 var RuleExecution = {
-  getObject: function (rule, callback) {
-    var aObject = rule['object'];
+  getObject: function (aMode, rule, callback) {
+    if (aMode) var aObject = rule['object'];
+    else var aObject = rule['remote'];
     NetUtil.asyncFetch(aObject, function (inputStream, status) {
       var binaryOutputStream = Cc['@mozilla.org/binaryoutputstream;1'].createInstance(Ci['nsIBinaryOutputStream']);
       var storageStream = Cc['@mozilla.org/storagestream;1'].createInstance(Ci['nsIStorageStream']);
@@ -644,7 +628,7 @@ var RuleExecution = {
 
     for (var i in RefererRules) {
       var rule = RefererRules[i];
-      if (rule && rule['target'].test(httpChannel.originalURI.spec)) {
+      if (rule['target'] && rule['target'].test(httpChannel.originalURI.spec)) {
         httpChannel.setRequestHeader('Referer', rule['host'], false);
       }
     }
@@ -656,10 +640,10 @@ var RuleExecution = {
 
     for (var i in FilterRules) {
       var rule = FilterRules[i];
-      if (rule && rule['target'].test(httpChannel.URI.spec)) {
+      if (rule['target'] && rule['target'].test(httpChannel.URI.spec)) {
         if (!rule['storageStream'] || !rule['count']) {
           httpChannel.suspend();
-          this.getObject(rule, function () {
+          this.getObject(false, rule, function () {
             httpChannel.resume();
           });
         }
@@ -682,17 +666,22 @@ var RuleExecution = {
 
     for (var i in PlayerRules) {
       var rule = PlayerRules[i];
-      if (rule && rule['target'].test(httpChannel.URI.spec)) {
+      if (rule['target'] && rule['target'].test(httpChannel.URI.spec)) {
         var fn = this, args = Array.prototype.slice.call(arguments);
         if (typeof rule['preHandle'] === 'function') rule['preHandle'].apply(fn, args);
         if (!rule['storageStream'] || !rule['count']) {
           httpChannel.suspend();
-          if (PrefValue['remote'].get()) rule = RemoteURLs[i];
-          else rule = PlayerRules[i];
-          this.getObject(rule, function () {
-            httpChannel.resume();
-            if (typeof rule['callback'] === 'function') rule['callback'].apply(fn, args);
-          });
+          if (PrefValue['remote'].get()) {
+            this.getObject(true, rule, function () {
+              httpChannel.resume();
+              if (typeof rule['callback'] === 'function') rule['callback'].apply(fn, args);
+            });
+          } else {
+            this.getObject(false, rule, function () {
+              httpChannel.resume();
+              if (typeof rule['callback'] === 'function') rule['callback'].apply(fn, args);
+            });
+          }
         }
         var newListener = new TrackingListener();
         aSubject.QueryInterface(Ci.nsITraceableChannel);
