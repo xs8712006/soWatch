@@ -75,6 +75,9 @@ var PrefValue = {
       return PrefBranch.getCharPref('file.directory');
     },
     set: function () {
+      try {
+        if (this.get()) return;
+      } catch (e) {}
       PrefBranch.setCharPref('file.directory', OS.Path.join(OS.Constants.Path.profileDir, 'soWatch'));
     },
   },

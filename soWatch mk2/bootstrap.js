@@ -75,7 +75,21 @@ var PrefValue = {
       return PrefBranch.getCharPref('file.directory');
     },
     set: function () {
+      try {
+        if (this.get()) return;
+      } catch (e) {}
       PrefBranch.setCharPref('file.directory', OS.Path.join(OS.Constants.Path.profileDir, 'soWatch'));
+    },
+  },
+  'server': {
+    get: function () {
+      return PrefBranch.getCharPref('remote.server.defined');
+    },
+    set: function () {
+      try {
+        if (this.get()) return;
+      } catch (e) {}
+      PrefBranch.setCharPref('remote.server.defined', '');
     },
   },
   'chrome': {
@@ -92,17 +106,6 @@ var PrefValue = {
     },
     set: function () {
       PrefBranch.setCharPref('remote.server.bitbucket', 'https://bitbucket.org/kafan15536900/haoutil/src/master/player/testmod/');
-    },
-  },
-  'server': {
-    get: function () {
-      return PrefBranch.getCharPref('remote.server.defined');
-    },
-    set: function () {
-      try {
-        if (this.get()) return;
-      } catch (e) {}
-      PrefBranch.setCharPref('remote.server.defined', '');
     },
   },
   'referer-youku': {
