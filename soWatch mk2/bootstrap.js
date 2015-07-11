@@ -560,6 +560,7 @@ var Toolbar = {
           if (PrefValue['referer-iqiyi'].get()) PrefValue['referer-iqiyi'].set(false);
           else PrefValue['referer-iqiyi'].set(true);
         }
+
         for (var x in SiteLists) {
           if (aEvent.target.id == 'sowatchmk2-' + x + '-player') {
             if (x == 'qq' || x == '163' || x == 'sina') continue;
@@ -676,15 +677,15 @@ var RuleManager = {
     };
     PlayerRules['sohu'] = {
       'object': FileIO.path + 'sohu_live.swf',
-	  'remote': FileIO.link + 'sohu_live.swf',
+      'remote': FileIO.link + 'sohu_live.swf',
     };
     PlayerRules['pptv'] = {
       'object': FileIO.path + 'player4player2.swf',
-	  'remote': FileIO.link + 'player4player2.swf',
+      'remote': FileIO.link + 'player4player2.swf',
     };
     PlayerRules['pptv_live'] = {
       'object': FileIO.path + 'pptv.in.Live.swf',
-	  'remote': FileIO.server + 'pptv.in.Live.swf',
+      'remote': FileIO.server + 'pptv.in.Live.swf',
     };
   },
   filter: function () {
