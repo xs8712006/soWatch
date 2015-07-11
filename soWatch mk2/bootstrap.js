@@ -1058,8 +1058,8 @@ var Observers = {
 
 function startup(aData, aReason) {
   Utilities = Services.strings.createBundle('chrome://sowatchmk2/locale/global.properties?' + Math.random());
-  RuleExecution.iqiyi();
   Preferences.pending();
+  RuleExecution.iqiyi();
   Observers.startUp();
 }
 

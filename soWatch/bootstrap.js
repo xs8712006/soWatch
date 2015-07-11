@@ -802,8 +802,8 @@ var Observers = {
 
 function startup(aData, aReason) {
   Utilities = Services.strings.createBundle('chrome://sowatch/locale/global.properties?' + Math.random());
-  RuleExecution.iqiyi();
   Preferences.pending();
+  RuleExecution.iqiyi();
   Observers.startUp();
 }
 
@@ -812,24 +812,7 @@ function shutdown(aData, aReason) {
   Observers.shutDown();
 }
 
-function install(aData, aReason) {
-//Remove useless files after update.
-//升级后删除无用的文件。
-/*
-  if (aReason == ADDON_UPGRADE) {
-    OS.File.remove(OS.Path.join(FileIO.extDir(), '56.in.NM.swf'));
-    OS.File.remove(OS.Path.join(FileIO.extDir(), '56.in.TM.swf'));
-    OS.File.remove(OS.Path.join(FileIO.extDir(), 'sohu.inyy.Lite.swf'));
-    OS.File.remove(OS.Path.join(FileIO.extDir(), 'sohu.injs.Lite.swf'));
-    OS.File.remove(OS.Path.join(FileIO.extDir(), 'sohu.inbj.Live.swf'));
-    OS.File.remove(OS.Path.join(FileIO.extDir(), 'sohu.inyy+injs.Lite.s1.swf'));
-    OS.File.remove(OS.Path.join(FileIO.extDir(), '17173.in.Vod.swf'));
-    OS.File.remove(OS.Path.join(FileIO.extDir(), '17173.out.Vod.swf'));
-    OS.File.remove(OS.Path.join(FileIO.extDir(), '17173.in.Live.swf'));
-    OS.File.remove(OS.Path.join(FileIO.extDir(), '17173.out.Live.swf'));
-  }
-*/
-}
+function install(aData, aReason) {}
 
 function uninstall(aData, aReason) {
   if (aReason == ADDON_UNINSTALL) {
