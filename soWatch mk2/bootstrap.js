@@ -691,9 +691,6 @@ var RuleManager = {
     FilterRules['youku_tudou'] = {
       'object': 'http://valf.atm.youku.com/vf',
     };
-    FilterRules['tudou_css'] = {
-      'object': 'https://raw.githubusercontent.com/jc3213/soWatch/master/misc/tudou_play_88.css',
-    };
     FilterRules['letv'] = {
       'object': 'http://ark.letv.com/s',
     };
@@ -748,13 +745,11 @@ var RuleResolver = {
   'tudou': {
     playerOn: function () {
       PlayerRules['tudou_portal']['target'] = /http:\/\/js\.tudouui\.com\/bin\/lingtong\/PortalPlayer.*\.swf/i;
-      FilterRules['tudou_css']['target'] = /http:\/\/css\.tudouui\.com\/v3\/dist\/css\/play\/play.+\.css/i;
       PlayerRules['tudou_olc']['target'] = /http:\/\/js\.tudouui\.com\/bin\/player2\/olc.+\.swf/i;
       PlayerRules['tudou_social']['target'] = /http:\/\/js\.tudouui\.com\/bin\/lingtong\/SocialPlayer.*\.swf/i;
     },
     playerOff: function () {
       PlayerRules['tudou_portal']['target'] = null;
-      FilterRules['tudou_css']['target'] = null;
       PlayerRules['tudou_olc']['target'] = null;
       PlayerRules['tudou_social']['target'] = null;
     },
