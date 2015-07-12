@@ -196,9 +196,9 @@ var Preferences = {
     RuleManager.referer();
 
     for (var i in RuleResolver) {
-      RuleResolver[i].playerOn();
-      RuleResolver[i].filterOn();
-      RuleResolver[i].refererOn();
+      if (RuleResolver[i].playerOn) RuleResolver[i].playerOn();
+      if (RuleResolver[i].filterOn) RuleResolver[i].filterOn();
+      if (RuleResolver[i].refererOn) RuleResolver[i].refererOn();
     }
 
     if (PrefValue['toolbar'].get()) Toolbar.addIcon();
