@@ -252,7 +252,7 @@ var Preferences = {
       FileIO.server = PrefValue['server'].get();
     } else {
       PrefValue['override'].set(false);
-      FileIO.server = 'https://github.com/jc3213/soWatch/raw/master/player/';
+      FileIO.server = 'https://raw.githubusercontent.com/jc3213/soWatch/master/player/';
     }
 
     if (PrefValue['override'].get()) FileIO.link = PrefValue['server'].get();
@@ -302,17 +302,25 @@ var Preferences = {
 };
 
 var QueryFiles = {
-  hash: function (aMode, aLink, aFile, aName) {
-    var aClient = Cc['@mozilla.org/xmlextras/xmlhttprequest;1'].createInstance(Ci.nsIXMLHttpRequest);
-    aClient.open('HEAD', aLink, false);
-    aClient.onload = function () {
-      var aSize = new Number(aClient.getResponseHeader('Content-Length'));
-      if (aSize < 5000) return;
-      var aHash = aSize.toString(16);
-      if (aMode == 0) QueryFiles.check(aLink, aFile, aName, aHash);
-      if (aMode == 1) QueryFiles.fetch(aLink, aFile, aName, aHash);
-    }
-    aClient.send();
+  hash: function (aMode, aLink, aFile, aName, aProbe) {
+    if (aProbe <= 3) {
+      aProbe = aProbe + 1;
+      var aClient = Cc['@mozilla.org/xmlextras/xmlhttprequest;1'].createInstance(Ci.nsIXMLHttpRequest);
+      aClient.open('HEAD', aLink, false);
+      aClient.onload = function () {
+        var aSize = new Number(aClient.getResponseHeader('Content-Length'));
+        if (aSize < 5000) aClient.onerror();
+        var aHash = aSize.toString(16);
+        var aLink = aClient.responseURL;
+        if (aMode == 0) QueryFiles.check(aLink, aFile, aName, aHash);
+        if (aMode == 1) QueryFiles.fetch(aLink, aFile, aName, aHash);
+      }
+      aClient.onerror = function () {
+        aClient.abort();
+        QueryFiles.hash(aMode, aLink, aFile, aName, aProbe);
+      }
+      aClient.send();
+    } else return;
   },
   check: function (aLink, aFile, aName, aHash) {
     try {
@@ -350,7 +358,8 @@ var QueryFiles = {
         var aLink = PlayerRules[i]['remote'];
         var aFile = OS.Path.fromFileURI(PlayerRules[i]['object']);
         var aName = OS.Path.split(aFile).components[OS.Path.split(aFile).components.length - 1];
-        QueryFiles.hash(aMode, aLink, aFile, aName);
+        var aProbe = 0;
+        QueryFiles.hash(aMode, aLink, aFile, aName, aProbe);
       }
     }
     PrefValue['lastdate'].set();  // 下载完成后记录时间以供下次更新时检测
