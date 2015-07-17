@@ -78,7 +78,7 @@ var PrefValue = {
       try {
         if (this.get()) return;
       } catch (e) {}
-      PrefBranch.setCharPref('file.directory', OS.Path.join(OS.Constants.Path.profileDir, 'soWatch'));
+      PrefBranch.setCharPref('file.directory', '');
     },
   },
   'server': {
@@ -247,6 +247,7 @@ var Preferences = {
     if (PrefValue['chrome'].get()) FileIO.chrome = PrefValue['chrome'].get();
 
     if (PrefValue['directory'].get()) FileIO.extDir = PrefValue['directory'].get();
+    else FileIO.extDir = OS.Path.join(OS.Constants.Path.profileDir, 'soWatch');
 
     if (PrefValue['server'].get()) {
       FileIO.server = PrefValue['server'].get();
@@ -311,7 +312,7 @@ var QueryFiles = {
         var aSize = new Number(aClient.getResponseHeader('Content-Length'));
         if (aSize < 5000) aClient.onerror();
         var aHash = aSize.toString(16);
-        var aLink = aClient.responseURL;
+        aLink = aClient.responseURL;
         if (aMode == 0) QueryFiles.check(aLink, aFile, aName, aHash);
         if (aMode == 1) QueryFiles.fetch(aLink, aFile, aName, aHash);
       }
