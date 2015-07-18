@@ -25,6 +25,132 @@ var FileIO = {
   },
 };
 
+var aaaaaa = {
+  branch: Services.prefs.getBranch('extensions.sowatch.'),
+  value: {
+    'autoupdate': {
+      pref: 'autoupdate.enabled',
+      bool: false,
+    },
+    'lastdate': {
+      pref: 'autoupdate.enabled',
+      integer: '',
+    },
+    'period': {
+      pref: 'autoupdate.period',
+      integer: 7,
+    },
+    'remote': {
+      pref: 'remote.access.enabled',
+      bool: false,
+    },
+    'override': {
+      pref: 'remote.override.enabled',
+      bool: false,
+    },
+    'directory': {
+      pref: 'file.directory',
+      string: OS.Path.join(OS.Constants.Path.profileDir, 'soWatch'),
+    },
+    'server': {
+      pref: 'remote.server.defined'.
+      string: '',
+    },
+    'bitbucket': {
+      pref: 'remote.server.bitbucket',
+      string: 'https://bitbucket.org/kafan15536900/haoutil/raw/master/player/testmod/',
+    },
+    'player': {
+      pref: 'general.player.enabled',
+      bool: true,
+    },
+    'filter': {
+      pref: 'general.filter.enabled',
+      bool: true,
+    },
+    'referer': {
+      pref: 'general.referer.enabled',
+      bool: true,
+    },
+    'toolbar': {
+      pref: 'general.interface.enabled',
+      bool: true,
+    },
+    'firstrun': {
+      pref: 'general.firstrun.done',
+      bool: false,
+    },
+  },
+  getBool: function (aPref) {
+    return this.branch.getBoolPref(aPref);
+  },
+  setBool: function (aPref, aBool) {
+    this.branch.setBoolPref(aPref, aBool);
+  },
+  getInteger: function (aPref) {
+    return this.branch.getIntPref(aPref);
+  },
+  setInteger: function (aPref, aInteger) {
+    this.branch.setIntPref(aPref, aInteger);
+  },
+  getChar: function (aPref) {
+    this.branch.getComplexValue(aPref, Ci.nsISupportsString).data;
+  },
+  setChar: function (aPref, aString) {
+    var aChar = Cc["@mozilla.org/supports-string;1"].createInstance(Ci.nsISupportsString);
+    aChar.data = aString;
+    this.branch.setComplexValue(aPref, Ci.nsISupportsString, aChar);
+  },
+  getAll: function (aValue) {
+    if (aValue.bool) {
+      this.getBool(aValue.pref);
+    }
+    if (aValue.integer) {
+      this.getInteger(aValue.pref);
+    }
+    if (aValue.string) {
+      this.getChar(aValue.pref);
+    }
+  },
+  setAll: function (aValue) {
+    if (aValue.bool) {
+      this.setBool(aValue.pref, aValue.bool);
+    }
+    if (aValue.integer) {
+      this.setInteger(aValue.pref, aValue.integer);
+    }
+    if (aValue.string) {
+      this.setChar(aValue.pref, aValue.string);
+    }
+  },
+  pending: function () {
+    for (var i in this.value) {
+      var aValue = this.value[i];
+      try {
+        this.getAll(aValue);
+      } catch (e) {
+        this.setAll(aValue);
+      }
+    }
+  },
+  manifest: function () {
+
+  },
+  resolver: function () {
+
+  },
+  setDefault: function () {
+    for (var i in this.value) {
+      if (i == 'directory' || i == 'server') continue;
+      var aValue = this.value[i];
+      this.setAll(aValue);
+    }
+  },
+  remove: function () {
+    Services.prefs.deleteBranch('extensions.sowatch.');
+  },
+};
+
 var PrefBranch = Services.prefs.getBranch('extensions.sowatch.');
 var PrefValue = {
   'autoupdate': {
