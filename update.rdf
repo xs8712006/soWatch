@@ -29,7 +29,7 @@
         <em:targetApplication><!-- Firefox -->
           <Description>
             <em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
-            <em:minVersion>10.0</em:minVersion>
+            <em:minVersion>29.0</em:minVersion>
             <em:maxVersion>42.0a1</em:maxVersion>
             <em:updateLink>https://github.com/jc3213/soWatch/raw/master/binary/sowatchmk2-1.0-fx.xpi</em:updateLink>
           </Description>
