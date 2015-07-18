@@ -209,6 +209,7 @@ var Preferences = {
 
 var QueryFiles = {
   hash: function (aMode, aLink, aFile, aName, aProbe) {
+    if (!aProbe) var aProbe = 0;
     if (aProbe <= 3) {
       aProbe = aProbe + 1;
       var aClient = Cc['@mozilla.org/xmlextras/xmlhttprequest;1'].createInstance(Ci.nsIXMLHttpRequest);
@@ -217,10 +218,9 @@ var QueryFiles = {
         var aSize = new Number(aClient.getResponseHeader('Content-Length'));
         if (aSize < 5000) aClient.onerror();
         var aHash = aSize.toString(16);
-        var xLink = aClient.responseURL;
-        var xProbe = 0;
-        if (aMode == 0) QueryFiles.check(xLink, aFile, aName, aHash, xProbe);
-        if (aMode == 1) QueryFiles.fetch(xLink, aFile, aName, aHash, xProbe);
+        aLink = aClient.responseURL;
+        if (aMode == 0) QueryFiles.check(aLink, aFile, aName, aHash);
+        if (aMode == 1) QueryFiles.fetch(aLink, aFile, aName, aHash);
       }
       aClient.onerror = function () {
         aClient.abort();
@@ -229,36 +229,37 @@ var QueryFiles = {
       aClient.send();
     } else return;
   },
-  check: function (xLink, aFile, aName, aHash, xProbe) {
+  check: function (aLink, aFile, aName, aHash) {
     try {
       var xHash = PrefBranch.getCharPref('file.hash.' + aName);
       if (xHash == aHash) return;
-      else QueryFiles.fetch(xLink, aFile, aName, aHash, xProbe);
+      else QueryFiles.fetch(aLink, aFile, aName, aHash);
     } catch (e) {
       OS.File.stat(aFile).then(function onSuccess(aData) {
         var xSize = aData.size;
         var xHash = xSize.toString(16);
         if (xHash == aHash) PrefBranch.setCharPref('file.hash.' + aName, aHash);
-        else QueryFiles.fetch(xLink, aFile, aName, aHash, xProbe);
+        else QueryFiles.fetch(aLink, aFile, aName, aHash);
       }, function onFailure(aReason) {
         if (aReason instanceof OS.File.Error && aReason.becauseNoSuchFile) {
-          QueryFiles.fetch(xLink, aFile, aName, aHash, xProbe);
+          QueryFiles.fetch(aLink, aFile, aName, aHash);
         }
       });
     }
   },
-  fetch: function (xLink, aFile, aName, aHash, xProbe) {
-    if (xProbe <= 3) {
-      xProbe = xProbe + 1;
-      var xFile = aFile + '_sw';  // 因为Downloads.jsm并不能直接覆盖原文件所以需要使用临时文件
-      Downloads.fetch(xLink, xFile, {
+  fetch: function (aLink, aFile, aName, aHash, aProbe) {
+    if (!aProbe) var aProbe = 0;
+    if (aProbe <= 3) {
+      aProbe = aProbe + 1;
+      var aTemp = aFile + '_sw';  // 因为Downloads.jsm并不能直接覆盖原文件所以需要使用临时文件
+      Downloads.fetch(aLink, aTemp, {
         isPrivate: true
       }).then(function onSuccess() {
-        OS.File.move(xFile, aFile);
+        OS.File.move(aTemp, aFile);
         PrefBranch.setCharPref('file.hash.' + aName, aHash);
       }, function onFailure() {
-        OS.File.remove(xFile);
-        QueryFiles.fetch(xLink, aFile, aName, aHash, xProbe);
+        OS.File.remove(aTemp);
+        QueryFiles.fetch(aLink, aFile, aName, aHash, aProbe);
       });
     } else return;
   },
@@ -269,8 +270,7 @@ var QueryFiles = {
         var aLink = PlayerRules[i]['remote'];
         var aFile = OS.Path.fromFileURI(PlayerRules[i]['object']);
         var aName = OS.Path.split(aFile).components[OS.Path.split(aFile).components.length - 1];
-        var aProbe = 0;
-        QueryFiles.hash(aMode, aLink, aFile, aName, aProbe);
+        QueryFiles.hash(aMode, aLink, aFile, aName);
       }
     }
     PrefValue['lastdate'].set();  // 下载完成后记录时间以供下次更新时检测

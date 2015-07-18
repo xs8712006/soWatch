@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<!DOCTYPE page SYSTEM "chrome://sowatch/locale/options.dtd">
+<vbox xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+<setting pref="extensions.sowatch.general.interface.enabled" type="radio" title="&sowatch-interface;">
+  <radiogroup>
+    <radio value="true" label="&sowatch-enable;"/>
+    <radio value="false" label="&sowatch-disable;"/>
+  </radiogroup>
+</setting>
+<setting pref="extensions.sowatch.autoupdate.enabled" type="radio" title="&sowatch-auto;" desc="&sowatch-auto-desc;">
+  <radiogroup>
+    <radio value="true" label="&sowatch-enable;"/>
+    <radio value="false" label="&sowatch-disable;"/>
+  </radiogroup>
+</setting>
+<setting pref="extensions.sowatch.autoupdate.period" type="integer" min="1" max="365" size="1" title="&sowatch-period;" desc="&sowatch-period-desc;"/>
+<setting pref="extensions.sowatch.file.directory" type="directory" title="&sowatch-directory;" onpreferencechanged='
+  this.valueToPreference = function () {
+    let aString = Cc["@mozilla.org/supports-string;1"].createInstance(Ci.nsISupportsString);
+    aString.data = this.value;
+    Services.prefs.setComplexValue(this.pref, Ci.nsISupportsString, aString);
+  };
+  this.valueFromPreference = function () {
+    this.value = Services.prefs.getComplexValue(this.pref, Ci.nsISupportsString).data;
+  };
+  this.valueFromPreference();
+'/>
+<setting pref="extensions.sowatch.remote.access.enabled" type="radio" title="&sowatch-remote;" desc="&sowatch-remote-desc;">
+  <radiogroup>
+    <radio value="true" label="&sowatch-enable;"/>
+    <radio value="false" label="&sowatch-disable;"/>
+  </radiogroup>
+</setting>
+<setting pref="extensions.sowatch.remote.server.defined" type="string" title="&sowatch-server;" onpreferencechanged='
+  this.valueToPreference = function () {
+    let aString = Cc["@mozilla.org/supports-string;1"].createInstance(Ci.nsISupportsString);
+    aString.data = this.value;
+    Services.prefs.setComplexValue(this.pref, Ci.nsISupportsString, aString);
+  };
+  this.valueFromPreference = function () {
+    this.value = Services.prefs.getComplexValue(this.pref, Ci.nsISupportsString).data;
+  };
+  this.valueFromPreference();
+'/>
+<setting pref="extensions.sowatch.remote.server.bitbucket" type="string" title="Bitbucket.org" desc="&sowatch-bitbucket-desc;" disabled="true"/>
+<setting pref="extensions.sowatch.remote.override.enabled" type="radio" title="&sowatch-override;" desc="&sowatch-override-desc;">
+  <radiogroup>
+    <radio value="true" label="&sowatch-enable;"/>
+    <radio value="false" label="&sowatch-disable;"/>
+  </radiogroup>
+</setting>
+</vbox>

@@ -2,7 +2,5 @@
 *.reg
 soWatch/install.rdf
 soWatch/LICENSE
-soWatch/options.xul
 soWatch mk2/install.rdf
 soWatch mk2/LICENSE
-soWatch mk2/options.xul
