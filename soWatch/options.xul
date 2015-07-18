@@ -16,12 +16,12 @@
 <setting pref="extensions.sowatch.autoupdate.period" type="integer" min="1" max="365" size="1" title="&sowatch-period;" desc="&sowatch-period-desc;"/>
 <setting pref="extensions.sowatch.file.directory" type="directory" title="&sowatch-directory;" onpreferencechanged='
   this.valueToPreference = function () {
-    let aString = Cc["@mozilla.org/supports-string;1"].createInstance(Ci.nsISupportsString);
+    var aString = Components.classes["@mozilla.org/supports-string;1"].createInstance(Components.interfaces.nsISupportsString);
     aString.data = this.value;
-    Services.prefs.setComplexValue(this.pref, Ci.nsISupportsString, aString);
+    Services.prefs.setComplexValue(this.pref, Components.interfaces.nsISupportsString, aString);
   };
   this.valueFromPreference = function () {
-    this.value = Services.prefs.getComplexValue(this.pref, Ci.nsISupportsString).data;
+    this.value = Services.prefs.getComplexValue(this.pref, Components.interfaces.nsISupportsString).data;
   };
   this.valueFromPreference();
 '/>
@@ -33,12 +33,12 @@
 </setting>
 <setting pref="extensions.sowatch.remote.server.defined" type="string" title="&sowatch-server;" onpreferencechanged='
   this.valueToPreference = function () {
-    let aString = Cc["@mozilla.org/supports-string;1"].createInstance(Ci.nsISupportsString);
+    var aString = Components.classes["@mozilla.org/supports-string;1"].createInstance(Components.interfaces.nsISupportsString);
     aString.data = this.value;
-    Services.prefs.setComplexValue(this.pref, Ci.nsISupportsString, aString);
+    Services.prefs.setComplexValue(this.pref, Components.interfaces.nsISupportsString, aString);
   };
   this.valueFromPreference = function () {
-    this.value = Services.prefs.getComplexValue(this.pref, Ci.nsISupportsString).data;
+    this.value = Services.prefs.getComplexValue(this.pref, Components.interfaces.nsISupportsString).data;
   };
   this.valueFromPreference();
 '/>

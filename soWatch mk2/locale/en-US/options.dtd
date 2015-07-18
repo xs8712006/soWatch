@@ -17,7 +17,7 @@
 
 <!ENTITY sowatchmk2-auto "Automatic Update Players">
 <!ENTITY sowatchmk2-auto-desc "Use local directory to synchronize players">
-<!ENTITY sowatchmk2-period "Period">
+<!ENTITY sowatchmk2-period "Update Period">
 <!ENTITY sowatchmk2-period-desc "Day">
 <!ENTITY sowatchmk2-directory "Local Directory">
 

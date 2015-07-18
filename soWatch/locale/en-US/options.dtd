@@ -1,6 +1,6 @@
 <!ENTITY sowatch-auto "Automatic Update Players">
 <!ENTITY sowatch-auto-desc "Use local directory to synchronize players">
-<!ENTITY sowatch-period "Period">
+<!ENTITY sowatch-period "Update Period">
 <!ENTITY sowatch-period-desc "Day">
 <!ENTITY sowatch-directory "Local Directory">
 

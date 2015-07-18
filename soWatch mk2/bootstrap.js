@@ -72,24 +72,22 @@ var PrefValue = {
   },
   'directory': {
     get: function () {
-      return PrefBranch.getCharPref('file.directory');
+      return PrefBranch.getComplexValue('file.directory', Ci.nsISupportsString).data;
     },
     set: function () {
-      try {
-        if (this.get()) return;
-      } catch (e) {}
-      PrefBranch.setCharPref('file.directory', '');
+      var aString = Cc["@mozilla.org/supports-string;1"].createInstance(Ci.nsISupportsString);
+      aString.data = '';
+      PrefBranch.setComplexValue('file.directory', Ci.nsISupportsString, aString);
     },
   },
   'server': {
     get: function () {
-      return PrefBranch.getCharPref('remote.server.defined');
+      return PrefBranch.getComplexValue('remote.server.defined', Ci.nsISupportsString).data;
     },
     set: function () {
-      try {
-        if (this.get()) return;
-      } catch (e) {}
-      PrefBranch.setCharPref('remote.server.defined', '');
+      var aString = Cc["@mozilla.org/supports-string;1"].createInstance(Ci.nsISupportsString);
+      aString.data = '';
+      PrefBranch.setComplexValue('remote.server.defined', Ci.nsISupportsString, aString);
     },
   },
   'chrome': {
@@ -224,6 +222,7 @@ var Preferences = {
 // 恢复默认设置(暂时未添加)
   setDefault: function () {
     for (var i in PrefValue) {
+      if (i == 'directory' || i == 'server') continue;
       PrefValue[i].set();
     }
   },
