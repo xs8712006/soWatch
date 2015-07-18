@@ -97,7 +97,7 @@ var PrefValue = {
       return PrefBranch.getCharPref('remote.server.bitbucket');
     },
     set: function () {
-      PrefBranch.setCharPref('remote.server.bitbucket', 'https://bitbucket.org/kafan15536900/haoutil/src/master/player/testmod/');
+      PrefBranch.setCharPref('remote.server.bitbucket', 'https://bitbucket.org/kafan15536900/haoutil/raw/master/player/testmod/');
     },
   },
   'player': {
@@ -208,7 +208,7 @@ var Preferences = {
 };
 
 var QueryFiles = {
-  hash: function (aMode, aLink, aFile, aName) {
+  hash: function (aMode, aLink, aFile, aName, aProbe) {
     if (aProbe <= 3) {
       aProbe = aProbe + 1;
       var aClient = Cc['@mozilla.org/xmlextras/xmlhttprequest;1'].createInstance(Ci.nsIXMLHttpRequest);
@@ -217,9 +217,10 @@ var QueryFiles = {
         var aSize = new Number(aClient.getResponseHeader('Content-Length'));
         if (aSize < 5000) aClient.onerror();
         var aHash = aSize.toString(16);
-        aLink = aClient.responseURL;
-        if (aMode == 0) QueryFiles.check(aLink, aFile, aName, aHash);
-        if (aMode == 1) QueryFiles.fetch(aLink, aFile, aName, aHash);
+        var xLink = aClient.responseURL;
+        var xProbe = 0;
+        if (aMode == 0) QueryFiles.check(xLink, aFile, aName, aHash, xProbe);
+        if (aMode == 1) QueryFiles.fetch(xLink, aFile, aName, aHash, xProbe);
       }
       aClient.onerror = function () {
         aClient.abort();
@@ -228,34 +229,38 @@ var QueryFiles = {
       aClient.send();
     } else return;
   },
-  check: function (aLink, aFile, aName, aHash) {
+  check: function (xLink, aFile, aName, aHash, xProbe) {
     try {
       var xHash = PrefBranch.getCharPref('file.hash.' + aName);
       if (xHash == aHash) return;
-      else QueryFiles.fetch(aLink, aFile, aName, aHash);
+      else QueryFiles.fetch(xLink, aFile, aName, aHash, xProbe);
     } catch (e) {
       OS.File.stat(aFile).then(function onSuccess(aData) {
         var xSize = aData.size;
         var xHash = xSize.toString(16);
         if (xHash == aHash) PrefBranch.setCharPref('file.hash.' + aName, aHash);
-        else QueryFiles.fetch(aLink, aFile, aName, aHash);
+        else QueryFiles.fetch(xLink, aFile, aName, aHash, xProbe);
       }, function onFailure(aReason) {
         if (aReason instanceof OS.File.Error && aReason.becauseNoSuchFile) {
-          QueryFiles.fetch(aLink, aFile, aName, aHash);
+          QueryFiles.fetch(xLink, aFile, aName, aHash, xProbe);
         }
       });
     }
   },
-  fetch: function (aLink, aFile, aName, aHash) {
-    var aTemp = aFile + '_sw';  // 因为Downloads.jsm并不能直接覆盖原文件所以需要使用临时文件
-    Downloads.fetch(aLink, aTemp, {
-      isPrivate: true
-    }).then(function onSuccess() {
-      OS.File.move(aTemp, aFile);
-      PrefBranch.setCharPref('file.hash.' + aName, aHash);
-    }, function onFailure() {
-      OS.File.remove(aTemp);
-    });
+  fetch: function (xLink, aFile, aName, aHash, xProbe) {
+    if (xProbe <= 3) {
+      xProbe = xProbe + 1;
+      var xFile = aFile + '_sw';  // 因为Downloads.jsm并不能直接覆盖原文件所以需要使用临时文件
+      Downloads.fetch(xLink, xFile, {
+        isPrivate: true
+      }).then(function onSuccess() {
+        OS.File.move(xFile, aFile);
+        PrefBranch.setCharPref('file.hash.' + aName, aHash);
+      }, function onFailure() {
+        OS.File.remove(xFile);
+        QueryFiles.fetch(xLink, aFile, aName, aHash, xProbe);
+      });
+    } else return;
   },
   start: function (aMode) {
     FileIO.addFolder();
