@@ -76,7 +76,7 @@ var PrefValue = {
     },
     set: function () {
       var aString = Cc["@mozilla.org/supports-string;1"].createInstance(Ci.nsISupportsString);
-      aString.data = '';
+      aString.data = OS.Path.join(OS.Constants.Path.profileDir, 'soWatch');
       PrefBranch.setComplexValue('file.directory', Ci.nsISupportsString, aString);
     },
   },
@@ -167,7 +167,6 @@ var Preferences = {
     if (PrefValue['remote'].get() == true) PrefValue['autoupdate'].set(false);
 
     if (PrefValue['directory'].get()) FileIO.extDir = PrefValue['directory'].get();
-    else FileIO.extDir = OS.Path.join(OS.Constants.Path.profileDir, 'soWatch');
 
     if (PrefValue['server'].get()) {
       FileIO.server = PrefValue['server'].get();

@@ -6,7 +6,7 @@ Cu.import('resource://gre/modules/osfile.jsm'); //Require Gecko 27 and later
 Cu.import('resource://gre/modules/Downloads.jsm'); //Require Gecko 26 and later
 Cu.import('resource://gre/modules/NetUtil.jsm'); //Promise chain that require Gecko 25 and later
 
-var Utilities = {}, SiteLists = {}, PlayerRules = {}, FilterRules = {}, RefererRules = {};
+var Utilities = {}, PlayerRules = {}, FilterRules = {}, RefererRules = {};
 
 var Services = {
   io: Cc['@mozilla.org/network/io-service;1'].getService(Ci.nsIIOService),
@@ -25,7 +25,133 @@ var FileIO = {
   },
 };
 
-var PrefBranch = Services.prefs.getBranch('extensions.sowatchmk2.');
+var aaaaaa = {
+  branch: Services.prefs.getBranch('extensions.sowatch.'),
+  value: {
+    'autoupdate': {
+      pref: 'autoupdate.enabled',
+      bool: false,
+    },
+    'lastdate': {
+      pref: 'autoupdate.enabled',
+      integer: '',
+    },
+    'period': {
+      pref: 'autoupdate.period',
+      integer: 7,
+    },
+    'remote': {
+      pref: 'remote.access.enabled',
+      bool: false,
+    },
+    'override': {
+      pref: 'remote.override.enabled',
+      bool: false,
+    },
+    'directory': {
+      pref: 'file.directory',
+      string: OS.Path.join(OS.Constants.Path.profileDir, 'soWatch'),
+    },
+    'server': {
+      pref: 'remote.server.defined'.
+      string: '',
+    },
+    'bitbucket': {
+      pref: 'remote.server.bitbucket',
+      string: 'https://bitbucket.org/kafan15536900/haoutil/raw/master/player/testmod/',
+    },
+    'player': {
+      pref: 'general.player.enabled',
+      bool: true,
+    },
+    'filter': {
+      pref: 'general.filter.enabled',
+      bool: true,
+    },
+    'referer': {
+      pref: 'general.referer.enabled',
+      bool: true,
+    },
+    'toolbar': {
+      pref: 'general.interface.enabled',
+      bool: true,
+    },
+    'firstrun': {
+      pref: 'general.firstrun.done',
+      bool: false,
+    },
+  },
+  getBool: function (aPref) {
+    return this.branch.getBoolPref(aPref);
+  },
+  setBool: function (aPref, aBool) {
+    this.branch.setBoolPref(aPref, aBool);
+  },
+  getInteger: function (aPref) {
+    return this.branch.getIntPref(aPref);
+  },
+  setInteger: function (aPref, aInteger) {
+    this.branch.setIntPref(aPref, aInteger);
+  },
+  getChar: function (aPref) {
+    this.branch.getComplexValue(aPref, Ci.nsISupportsString).data;
+  },
+  setChar: function (aPref, aString) {
+    var aChar = Cc["@mozilla.org/supports-string;1"].createInstance(Ci.nsISupportsString);
+    aChar.data = aString;
+    this.branch.setComplexValue(aPref, Ci.nsISupportsString, aChar);
+  },
+  getAll: function (aValue) {
+    if (aValue.bool) {
+      this.getBool(aValue.pref);
+    }
+    if (aValue.integer) {
+      this.getInteger(aValue.pref);
+    }
+    if (aValue.string) {
+      this.getChar(aValue.pref);
+    }
+  },
+  setAll: function (aValue) {
+    if (aValue.bool) {
+      this.setBool(aValue.pref, aValue.bool);
+    }
+    if (aValue.integer) {
+      this.setInteger(aValue.pref, aValue.integer);
+    }
+    if (aValue.string) {
+      this.setChar(aValue.pref, aValue.string);
+    }
+  },
+  pending: function () {
+    for (var i in this.value) {
+      var aValue = this.value[i];
+      try {
+        this.getAll(aValue);
+      } catch (e) {
+        this.setAll(aValue);
+      }
+    }
+  },
+  manifest: function () {
+
+  },
+  resolver: function () {
+
+  },
+  setDefault: function () {
+    for (var i in this.value) {
+      if (i == 'directory' || i == 'server') continue;
+      var aValue = this.value[i];
+      this.setAll(aValue);
+    }
+  },
+  remove: function () {
+    Services.prefs.deleteBranch('extensions.sowatch.');
+  },
+};
+
+var PrefBranch = Services.prefs.getBranch('extensions.sowatch.');
 var PrefValue = {
   'autoupdate': {
     get: function () {
@@ -90,14 +216,6 @@ var PrefValue = {
       PrefBranch.setComplexValue('remote.server.defined', Ci.nsISupportsString, aString);
     },
   },
-  'chrome': {
-    get: function () {
-      return PrefBranch.getCharPref('file.chrome');
-    },
-    set: function () {
-      PrefBranch.setCharPref('file.chrome', 'chrome://sowatchmk2/content/');
-    },
-  },
   'bitbucket': {
     get: function () {
       return PrefBranch.getCharPref('remote.server.bitbucket');
@@ -106,103 +224,28 @@ var PrefValue = {
       PrefBranch.setCharPref('remote.server.bitbucket', 'https://bitbucket.org/kafan15536900/haoutil/raw/master/player/testmod/');
     },
   },
-  'referer-youku': {
+  'player': {
     get: function () {
-      return PrefBranch.getBoolPref('referer.youku.enabled');
+      return PrefBranch.getBoolPref('general.player.enabled');
     },
-    set: function (aBool) {
-      if (aBool == false) PrefBranch.setBoolPref('referer.youku.enabled', aBool);
-      else PrefBranch.setBoolPref('referer.youku.enabled', true);
+    set: function () {
+      PrefBranch.setBoolPref('general.player.enabled', true);
     },
   },
-  'referer-iqiyi': {
+  'filter': {
     get: function () {
-      return PrefBranch.getBoolPref('referer.iqiyi.enabled');
+      return PrefBranch.getBoolPref('general.filter.enabled');
     },
-    set: function (aBool) {
-      if (aBool == false) PrefBranch.setBoolPref('referer.iqiyi.enabled', aBool);
-      else PrefBranch.setBoolPref('referer.iqiyi.enabled', true);
+    set: function () {
+      PrefBranch.setBoolPref('general.filter.enabled', true);
     },
   },
-  'youku': {
+  'referer': {
     get: function () {
-      return PrefBranch.getCharPref('rule.youku.defined');
+      return PrefBranch.getBoolPref('general.referer.enabled');
     },
-    set: function (aChar) {
-      if (aChar) PrefBranch.setCharPref('rule.youku.defined', aChar);
-      else PrefBranch.setCharPref('rule.youku.defined', 'player');
-    },
-  },
-  'tudou': {
-    get: function () {
-      return PrefBranch.getCharPref('rule.tudou.defined');
-    },
-    set: function (aChar) {
-      if (aChar) PrefBranch.setCharPref('rule.tudou.defined', aChar);
-      else PrefBranch.setCharPref('rule.tudou.defined', 'player');
-    },
-  },
-  'iqiyi': {
-    get: function () {
-      return PrefBranch.getCharPref('rule.iqiyi.defined');
-    },
-    set: function (aChar) {
-      if (aChar) PrefBranch.setCharPref('rule.iqiyi.defined', aChar);
-      else PrefBranch.setCharPref('rule.iqiyi.defined', 'player');
-    },
-  },
-  'letv': {
-    get: function () {
-      return PrefBranch.getCharPref('rule.letv.defined');
-    },
-    set: function (aChar) {
-      if (aChar) PrefBranch.setCharPref('rule.letv.defined', aChar);
-      else PrefBranch.setCharPref('rule.letv.defined', 'filter');
-    },
-  },
-  'sohu': {
-    get: function () {
-      return PrefBranch.getCharPref('rule.sohu.defined');
-    },
-    set: function (aChar) {
-      if (aChar) PrefBranch.setCharPref('rule.sohu.defined', aChar);
-      else PrefBranch.setCharPref('rule.sohu.defined', 'filter');
-    },
-  },
-  'pptv': {
-    get: function () {
-      return PrefBranch.getCharPref('rule.pptv.defined');
-    },
-    set: function (aChar) {
-      if (aChar) PrefBranch.setCharPref('rule.pptv.defined', aChar);
-      else PrefBranch.setCharPref('rule.pptv.defined', 'player');
-    },
-  },
-  'qq': {
-    get: function () {
-      return PrefBranch.getCharPref('rule.qq.defined');
-    },
-    set: function (aChar) {
-      if (aChar) PrefBranch.setCharPref('rule.qq.defined', aChar);
-      else PrefBranch.setCharPref('rule.qq.defined', 'filter');
-    },
-  },
-  '163': {
-    get: function () {
-      return PrefBranch.getCharPref('rule.163.defined');
-    },
-    set: function (aChar) {
-      if (aChar) PrefBranch.setCharPref('rule.163.defined', aChar);
-      else PrefBranch.setCharPref('rule.163.defined', 'filter');
-    },
-  },
-  'sina': {
-    get: function () {
-      return PrefBranch.getCharPref('rule.sina.defined');
-    },
-    set: function (aChar) {
-      if (aChar) PrefBranch.setCharPref('rule.sina.defined', aChar);
-      else PrefBranch.setCharPref('rule.sina.defined', 'filter');
+    set: function () {
+      PrefBranch.setBoolPref('general.referer.enabled', true);
     },
   },
   'toolbar': {
@@ -213,13 +256,20 @@ var PrefValue = {
       PrefBranch.setBoolPref('general.interface.enabled', true);
     },
   },
+  'firstrun': {
+    get: function () {
+      return PrefBranch.getBoolPref('general.firstrun.done');
+    },
+    set: function (aBool) {
+      if (aBool) PrefBranch.setBoolPref('general.firstrun.done', aBool);
+      else PrefBranch.setBoolPref('general.firstrun.done', false);
+    },
+  },
 };
 var Preferences = {
-// 移除参数设置
   remove: function () {
-    Services.prefs.deleteBranch('extensions.sowatchmk2.');
+    Services.prefs.deleteBranch('extensions.sowatch.');
   },
-// 恢复默认设置(暂时未添加)
   setDefault: function () {
     for (var i in PrefValue) {
       if (i == 'directory' || i == 'server') continue;
@@ -238,12 +288,9 @@ var Preferences = {
     this.resolver();
   },
   manifest: function () {
-    PrefValue['chrome'].set();  // 禁止修改chrome否则会影响扩展工作
-    PrefValue['bitbucket'].set(); // 禁止修改bitbucket否则会影响扩展工作
+    PrefValue['bitbucket'].set();  // 禁止修改bitbucket否则会影响扩展工作
 
-    if (PrefValue['remote'].get()) PrefValue['autoupdate'].set(false);
-
-    if (PrefValue['chrome'].get()) FileIO.chrome = PrefValue['chrome'].get();
+    if (PrefValue['remote'].get() == true) PrefValue['autoupdate'].set(false);
 
     if (PrefValue['directory'].get()) FileIO.extDir = PrefValue['directory'].get();
 
@@ -257,11 +304,15 @@ var Preferences = {
     if (PrefValue['override'].get()) FileIO.link = PrefValue['server'].get();
     else FileIO.link = PrefValue['bitbucket'].get()
 
+    FileIO.path = OS.Path.toFileURI(PrefValue['directory'].get()) + '/';
+
     if (PrefValue['autoupdate'].get()) {
-      FileIO.path = OS.Path.toFileURI(PrefValue['directory'].get()) + '/';
       if (PrefValue['lastdate'].get() + PrefValue['period'].get() * 86400 < Date.now() / 1000) QueryFiles.start(0);
-    } else {
-      FileIO.path = PrefValue['chrome'].get();
+    }
+
+    if (!PrefValue['firstrun'].get()) {
+      QueryFiles.start(0);
+      PrefValue['firstrun'].set(true);
     }
   },
   resolver: function () {
@@ -269,30 +320,10 @@ var Preferences = {
     RuleManager.filter();
     RuleManager.referer();
 
-    if (PrefValue['referer-youku'].get()) RuleResolver['youku'].refererOn();
-    else RuleResolver['youku'].refererOff();
-    if (PrefValue['referer-iqiyi'].get()) RuleResolver['iqiyi'].refererOn();
-    else RuleResolver['iqiyi'].refererOff();
-
-    if ((PrefValue['youku'].get() == 'filter' && PrefValue['tudou'].get() == 'none') || (PrefValue['youku'].get() == 'none' && PrefValue['tudou'].get() == 'filter')) {
-      PrefValue['youku'].set('filter');
-      PrefValue['tudou'].set('filter');
-    }
-
     for (var i in RuleResolver) {
-      if (PrefValue[i].get() == 'player') {
-        if (i == 'qq' || i == '163' || i == 'sina') continue;
-        RuleResolver[i].playerOn();
-      } else if (PrefValue[i].get() == 'filter') {
-        if (i == 'iqiyi') continue;
-        RuleResolver[i].playerOff();
-        RuleResolver[i].filterOn();
-      } else if (PrefValue[i].get() == 'none'){
-        RuleResolver[i].playerOff();
-        RuleResolver[i].filterOff();
-      } else {
-        PrefValue[i].set();
-      }
+      if (RuleResolver[i].playerOn) RuleResolver[i].playerOn();
+      if (RuleResolver[i].filterOn) RuleResolver[i].filterOn();
+      if (RuleResolver[i].refererOn) RuleResolver[i].refererOn();
     }
 
     if (PrefValue['toolbar'].get()) Toolbar.addIcon();
@@ -370,14 +401,12 @@ var QueryFiles = {
   },
 };
 
-// Add toolbar ui for quick management
-// 添加工具栏界面以快速管理设置
 var Toolbar = {
-  css: Services.io.newURI('chrome://sowatchmk2/skin/toolbar.css', null, null),
+  css: Services.io.newURI('chrome://sowatch/skin/toolbar.css', null, null),
   addIcon: function () {
     if (this.buttonOn) return;
     CustomizableUI.createWidget({
-      id: 'sowatchmk2-button',
+      id: 'sowatch-button',
       type: 'custom',
       defaultArea: CustomizableUI.AREA_NAVBAR,
       onBuild: function (aDocument) {
@@ -392,10 +421,10 @@ var Toolbar = {
             tooltiptext: Utilities.GetStringFromName('remoteAccessDescription'),
           },
           'autoupdate': {
-            label: Utilities.GetStringFromName('updatePlayerLabel'),
-            tooltiptext: Utilities.GetStringFromName('updatePlayerDescription'),
+            label: Utilities.GetStringFromName('autoUpdateLabel'),
+            tooltiptext: Utilities.GetStringFromName('autoUpdateDescription'),
           },
-          S2: null,
+          S2: null,  // Menu separator
           'checkupdate': {
             label: Utilities.GetStringFromName('checkUpdateLabel'),
             tooltiptext: Utilities.GetStringFromName('checkUpdateDescription'),
@@ -404,97 +433,16 @@ var Toolbar = {
             label: Utilities.GetStringFromName('forceUpdateLabel'),
             tooltiptext: Utilities.GetStringFromName('forceUpdateDescription'),
           },
-          S3: null,  // Menu separator
-          'referer-youku': {
-            label: Utilities.GetStringFromName('youkuRefererLabel'),
-            tooltiptext: Utilities.GetStringFromName('youkuRefererDescription'),
-          },
-          'referer-iqiyi': {
-            label: Utilities.GetStringFromName('iqiyiRefererLabel'),
-            tooltiptext: Utilities.GetStringFromName('iqiyiRefererDescription'),
-          },
-        };
-
-        SiteLists = {
-          'youku': {
-            label: Utilities.GetStringFromName('youkuSiteLabel'),
-            tooltiptext: 'http://www.youku.com/',
-            target: /http:\/\/static\.youku\.com\/.+player.*\.swf/i,
-            url: /https?:\/\/[^\/]+youku\.com\//i,
-          },
-          'tudou': {
-            label: Utilities.GetStringFromName('tudouSiteLabel'),
-            tooltiptext: 'http://www.tudou.com/',
-            target: /http:\/\/js\.tudouui\.com\/.+player.+\.swf/i,
-            url: /https?:\/\/[^\/]+tudou\.com\//i,
-          },
-          'iqiyi': {
-            label: Utilities.GetStringFromName('iqiyiSiteLabel'),
-            tooltiptext: 'http://www.iqiyi.com/',
-            target: /http:\/\/www\.iqiyi\.com\/.+\/(Main|Share|Enjoy)Player.+\.swf/i,
-            url: /https?:\/\/[^\/]+(iqiyi\.com)\//i,
-          },
-          'letv': {
-            label: Utilities.GetStringFromName('letvSiteLabel'),
-            tooltiptext: 'http://www.letv.com/',
-            target: /http:\/\/player\.letvcdn\.com\/.+player\.swf/i,
-            url: /https?:\/\/[^\/]+letv\.com\//i,
-          },
-          'sohu': {
-            label: Utilities.GetStringFromName('sohuSiteLabel'),
-            tooltiptext: 'http://tv.sohu.com/',
-            target: /http:\/\/tv\.sohu\.com\/.+main\.swf/i,
-            url: /https?:\/\/(tv\.sohu|[^\/]+56)\.com\//i,
-          },
-          'pptv': {
-            label: Utilities.GetStringFromName('pptvSiteLabel'),
-            tooltiptext: 'http://www.pptv.com/',
-            target: /http:\/\/player\.pplive\.cn\/.+(player|live).+\.swf/i,
-            url: /https?:\/\/[^\/]+pptv\.com\//i,
-          },
-          'qq': {
-            label: Utilities.GetStringFromName('qqSiteLabel'),
-            tooltiptext: 'http://v.qq.com/',
-            target: /http:\/\/imgcache\.qq\.com\/.+mediaplugin\.swf/i,
-            url: /https?:\/\/v\.qq\.com\//i,
-          },
-          '163': {
-            label: Utilities.GetStringFromName('163SiteLabel'),
-            tooltiptext: 'http://v.163.com/',
-            target: /http:\/\/v\.163\.com\/.+player.+\.swf/i,
-            url: /https?:\/\/v\.163\.com\//i,
-          },
-          'sina': {
-            label: Utilities.GetStringFromName('sinaSiteLabel'),
-            tooltiptext: 'http://video.sina.com.cn/',
-            target: /http:\/\/[^/]+\.sina\.com\.cn\/.+player.+\.swf/i,
-            url: /https?:\/\/video\.+sina\.com\.cn\//i,
-          },
-        };
-
-        var nLists = {
-          'player': {
-            label: Utilities.GetStringFromName('rulePlayerLabel'),
-            tooltiptext: Utilities.GetStringFromName('rulePlayerDescription'),
-          },
-          'filter': {
-            label: Utilities.GetStringFromName('ruleFilterLabel'),
-            tooltiptext: Utilities.GetStringFromName('ruleFilterDescription'),
-          },
-          'none': {
-            label: Utilities.GetStringFromName('ruleNoneLabel'),
-            tooltiptext: Utilities.GetStringFromName('ruleNoneDescription'),
-          },
         };
 
         var aMenu = aDocument.createElement('toolbarbutton');
-        aMenu.setAttribute('id', 'sowatchmk2-button');
+        aMenu.setAttribute('id', 'sowatch-button');
         aMenu.setAttribute('class', 'toolbarbutton-1');
         aMenu.setAttribute('type', 'menu');
-        aMenu.setAttribute('label', 'soWatch! mk2');
+        aMenu.setAttribute('label', 'soWatch! ');
 
         var aPopup = aDocument.createElement('menupopup');
-        aPopup.setAttribute('id', 'sowatchmk2-popup');
+        aPopup.setAttribute('id', 'sowatch-popup');
         aPopup.addEventListener('click', this.onClick, false);
         aPopup.addEventListener('popupshowing', this.onPopup, false);
         aMenu.appendChild(aPopup);
@@ -505,127 +453,56 @@ var Toolbar = {
             aPopup.appendChild(aSeparator);
           } else {
             var aItem = aDocument.createElement('menuitem');
-            aItem.setAttribute('id', 'sowatchmk2-' + i);
+            aItem.setAttribute('id', 'sowatch-' + i);
             aItem.setAttribute('label', aLists[i].label);
             aItem.setAttribute('tooltiptext', aLists[i].tooltiptext);
             aItem.setAttribute('class', 'menuitem-iconic');
-            if (i == 'remote' || i == 'referer-youku' || i == 'referer-iqiyi') aItem.setAttribute('type', 'checkbox');
+            if (i == 'autoupdate' || i == 'remote') aItem.setAttribute('type', 'checkbox');
             aPopup.appendChild(aItem);
-          }
-        }
-
-        for (var x in SiteLists) {
-          var xItem = aDocument.createElement('menu');
-          xItem.setAttribute('id', 'sowatchmk2-' + x);
-          xItem.setAttribute('label', SiteLists[x].label);
-          xItem.setAttribute('tooltiptext', SiteLists[x].tooltiptext);
-          xItem.setAttribute('class', 'menu-iconic');
-          aPopup.appendChild(xItem);
-
-          var xPopup = aDocument.createElement('menupopup');
-          xPopup.setAttribute('id', 'sowatchmk2-popup-' + x);
-          xItem.appendChild(xPopup);
-
-          for (var n in nLists) {
-            var nItem = aDocument.createElement('menuitem');
-            nItem.setAttribute('id', 'sowatchmk2-' + x + '-' + n);
-            nItem.setAttribute('label', nLists[n].label);
-            nItem.setAttribute('tooltiptext', nLists[n].tooltiptext);
-            nItem.setAttribute('type', 'radio');
-            nItem.setAttribute('name', x);
-            if ((x == 'qq' || x == '163' || x == 'sina') && n == 'player') nItem.setAttribute('disabled', 'true');
-            if ((x == 'iqiyi') && n == 'filter') nItem.setAttribute('disabled', 'true');
-            xPopup.appendChild(nItem);
           }
         }
 
         return aMenu;
       },
       onClick: function (aEvent) {
-        if (aEvent.target.id == 'sowatchmk2-default') Preferences.setDefault();
+        if (aEvent.target.id == 'sowatch-default') Preferences.setDefault();
 
-        if (aEvent.target.id == 'sowatchmk2-remote') {
+        if (aEvent.target.id == 'sowatch-remote') {
           if (PrefValue['remote'].get()) PrefValue['remote'].set(false);
           else PrefValue['remote'].set(true);
         }
 
-        if (aEvent.target.id == 'sowatchmk2-autoupdate') {
+        if (aEvent.target.id == 'sowatch-autoupdate') {
           if (PrefValue['autoupdate'].get()) PrefValue['autoupdate'].set(false);
           else PrefValue['autoupdate'].set(true);
         }
 
-        if (aEvent.target.id == 'sowatchmk2-checkupdate') {
+        if (aEvent.target.id == 'sowatch-checkupdate') {
           if (PrefValue['remote'].get()) return;
           QueryFiles.start(0);
         }
 
-        if (aEvent.target.id == 'sowatchmk2-forceupdate') {
+        if (aEvent.target.id == 'sowatch-forceupdate') {
           if (PrefValue['remote'].get()) return;
           QueryFiles.start(1);
         }
-
-        if (aEvent.target.id == 'sowatchmk2-referer-youku') {
-          if (PrefValue['referer-youku'].get()) PrefValue['referer-youku'].set(false);
-          else PrefValue['referer-youku'].set(true);
-        }
-
-        if (aEvent.target.id == 'sowatchmk2-referer-iqiyi') {
-          if (PrefValue['referer-iqiyi'].get()) PrefValue['referer-iqiyi'].set(false);
-          else PrefValue['referer-iqiyi'].set(true);
-        }
-
-        for (var x in SiteLists) {
-          if (aEvent.target.id == 'sowatchmk2-' + x + '-player') {
-            if (x == 'qq' || x == '163' || x == 'sina') continue;
-            PrefValue[x].set('player');
-          } else if (aEvent.target.id == 'sowatchmk2-' + x + '-filter') {
-            if (x == 'iqiyi') continue;
-            PrefValue[x].set('filter');
-          } else if (aEvent.target.id == 'sowatchmk2-' + x + '-none') PrefValue[x].set('none');
-        }
       },
       onPopup: function (aEvent) {
-        if (aEvent.target.id == 'sowatchmk2-popup') {
+        if (aEvent.target.id == 'sowatch-popup') {
           if (PrefValue['remote'].get()) {
-            aEvent.target.querySelector('#sowatchmk2-remote').setAttribute('checked', 'true');
-            aEvent.target.querySelector('#sowatchmk2-autoupdate').setAttribute('disabled', 'true');
+            aEvent.target.querySelector('#sowatch-remote').setAttribute('checked', 'true');
+            aEvent.target.querySelector('#sowatch-autoupdate').setAttribute('disabled', 'true');
+            aEvent.target.querySelector('#sowatch-checkupdate').setAttribute('disabled', 'true');
+            aEvent.target.querySelector('#sowatch-forceupdate').setAttribute('disabled', 'true');
           } else {
-            aEvent.target.querySelector('#sowatchmk2-remote').setAttribute('checked', 'false');
-            aEvent.target.querySelector('#sowatchmk2-autoupdate').setAttribute('disabled', 'false');
+            aEvent.target.querySelector('#sowatch-remote').setAttribute('checked', 'false');
+            aEvent.target.querySelector('#sowatch-autoupdate').setAttribute('disabled', 'false');
+            aEvent.target.querySelector('#sowatch-checkupdate').setAttribute('disabled', 'false');
+            aEvent.target.querySelector('#sowatch-forceupdate').setAttribute('disabled', 'false');
           }
 
-          if (PrefValue['autoupdate'].get()) {
-            aEvent.target.querySelector('#sowatchmk2-autoupdate').setAttribute('checked', 'true');
-            aEvent.target.querySelector('#sowatchmk2-checkupdate').setAttribute('disabled', 'false');
-            aEvent.target.querySelector('#sowatchmk2-forceupdate').setAttribute('disabled', 'false');
-          } else {
-            aEvent.target.querySelector('#sowatchmk2-autoupdate').setAttribute('checked', 'false');
-            aEvent.target.querySelector('#sowatchmk2-checkupdate').setAttribute('disabled', 'true');
-            aEvent.target.querySelector('#sowatchmk2-forceupdate').setAttribute('disabled', 'true');
-          }
-
-          if (PrefValue['referer-youku'].get()) aEvent.target.querySelector('#sowatchmk2-referer-youku').setAttribute('checked', 'true');
-          else aEvent.target.querySelector('#sowatchmk2-referer-youku').setAttribute('checked', 'false');
-
-          if (PrefValue['referer-iqiyi'].get()) aEvent.target.querySelector('#sowatchmk2-referer-iqiyi').setAttribute('checked', 'true');
-          else aEvent.target.querySelector('#sowatchmk2-referer-iqiyi').setAttribute('checked', 'false');
-        }
-
-        for (var x in SiteLists) {
-          if (aEvent.target.id == 'sowatchmk2-popup') {
-            if (!SiteLists[x].url.test(aEvent.target.ownerDocument.defaultView.content.location.href) && !SiteLists[x].popup) {
-              aEvent.target.querySelector('#sowatchmk2-' + x).setAttribute('hidden', 'true');
-              if (x == 'youku' || x == 'iqiyi') aEvent.target.querySelector('#sowatchmk2-referer-' + x).setAttribute('hidden', 'true');
-            } else {
-              aEvent.target.querySelector('#sowatchmk2-' + x).setAttribute('hidden', 'false');
-              if (x == 'youku' || x == 'iqiyi') aEvent.target.querySelector('#sowatchmk2-referer-' + x).setAttribute('hidden', 'false');
-            }
-          }
-          if (aEvent.target.id == 'sowatchmk2-popup-' + x) {
-            if (PrefValue[x].get() == 'player') aEvent.target.querySelector('#sowatchmk2-' + x + '-player').setAttribute('checked', 'true');
-            else if (PrefValue[x].get() == 'filter') aEvent.target.querySelector('#sowatchmk2-' + x + '-filter').setAttribute('checked', 'true');
-            else if (PrefValue[x].get() == 'none') aEvent.target.querySelector('#sowatchmk2-' + x + '-none').setAttribute('checked', 'true');
-          }
+          if (PrefValue['autoupdate'].get()) aEvent.target.querySelector('#sowatch-autoupdate').setAttribute('checked', 'true');
+          else aEvent.target.querySelector('#sowatch-autoupdate').setAttribute('checked', 'false');
         }
       },
     });
@@ -635,20 +512,8 @@ var Toolbar = {
   removeIcon: function () {
     if (!this.buttonOn) return;
     Services.sss.unregisterSheet(this.css, Services.sss.AUTHOR_SHEET);
-    CustomizableUI.destroyWidget('sowatchmk2-button');
+    CustomizableUI.destroyWidget('sowatch-button');
     this.buttonOn = false;
-  },
-  UserInterface: function (aSubject) {
-    var httpChannel = aSubject.QueryInterface(Ci.nsIHttpChannel);
-
-    var aVisitor = new HttpHeaderVisitor();
-    httpChannel.visitResponseHeaders(aVisitor);
-    if (!aVisitor.isFlash()) return;
-
-    for (var i in SiteLists) {
-      if (SiteLists[i] && SiteLists[i].target.test(httpChannel.URI.spec)) SiteLists[i].popup = true;
-      else SiteLists[i].popup = false;
-    }
   },
 };
 
@@ -894,6 +759,8 @@ var RuleExecution = {
     return Cr.NS_ERROR_NO_INTERFACE;
   },
   referer: function (aSubject) {
+    if (!PrefValue['referer'].get()) return;
+
     var httpChannel = aSubject.QueryInterface(Ci.nsIHttpChannel);
 
     for (var i in RefererRules) {
@@ -904,6 +771,8 @@ var RuleExecution = {
     }
   },
   filter: function (aSubject) {
+    if (!PrefValue['filter'].get()) return;
+
     var httpChannel = aSubject.QueryInterface(Ci.nsIHttpChannel);
 
     for (var i in FilterRules) {
@@ -924,6 +793,8 @@ var RuleExecution = {
     }
   },
   player: function (aSubject) {
+    if (!PrefValue['player'].get()) return;
+
     var httpChannel = aSubject.QueryInterface(Ci.nsIHttpChannel);
 
     var aVisitor = new HttpHeaderVisitor();
@@ -1014,18 +885,17 @@ function TrackingListener() {
   this.rule = null;
 }
 TrackingListener.prototype = {
-  onStartRequest: function (request, context) {
-    this.originalListener.onStartRequest(request, context);
+  onStartRequest: function (aRequest, aContext) {
+    this.originalListener.onStartRequest(aRequest, aContext);
   },
-  onStopRequest: function (request, context) {
-    this.originalListener.onStopRequest(request, context, Cr.NS_OK);
+  onStopRequest: function (aRequest, aContext) {
+    this.originalListener.onStopRequest(aRequest, aContext, Cr.NS_OK);
   },
-  onDataAvailable: function (request, context) {
-    this.originalListener.onDataAvailable(request, context, this.rule['storageStream'].newInputStream(0), 0, this.rule['count']);
+  onDataAvailable: function (aRequest, aContext) {
+    this.originalListener.onDataAvailable(aRequest, aContext, this.rule['storageStream'].newInputStream(0), 0, this.rule['count']);
   }
 }
 
-//判断是否是SWF文件，总感觉意义不太大
 function HttpHeaderVisitor() {
   this._isFlash = false;
 }
@@ -1051,7 +921,6 @@ var Observers = {
       RuleExecution.referer(aSubject);
     }
     if (aTopic == 'http-on-examine-response') {
-      Toolbar.UserInterface(aSubject);
       RuleExecution.filter(aSubject);
       RuleExecution.player(aSubject);
     }
@@ -1069,7 +938,7 @@ var Observers = {
 };
 
 function startup(aData, aReason) {
-  Utilities = Services.strings.createBundle('chrome://sowatchmk2/locale/global.properties?' + Math.random());
+  Utilities = Services.strings.createBundle('chrome://sowatch/locale/global.properties?' + Math.random());
   Preferences.pending();
   RuleExecution.iqiyi();
   Observers.startUp();
