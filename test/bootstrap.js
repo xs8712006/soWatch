@@ -53,7 +53,7 @@ var aaaaaa = {
       string: OS.Path.join(OS.Constants.Path.profileDir, 'soWatch'),
     },
     'server': {
-      pref: 'remote.server.defined',
+      pref: 'remote.server.defined'.
       string: '',
     },
     'bitbucket': {
@@ -102,24 +102,24 @@ var aaaaaa = {
     this.branch.setComplexValue(aPref, Ci.nsISupportsString, aChar);
   },
   getAll: function (aValue) {
-    if (aValue.hasOwnProperty('bool')) {
+    if (aValue.bool) {
       this.getBool(aValue.pref);
     }
-    if (aValue.hasOwnProperty('integer')) {
+    if (aValue.integer) {
       this.getInteger(aValue.pref);
     }
-    if (aValue.hasOwnProperty('string')) {
+    if (aValue.string) {
       this.getChar(aValue.pref);
     }
   },
   setAll: function (aValue) {
-    if (aValue.hasOwnProperty('bool')) {
+    if (aValue.bool) {
       this.setBool(aValue.pref, aValue.bool);
     }
-    if (aValue.hasOwnProperty('integer')) {
+    if (aValue.integer) {
       this.setInteger(aValue.pref, aValue.integer);
     }
-    if (aValue.hasOwnProperty('string')) {
+    if (aValue.string) {
       this.setChar(aValue.pref, aValue.string);
     }
   },
