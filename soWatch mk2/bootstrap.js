@@ -28,275 +28,213 @@ var FileIO = {
 var PrefBranch = Services.prefs.getBranch('extensions.sowatchmk2.');
 var PrefValue = {
   'autoupdate': {
-    get: function () {
-      return PrefBranch.getBoolPref('autoupdate.enabled');
-    },
-    set: function (aBool) {
-      if (aBool) PrefBranch.setBoolPref('autoupdate.enabled', aBool);
-      else PrefBranch.setBoolPref('autoupdate.enabled', false);
-    },
+    pref: 'autoupdate.enabled',
+    bool: false,
   },
   'lastdate': {
-    get: function () {
-      return PrefBranch.getIntPref('autoupdate.lastdate');
-    },
-    set: function () {
-      PrefBranch.setIntPref('autoupdate.lastdate', Date.now() / 1000);
-    },
+    pref: 'autoupdate.lastdate',
+    integer: parseInt(Date.now() / 1000),
   },
   'period': {
-    get: function () {
-      return PrefBranch.getIntPref('autoupdate.period');
-    },
-    set: function () {
-      PrefBranch.setIntPref('autoupdate.period', 7);
-    },
+    pref: 'autoupdate.period',
+    integer: 7,
   },
   'remote': {
-    get: function () {
-      return PrefBranch.getBoolPref('remote.access.enabled');
-    },
-    set: function (aBool) {
-      if (aBool) PrefBranch.setBoolPref('remote.access.enabled', aBool);
-      else PrefBranch.setBoolPref('remote.access.enabled', false);
-    },
+    pref: 'remote.access.enabled',
+    bool: false,
   },
   'override': {
-    get: function () {
-      return PrefBranch.getBoolPref('remote.override.enabled');
-    },
-    set: function (aBool) {
-      if (aBool) PrefBranch.setBoolPref('remote.override.enabled', aBool);
-      else PrefBranch.setBoolPref('remote.override.enabled', false);
-    },
+    pref: 'remote.override.enabled',
+    bool: false,
   },
   'directory': {
-    get: function () {
-      return PrefBranch.getComplexValue('file.directory', Ci.nsISupportsString).data;
-    },
-    set: function () {
-      var aString = Cc["@mozilla.org/supports-string;1"].createInstance(Ci.nsISupportsString);
-      aString.data = OS.Path.join(OS.Constants.Path.profileDir, 'soWatch');
-      PrefBranch.setComplexValue('file.directory', Ci.nsISupportsString, aString);
-    },
+    pref: 'file.directory',
+    string: OS.Path.join(OS.Constants.Path.profileDir, 'soWatch'),
   },
   'server': {
-    get: function () {
-      return PrefBranch.getComplexValue('remote.server.defined', Ci.nsISupportsString).data;
-    },
-    set: function () {
-      var aString = Cc["@mozilla.org/supports-string;1"].createInstance(Ci.nsISupportsString);
-      aString.data = '';
-      PrefBranch.setComplexValue('remote.server.defined', Ci.nsISupportsString, aString);
-    },
-  },
-  'chrome': {
-    get: function () {
-      return PrefBranch.getCharPref('file.chrome');
-    },
-    set: function () {
-      PrefBranch.setCharPref('file.chrome', 'chrome://sowatchmk2/content/');
-    },
+    pref: 'remote.server.defined',
+    string: '',
   },
   'bitbucket': {
-    get: function () {
-      return PrefBranch.getCharPref('remote.server.bitbucket');
-    },
-    set: function () {
-      PrefBranch.setCharPref('remote.server.bitbucket', 'https://bitbucket.org/kafan15536900/haoutil/raw/master/player/testmod/');
-    },
+    pref: 'remote.server.bitbucket',
+    string: 'https://bitbucket.org/kafan15536900/haoutil/raw/master/player/testmod/',
   },
   'referer-youku': {
-    get: function () {
-      return PrefBranch.getBoolPref('referer.youku.enabled');
-    },
-    set: function (aBool) {
-      if (aBool == false) PrefBranch.setBoolPref('referer.youku.enabled', aBool);
-      else PrefBranch.setBoolPref('referer.youku.enabled', true);
-    },
+    pref: 'referer.youku.enabled',
+    bool: true,
   },
   'referer-iqiyi': {
-    get: function () {
-      return PrefBranch.getBoolPref('referer.iqiyi.enabled');
-    },
-    set: function (aBool) {
-      if (aBool == false) PrefBranch.setBoolPref('referer.iqiyi.enabled', aBool);
-      else PrefBranch.setBoolPref('referer.iqiyi.enabled', true);
-    },
+    pref: 'referer.iqiyi.enabled',
+    bool: true,
   },
   'youku': {
-    get: function () {
-      return PrefBranch.getCharPref('rule.youku.defined');
-    },
-    set: function (aChar) {
-      if (aChar) PrefBranch.setCharPref('rule.youku.defined', aChar);
-      else PrefBranch.setCharPref('rule.youku.defined', 'player');
-    },
+    pref: 'rule.youku.defined',
+    string: 'player',
   },
   'tudou': {
-    get: function () {
-      return PrefBranch.getCharPref('rule.tudou.defined');
-    },
-    set: function (aChar) {
-      if (aChar) PrefBranch.setCharPref('rule.tudou.defined', aChar);
-      else PrefBranch.setCharPref('rule.tudou.defined', 'player');
-    },
+    pref: 'rule.tudou.defined',
+    string: 'player',
   },
   'iqiyi': {
-    get: function () {
-      return PrefBranch.getCharPref('rule.iqiyi.defined');
-    },
-    set: function (aChar) {
-      if (aChar) PrefBranch.setCharPref('rule.iqiyi.defined', aChar);
-      else PrefBranch.setCharPref('rule.iqiyi.defined', 'player');
-    },
+    pref: 'rule.iqiyi.defined',
+    string: 'player',
   },
   'letv': {
-    get: function () {
-      return PrefBranch.getCharPref('rule.letv.defined');
-    },
-    set: function (aChar) {
-      if (aChar) PrefBranch.setCharPref('rule.letv.defined', aChar);
-      else PrefBranch.setCharPref('rule.letv.defined', 'filter');
-    },
+    pref: 'rule.letv.defined',
+    string: 'filter',
   },
   'sohu': {
-    get: function () {
-      return PrefBranch.getCharPref('rule.sohu.defined');
-    },
-    set: function (aChar) {
-      if (aChar) PrefBranch.setCharPref('rule.sohu.defined', aChar);
-      else PrefBranch.setCharPref('rule.sohu.defined', 'filter');
-    },
+    pref: 'rule.sohu.defined',
+    string: 'filter',
   },
   'pptv': {
-    get: function () {
-      return PrefBranch.getCharPref('rule.pptv.defined');
-    },
-    set: function (aChar) {
-      if (aChar) PrefBranch.setCharPref('rule.pptv.defined', aChar);
-      else PrefBranch.setCharPref('rule.pptv.defined', 'player');
-    },
+    pref: 'rule.pptv.defined',
+    string: 'player',
   },
   'qq': {
-    get: function () {
-      return PrefBranch.getCharPref('rule.qq.defined');
-    },
-    set: function (aChar) {
-      if (aChar) PrefBranch.setCharPref('rule.qq.defined', aChar);
-      else PrefBranch.setCharPref('rule.qq.defined', 'filter');
-    },
+    pref: 'rule.qq.defined',
+    string: 'filter',
   },
   '163': {
-    get: function () {
-      return PrefBranch.getCharPref('rule.163.defined');
-    },
-    set: function (aChar) {
-      if (aChar) PrefBranch.setCharPref('rule.163.defined', aChar);
-      else PrefBranch.setCharPref('rule.163.defined', 'filter');
-    },
+    pref: 'rule.163.defined',
+    string: 'filter',
   },
   'sina': {
-    get: function () {
-      return PrefBranch.getCharPref('rule.sina.defined');
-    },
-    set: function (aChar) {
-      if (aChar) PrefBranch.setCharPref('rule.sina.defined', aChar);
-      else PrefBranch.setCharPref('rule.sina.defined', 'filter');
-    },
+    pref: 'rule.sina.defined',
+    string: 'filter',
   },
   'toolbar': {
-    get: function () {
-      return PrefBranch.getBoolPref('general.interface.enabled');
-    },
-    set: function () {
-      PrefBranch.setBoolPref('general.interface.enabled', true);
-    },
+    pref: 'general.interface.enabled',
+    bool: true,
+  },
+  'firstrun': {
+    pref: 'general.firstrun.done',
+    bool: false,
   },
 };
 var Preferences = {
-// 移除参数设置
-  remove: function () {
-    Services.prefs.deleteBranch('extensions.sowatchmk2.');
+  getBool: function (aPref) {
+    return PrefBranch.getBoolPref(aPref);
   },
-// 恢复默认设置(暂时未添加)
-  setDefault: function () {
-    for (var i in PrefValue) {
-      if (i == 'directory' || i == 'server') continue;
-      PrefValue[i].set();
+  setBool: function (aPref, aBool) {
+    PrefBranch.setBoolPref(aPref, aBool);
+  },
+  getInteger: function (aPref) {
+    return PrefBranch.getIntPref(aPref);
+  },
+  setInteger: function (aPref, aInteger) {
+    PrefBranch.setIntPref(aPref, aInteger);
+  },
+  getChar: function (aPref) {
+    return PrefBranch.getComplexValue(aPref, Ci.nsISupportsString).data;
+  },
+  setChar: function (aPref, aString) {
+    var aChar = Cc["@mozilla.org/supports-string;1"].createInstance(Ci.nsISupportsString);
+    aChar.data = aString;
+    PrefBranch.setComplexValue(aPref, Ci.nsISupportsString, aChar);
+  },
+  getValue: function (aValue) {
+    if ('bool' in aValue) {
+      this.getBool(aValue.pref);
+    }
+    if ('integer' in aValue) {
+      this.getInteger(aValue.pref);
+    }
+    if ('string' in aValue) {
+      this.getChar(aValue.pref);
+    }
+  },
+  setValue: function (aValue) {
+    if ('bool' in aValue) {
+      this.setBool(aValue.pref, aValue.bool);
+    }
+    if ('integer' in aValue) {
+      this.setInteger(aValue.pref, aValue.integer);
+    }
+    if ('string' in aValue) {
+      this.setChar(aValue.pref, aValue.string);
     }
   },
   pending: function () {
     for (var i in PrefValue) {
+      var aValue = PrefValue[i];
       try {
-        PrefValue[i].get();
+        this.getValue(aValue);
       } catch (e) {
-        PrefValue[i].set();
+        this.setValue(aValue);
       }
     }
-    this.manifest();
-    this.resolver();
-  },
-  manifest: function () {
-    PrefValue['chrome'].set();  // 禁止修改chrome否则会影响扩展工作
-    PrefValue['bitbucket'].set(); // 禁止修改bitbucket否则会影响扩展工作
 
-    if (PrefValue['remote'].get()) PrefValue['autoupdate'].set(false);
+    this.setChar(PrefValue['bitbucket'].pref, PrefValue['bitbucket'].string);  // 禁止修改bitbucket否则会影响扩展工作
+    this.setBool(PrefValue['autoupdate'].pref, true); // 无内置播放器所以强制自动更新
 
-    if (PrefValue['chrome'].get()) FileIO.chrome = PrefValue['chrome'].get();
+    if (this.getChar(PrefValue['directory'].pref)) FileIO.extDir = this.getChar(PrefValue['directory'].pref);
+    FileIO.path = OS.Path.toFileURI(this.getChar(PrefValue['directory'].pref)) + '/';
 
-    if (PrefValue['directory'].get()) FileIO.extDir = PrefValue['directory'].get();
-
-    if (PrefValue['server'].get()) {
-      FileIO.server = PrefValue['server'].get();
+    if (this.getChar(PrefValue['server'].pref)) {
+      FileIO.server = this.getChar(PrefValue['server'].pref);
     } else {
-      PrefValue['override'].set(false);
+      this.setBool(PrefValue['override'].pref, false);
       FileIO.server = 'https://raw.githubusercontent.com/jc3213/soWatch/master/player/';
     }
 
-    if (PrefValue['override'].get()) FileIO.link = PrefValue['server'].get();
-    else FileIO.link = PrefValue['bitbucket'].get()
+    if (this.getBool(PrefValue['override'].pref)) FileIO.link = this.getChar(PrefValue['server'].pref);
+    else FileIO.link = this.getChar(PrefValue['bitbucket'].pref);
 
-    if (PrefValue['autoupdate'].get()) {
-      FileIO.path = OS.Path.toFileURI(PrefValue['directory'].get()) + '/';
-      if (PrefValue['lastdate'].get() + PrefValue['period'].get() * 86400 < Date.now() / 1000) QueryFiles.start(0);
-    } else {
-      FileIO.path = PrefValue['chrome'].get();
+    if (this.getBool(PrefValue['autoupdate'].pref)) {
+      if (this.getInteger(PrefValue['lastdate'].pref) + this.getInteger(PrefValue['period'].pref) * 86400 < Date.now() / 1000) QueryFiles.start(0);
     }
+
+    this.manifest();
   },
-  resolver: function () {
+  manifest: function () {
     RuleManager.player();
     RuleManager.filter();
     RuleManager.referer();
 
-    if (PrefValue['referer-youku'].get()) RuleResolver['youku'].refererOn();
+    if (this.getBool(PrefValue['referer-youku'].pref)) RuleResolver['youku'].refererOn();
     else RuleResolver['youku'].refererOff();
-    if (PrefValue['referer-iqiyi'].get()) RuleResolver['iqiyi'].refererOn();
+    if (this.getBool(PrefValue['referer-iqiyi'].pref)) RuleResolver['iqiyi'].refererOn();
     else RuleResolver['iqiyi'].refererOff();
 
-    if ((PrefValue['youku'].get() == 'filter' && PrefValue['tudou'].get() == 'none') || (PrefValue['youku'].get() == 'none' && PrefValue['tudou'].get() == 'filter')) {
-      PrefValue['youku'].set('filter');
-      PrefValue['tudou'].set('filter');
+    if ((this.getChar(PrefValue['youku'].pref) == 'filter' && this.getChar(PrefValue['tudou'].pref) == 'none') || (this.getChar(PrefValue['youku'].pref) == 'none' && this.getChar(PrefValue['tudou'].pref) == 'filter')) {
+      this.setChar(PrefValue['youku'].pref, 'filter');
+      this.setChar(PrefValue['tudou'].pref, 'filter');
     }
 
     for (var i in RuleResolver) {
-      if (PrefValue[i].get() == 'player') {
+      if (this.getChar(PrefValue[i].pref) == 'player') {
         if (i == 'qq' || i == '163' || i == 'sina') continue;
         RuleResolver[i].playerOn();
-      } else if (PrefValue[i].get() == 'filter') {
+      } else if (this.getChar(PrefValue[i].pref) == 'filter') {
         if (i == 'iqiyi') continue;
         RuleResolver[i].playerOff();
         RuleResolver[i].filterOn();
-      } else if (PrefValue[i].get() == 'none'){
+      } else if (this.getChar(PrefValue[i].pref) == 'none') {
         RuleResolver[i].playerOff();
         RuleResolver[i].filterOff();
       } else {
-        PrefValue[i].set();
+        this.setChar(PrefValue[i].pref, PrefValue[i].string);
       }
     }
 
-    if (PrefValue['toolbar'].get()) Toolbar.addIcon();
+    if (this.getBool(PrefValue['toolbar'].pref)) Toolbar.addIcon();
     else Toolbar.removeIcon();
+
+    if (!this.getBool(PrefValue['firstrun'].pref)) {
+      QueryFiles.start(0);
+      this.setBool(PrefValue['firstrun'].pref, true);
+    }
+  },
+  setDefault: function () {
+    for (var i in PrefValue) {
+      if (i == 'directory' || i == 'server') continue;
+      var aValue = PrefValue[i];
+      this.setValue(aValue);
+    }
+  },
+  remove: function () {
+    Services.prefs.deleteBranch('extensions.sowatchmk2.');
   },
 };
 
@@ -366,7 +304,7 @@ var QueryFiles = {
         QueryFiles.hash(aMode, aLink, aFile, aName);
       }
     }
-    PrefValue['lastdate'].set();  // 下载完成后记录时间以供下次更新时检测
+    Preferences.setInteger(PrefValue['lastdate'].pref, PrefValue['lastdate'].integer);  // 下载完成后记录时间以供下次更新时检测
   },
 };
 
@@ -545,48 +483,48 @@ var Toolbar = {
         if (aEvent.target.id == 'sowatchmk2-default') Preferences.setDefault();
 
         if (aEvent.target.id == 'sowatchmk2-remote') {
-          if (PrefValue['remote'].get()) PrefValue['remote'].set(false);
-          else PrefValue['remote'].set(true);
+          if (Preferences.getBool(PrefValue['remote'].pref)) Preferences.setBool(PrefValue['remote'].pref, false);
+          else Preferences.setBool(PrefValue['remote'].pref, true);
         }
 
         if (aEvent.target.id == 'sowatchmk2-autoupdate') {
-          if (PrefValue['autoupdate'].get()) PrefValue['autoupdate'].set(false);
-          else PrefValue['autoupdate'].set(true);
+          if (Preferences.getBool(PrefValue['autoupdate'].pref)) Preferences.setBool(PrefValue['autoupdate'].pref, false);
+          else Preferences.setBool(PrefValue['autoupdate'].pref, true);
         }
 
         if (aEvent.target.id == 'sowatchmk2-checkupdate') {
-          if (PrefValue['remote'].get()) return;
+          if (Preferences.getBool(PrefValue['remote'].pref)) return;
           QueryFiles.start(0);
         }
 
         if (aEvent.target.id == 'sowatchmk2-forceupdate') {
-          if (PrefValue['remote'].get()) return;
+          if (Preferences.getBool(PrefValue['remote'].pref)) return;
           QueryFiles.start(1);
         }
 
         if (aEvent.target.id == 'sowatchmk2-referer-youku') {
-          if (PrefValue['referer-youku'].get()) PrefValue['referer-youku'].set(false);
-          else PrefValue['referer-youku'].set(true);
+          if (Preferences.getBool(PrefValue['referer-youku'].pref)) Preferences.setBool(PrefValue['referer-youku'].pref, false);
+          else Preferences.setBool(PrefValue['referer-youku'].pref, true);
         }
 
         if (aEvent.target.id == 'sowatchmk2-referer-iqiyi') {
-          if (PrefValue['referer-iqiyi'].get()) PrefValue['referer-iqiyi'].set(false);
-          else PrefValue['referer-iqiyi'].set(true);
+          if (Preferences.getBool(PrefValue['referer-iqiyi'].pref)) Preferences.setBool(PrefValue['referer-iqiyi'].pref, false);
+          else Preferences.setBool(PrefValue['referer-iqiyi'].pref, true);
         }
 
         for (var x in SiteLists) {
           if (aEvent.target.id == 'sowatchmk2-' + x + '-player') {
             if (x == 'qq' || x == '163' || x == 'sina') continue;
-            PrefValue[x].set('player');
+            Preferences.setChar(PrefValue[x].pref, 'player');
           } else if (aEvent.target.id == 'sowatchmk2-' + x + '-filter') {
             if (x == 'iqiyi') continue;
-            PrefValue[x].set('filter');
-          } else if (aEvent.target.id == 'sowatchmk2-' + x + '-none') PrefValue[x].set('none');
+            Preferences.setChar(PrefValue[x].pref, 'filter');
+          } else if (aEvent.target.id == 'sowatchmk2-' + x + '-none') Preferences.setChar(PrefValue[x].pref, 'none');
         }
       },
       onPopup: function (aEvent) {
         if (aEvent.target.id == 'sowatchmk2-popup') {
-          if (PrefValue['remote'].get()) {
+          if (Preferences.getBool(PrefValue['remote'].pref)) {
             aEvent.target.querySelector('#sowatchmk2-remote').setAttribute('checked', 'true');
             aEvent.target.querySelector('#sowatchmk2-autoupdate').setAttribute('disabled', 'true');
           } else {
@@ -594,7 +532,7 @@ var Toolbar = {
             aEvent.target.querySelector('#sowatchmk2-autoupdate').setAttribute('disabled', 'false');
           }
 
-          if (PrefValue['autoupdate'].get()) {
+          if (Preferences.getBool(PrefValue['autoupdate'].pref)) {
             aEvent.target.querySelector('#sowatchmk2-autoupdate').setAttribute('checked', 'true');
             aEvent.target.querySelector('#sowatchmk2-checkupdate').setAttribute('disabled', 'false');
             aEvent.target.querySelector('#sowatchmk2-forceupdate').setAttribute('disabled', 'false');
@@ -604,10 +542,10 @@ var Toolbar = {
             aEvent.target.querySelector('#sowatchmk2-forceupdate').setAttribute('disabled', 'true');
           }
 
-          if (PrefValue['referer-youku'].get()) aEvent.target.querySelector('#sowatchmk2-referer-youku').setAttribute('checked', 'true');
+          if (Preferences.getBool(PrefValue['referer-youku'].pref)) aEvent.target.querySelector('#sowatchmk2-referer-youku').setAttribute('checked', 'true');
           else aEvent.target.querySelector('#sowatchmk2-referer-youku').setAttribute('checked', 'false');
 
-          if (PrefValue['referer-iqiyi'].get()) aEvent.target.querySelector('#sowatchmk2-referer-iqiyi').setAttribute('checked', 'true');
+          if (Preferences.getBool(PrefValue['referer-iqiyi'].pref)) aEvent.target.querySelector('#sowatchmk2-referer-iqiyi').setAttribute('checked', 'true');
           else aEvent.target.querySelector('#sowatchmk2-referer-iqiyi').setAttribute('checked', 'false');
         }
 
@@ -622,9 +560,9 @@ var Toolbar = {
             }
           }
           if (aEvent.target.id == 'sowatchmk2-popup-' + x) {
-            if (PrefValue[x].get() == 'player') aEvent.target.querySelector('#sowatchmk2-' + x + '-player').setAttribute('checked', 'true');
-            else if (PrefValue[x].get() == 'filter') aEvent.target.querySelector('#sowatchmk2-' + x + '-filter').setAttribute('checked', 'true');
-            else if (PrefValue[x].get() == 'none') aEvent.target.querySelector('#sowatchmk2-' + x + '-none').setAttribute('checked', 'true');
+            if (Preferences.getChar(PrefValue[x].pref) == 'player') aEvent.target.querySelector('#sowatchmk2-' + x + '-player').setAttribute('checked', 'true');
+            else if (Preferences.getChar(PrefValue[x].pref) == 'filter') aEvent.target.querySelector('#sowatchmk2-' + x + '-filter').setAttribute('checked', 'true');
+            else if (Preferences.getChar(PrefValue[x].pref) == 'none') aEvent.target.querySelector('#sowatchmk2-' + x + '-none').setAttribute('checked', 'true');
           }
         }
       },
@@ -872,8 +810,8 @@ var RuleResolver = {
 
 var RuleExecution = {
   getObject: function (aMode, rule, callback) {
-    if (aMode) var aObject = rule['object'];
-    else var aObject = rule['remote'];
+    if (aMode == 0) var aObject = rule['object'];
+    if (aMode == 1) var aObject = rule['remote'];
     NetUtil.asyncFetch(aObject, function (inputStream, status) {
       var binaryOutputStream = Cc['@mozilla.org/binaryoutputstream;1'].createInstance(Ci['nsIBinaryOutputStream']);
       var storageStream = Cc['@mozilla.org/storagestream;1'].createInstance(Ci['nsIStorageStream']);
@@ -911,7 +849,7 @@ var RuleExecution = {
       if (rule['target'] && rule['target'].test(httpChannel.URI.spec)) {
         if (!rule['storageStream'] || !rule['count']) {
           httpChannel.suspend();
-          this.getObject(false, rule, function () {
+          this.getObject(0, rule, function () {
             httpChannel.resume();
           });
         }
@@ -937,13 +875,13 @@ var RuleExecution = {
         if (typeof rule['preHandle'] === 'function') rule['preHandle'].apply(fn, args);
         if (!rule['storageStream'] || !rule['count']) {
           httpChannel.suspend();
-          if (PrefValue['remote'].get()) {
-            this.getObject(true, rule, function () {
+          if (Preferences.getBool(PrefValue['remote'].pref)) {
+            this.getObject(1, rule, function () {
               httpChannel.resume();
               if (typeof rule['callback'] === 'function') rule['callback'].apply(fn, args);
             });
           } else {
-            this.getObject(false, rule, function () {
+            this.getObject(0, rule, function () {
               httpChannel.resume();
               if (typeof rule['callback'] === 'function') rule['callback'].apply(fn, args);
             });
@@ -1014,18 +952,17 @@ function TrackingListener() {
   this.rule = null;
 }
 TrackingListener.prototype = {
-  onStartRequest: function (request, context) {
-    this.originalListener.onStartRequest(request, context);
+  onStartRequest: function (aRequest, aContext) {
+    this.originalListener.onStartRequest(aRequest, aContext);
   },
-  onStopRequest: function (request, context) {
-    this.originalListener.onStopRequest(request, context, Cr.NS_OK);
+  onStopRequest: function (aRequest, aContext) {
+    this.originalListener.onStopRequest(aRequest, aContext, Cr.NS_OK);
   },
-  onDataAvailable: function (request, context) {
-    this.originalListener.onDataAvailable(request, context, this.rule['storageStream'].newInputStream(0), 0, this.rule['count']);
+  onDataAvailable: function (aRequest, aContext) {
+    this.originalListener.onDataAvailable(aRequest, aContext, this.rule['storageStream'].newInputStream(0), 0, this.rule['count']);
   }
 }
 
-//判断是否是SWF文件，总感觉意义不太大
 function HttpHeaderVisitor() {
   this._isFlash = false;
 }

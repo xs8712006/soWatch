@@ -593,8 +593,8 @@ var RuleResolver = {
 
 var RuleExecution = {
   getObject: function (aMode, rule, callback) {
-    if (aMode) var aObject = rule['object'];
-    else var aObject = rule['remote'];
+    if (aMode == 0) var aObject = rule['object'];
+    if (aMode == 1) var aObject = rule['remote'];
     NetUtil.asyncFetch(aObject, function (inputStream, status) {
       var binaryOutputStream = Cc['@mozilla.org/binaryoutputstream;1'].createInstance(Ci['nsIBinaryOutputStream']);
       var storageStream = Cc['@mozilla.org/storagestream;1'].createInstance(Ci['nsIStorageStream']);
@@ -636,7 +636,7 @@ var RuleExecution = {
       if (rule['target'] && rule['target'].test(httpChannel.URI.spec)) {
         if (!rule['storageStream'] || !rule['count']) {
           httpChannel.suspend();
-          this.getObject(false, rule, function () {
+          this.getObject(0, rule, function () {
             httpChannel.resume();
           });
         }
@@ -665,12 +665,12 @@ var RuleExecution = {
         if (!rule['storageStream'] || !rule['count']) {
           httpChannel.suspend();
           if (Preferences.getBool(PrefValue['remote'].pref)) {
-            this.getObject(true, rule, function () {
+            this.getObject(1, rule, function () {
               httpChannel.resume();
               if (typeof rule['callback'] === 'function') rule['callback'].apply(fn, args);
             });
           } else {
-            this.getObject(false, rule, function () {
+            this.getObject(0, rule, function () {
               httpChannel.resume();
               if (typeof rule['callback'] === 'function') rule['callback'].apply(fn, args);
             });

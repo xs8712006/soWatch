@@ -107,10 +107,6 @@ var PrefValue = {
     pref: 'general.interface.enabled',
     bool: true,
   },
-  'firstrun': {
-    pref: 'general.firstrun.done',
-    bool: false,
-  },
 };
 var Preferences = {
   getBool: function (aPref) {
@@ -166,10 +162,8 @@ var Preferences = {
     }
 
     this.setChar(PrefValue['bitbucket'].pref, PrefValue['bitbucket'].string);  // 禁止修改bitbucket否则会影响扩展工作
-    this.setBool(PrefValue['autoupdate'].pref, true); // 无内置播放器所以强制自动更新
 
     if (this.getChar(PrefValue['directory'].pref)) FileIO.extDir = this.getChar(PrefValue['directory'].pref);
-    FileIO.path = OS.Path.toFileURI(this.getChar(PrefValue['directory'].pref)) + '/';
 
     if (this.getChar(PrefValue['server'].pref)) {
       FileIO.server = this.getChar(PrefValue['server'].pref);
@@ -178,11 +172,16 @@ var Preferences = {
       FileIO.server = 'https://raw.githubusercontent.com/jc3213/soWatch/master/player/';
     }
 
+    if (this.getBool(PrefValue['remote'].pref)) this.setBool(PrefValue['autoupdate'].pref, false);
+
     if (this.getBool(PrefValue['override'].pref)) FileIO.link = this.getChar(PrefValue['server'].pref);
     else FileIO.link = this.getChar(PrefValue['bitbucket'].pref);
 
     if (this.getBool(PrefValue['autoupdate'].pref)) {
+      FileIO.path = OS.Path.toFileURI(this.getChar(PrefValue['directory'].pref)) + '/';
       if (this.getInteger(PrefValue['lastdate'].pref) + this.getInteger(PrefValue['period'].pref) * 86400 < Date.now() / 1000) QueryFiles.start(0);
+    } else {
+      FileIO.path = 'chrome://sowatchmk2/content/';
     }
 
     this.manifest();
@@ -220,11 +219,6 @@ var Preferences = {
 
     if (this.getBool(PrefValue['toolbar'].pref)) Toolbar.addIcon();
     else Toolbar.removeIcon();
-
-    if (!this.getBool(PrefValue['firstrun'].pref)) {
-      QueryFiles.start(0);
-      this.setBool(PrefValue['firstrun'].pref, true);
-    }
   },
   setDefault: function () {
     for (var i in PrefValue) {
@@ -628,15 +622,15 @@ var RuleManager = {
     };
     PlayerRules['sohu'] = {
       'object': FileIO.path + 'sohu_live.swf',
-	  'remote': FileIO.link + 'sohu_live.swf',
+      'remote': FileIO.link + 'sohu_live.swf',
     };
     PlayerRules['pptv'] = {
       'object': FileIO.path + 'player4player2.swf',
-	  'remote': FileIO.link + 'player4player2.swf',
+      'remote': FileIO.link + 'player4player2.swf',
     };
     PlayerRules['pptv_live'] = {
       'object': FileIO.path + 'pptv.in.Live.swf',
-	  'remote': FileIO.server + 'pptv.in.Live.swf',
+      'remote': FileIO.server + 'pptv.in.Live.swf',
     };
   },
   filter: function () {
@@ -810,8 +804,8 @@ var RuleResolver = {
 
 var RuleExecution = {
   getObject: function (aMode, rule, callback) {
-    if (aMode) var aObject = rule['object'];
-    else var aObject = rule['remote'];
+    if (aMode == 0) var aObject = rule['object'];
+    if (aMode == 1) var aObject = rule['remote'];
     NetUtil.asyncFetch(aObject, function (inputStream, status) {
       var binaryOutputStream = Cc['@mozilla.org/binaryoutputstream;1'].createInstance(Ci['nsIBinaryOutputStream']);
       var storageStream = Cc['@mozilla.org/storagestream;1'].createInstance(Ci['nsIStorageStream']);
@@ -849,7 +843,7 @@ var RuleExecution = {
       if (rule['target'] && rule['target'].test(httpChannel.URI.spec)) {
         if (!rule['storageStream'] || !rule['count']) {
           httpChannel.suspend();
-          this.getObject(false, rule, function () {
+          this.getObject(0, rule, function () {
             httpChannel.resume();
           });
         }
@@ -876,12 +870,12 @@ var RuleExecution = {
         if (!rule['storageStream'] || !rule['count']) {
           httpChannel.suspend();
           if (Preferences.getBool(PrefValue['remote'].pref)) {
-            this.getObject(true, rule, function () {
+            this.getObject(1, rule, function () {
               httpChannel.resume();
               if (typeof rule['callback'] === 'function') rule['callback'].apply(fn, args);
             });
           } else {
-            this.getObject(false, rule, function () {
+            this.getObject(0, rule, function () {
               httpChannel.resume();
               if (typeof rule['callback'] === 'function') rule['callback'].apply(fn, args);
             });
