@@ -32,7 +32,7 @@ var PrefValue = {
     bool: false,
   },
   'lastdate': {
-    pref: 'autoupdate.enabled',
+    pref: 'autoupdate.lastdate',
     integer: parseInt(Date.now() / 1000),
   },
   'period': {
@@ -94,7 +94,7 @@ var Preferences = {
     PrefBranch.setIntPref(aPref, aInteger);
   },
   getChar: function (aPref) {
-    PrefBranch.getComplexValue(aPref, Ci.nsISupportsString).data;
+    return PrefBranch.getComplexValue(aPref, Ci.nsISupportsString).data;
   },
   setChar: function (aPref, aString) {
     var aChar = Cc["@mozilla.org/supports-string;1"].createInstance(Ci.nsISupportsString);
