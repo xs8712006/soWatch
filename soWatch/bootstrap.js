@@ -164,7 +164,7 @@ var Preferences = {
   manifest: function () {
     PrefValue['bitbucket'].set();  // 禁止修改bitbucket否则会影响扩展工作
 
-    if (PrefValue['remote'].get() == true) PrefValue['autoupdate'].set(false);
+    if (PrefValue['remote'].get()) PrefValue['autoupdate'].set(false);
 
     if (PrefValue['directory'].get()) FileIO.extDir = PrefValue['directory'].get();
 

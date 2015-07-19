@@ -25,83 +25,83 @@ var FileIO = {
   },
 };
 
-var aaaaaa = {
-  branch: Services.prefs.getBranch('extensions.sowatch.'),
-  value: {
-    'autoupdate': {
-      pref: 'autoupdate.enabled',
-      bool: false,
-    },
-    'lastdate': {
-      pref: 'autoupdate.enabled',
-      integer: '',
-    },
-    'period': {
-      pref: 'autoupdate.period',
-      integer: 7,
-    },
-    'remote': {
-      pref: 'remote.access.enabled',
-      bool: false,
-    },
-    'override': {
-      pref: 'remote.override.enabled',
-      bool: false,
-    },
-    'directory': {
-      pref: 'file.directory',
-      string: OS.Path.join(OS.Constants.Path.profileDir, 'soWatch'),
-    },
-    'server': {
-      pref: 'remote.server.defined',
-      string: '',
-    },
-    'bitbucket': {
-      pref: 'remote.server.bitbucket',
-      string: 'https://bitbucket.org/kafan15536900/haoutil/raw/master/player/testmod/',
-    },
-    'player': {
-      pref: 'general.player.enabled',
-      bool: true,
-    },
-    'filter': {
-      pref: 'general.filter.enabled',
-      bool: true,
-    },
-    'referer': {
-      pref: 'general.referer.enabled',
-      bool: true,
-    },
-    'toolbar': {
-      pref: 'general.interface.enabled',
-      bool: true,
-    },
-    'firstrun': {
-      pref: 'general.firstrun.done',
-      bool: false,
-    },
+var PrefBranch = Services.prefs.getBranch('extensions.sowatch.');
+var PrefValue = {
+  'autoupdate': {
+    pref: 'autoupdate.enabled',
+    bool: false,
   },
+  'lastdate': {
+    pref: 'autoupdate.enabled',
+    integer: parseInt(Date.now() / 1000),
+  },
+  'period': {
+    pref: 'autoupdate.period',
+    integer: 7,
+  },
+  'remote': {
+    pref: 'remote.access.enabled',
+    bool: false,
+  },
+  'override': {
+    pref: 'remote.override.enabled',
+    bool: false,
+  },
+  'directory': {
+    pref: 'file.directory',
+    string: OS.Path.join(OS.Constants.Path.profileDir, 'soWatch'),
+  },
+  'server': {
+    pref: 'remote.server.defined',
+    string: '',
+  },
+  'bitbucket': {
+    pref: 'remote.server.bitbucket',
+    string: 'https://bitbucket.org/kafan15536900/haoutil/raw/master/player/testmod/',
+  },
+  'player': {
+    pref: 'general.player.enabled',
+    bool: true,
+  },
+  'filter': {
+    pref: 'general.filter.enabled',
+    bool: true,
+  },
+  'referer': {
+    pref: 'general.referer.enabled',
+    bool: true,
+  },
+  'toolbar': {
+    pref: 'general.interface.enabled',
+    bool: true,
+  },
+  'firstrun': {
+    pref: 'general.firstrun.done',
+    bool: false,
+  },
+};
+var Preferences = {
   getBool: function (aPref) {
-    return this.branch.getBoolPref(aPref);
+    return PrefBranch.getBoolPref(aPref);
   },
   setBool: function (aPref, aBool) {
-    this.branch.setBoolPref(aPref, aBool);
+    PrefBranch.setBoolPref(aPref, aBool);
   },
   getInteger: function (aPref) {
-    return this.branch.getIntPref(aPref);
+    return PrefBranch.getIntPref(aPref);
   },
   setInteger: function (aPref, aInteger) {
-    this.branch.setIntPref(aPref, aInteger);
+    PrefBranch.setIntPref(aPref, aInteger);
   },
   getChar: function (aPref) {
-    this.branch.getComplexValue(aPref, Ci.nsISupportsString).data;
+    PrefBranch.getComplexValue(aPref, Ci.nsISupportsString).data;
   },
   setChar: function (aPref, aString) {
     var aChar = Cc["@mozilla.org/supports-string;1"].createInstance(Ci.nsISupportsString);
     aChar.data = aString;
-    this.branch.setComplexValue(aPref, Ci.nsISupportsString, aChar);
+    PrefBranch.setComplexValue(aPref, Ci.nsISupportsString, aChar);
   },
-  getAll: function (aValue) {
+  getValue: function (aValue) {
     if ('bool' in aValue) {
       this.getBool(aValue.pref);
     }
@@ -112,7 +112,7 @@ var aaaaaa = {
       this.getChar(aValue.pref);
     }
   },
-  setAll: function (aValue) {
+  setValue: function (aValue) {
     if ('bool' in aValue) {
       this.setBool(aValue.pref, aValue.bool);
     }
@@ -124,198 +124,45 @@ var aaaaaa = {
     }
   },
   pending: function () {
-    for (var i in this.value) {
-      var aValue = this.value[i];
+    for (var i in PrefValue) {
+      var PrefValue[i] = aValue;
       try {
-        this.getAll(aValue);
+        this.getValue(aValue);
       } catch (e) {
-        this.setAll(aValue);
+        this.setValue(aValue);
       }
     }
-  },
-  manifest: function () {
 
-  },
-  resolver: function () {
+    this.setChar(PrefValue['bitbucket'].pref, PrefValue['bitbucket'].string);  // 禁止修改bitbucket否则会影响扩展工作
 
-  },
-  setDefault: function () {
-    for (var i in this.value) {
-      if (i == 'directory' || i == 'server') continue;
-      var aValue = this.value[i];
-      this.setAll(aValue);
-    }
-  },
-  remove: function () {
-    Services.prefs.deleteBranch('extensions.sowatch.');
-  },
-};
+    if (this.getChar(PrefValue['directory'].pref) FileIO.extDir = this.getChar(PrefValue['directory'].pref);
 
-var PrefBranch = Services.prefs.getBranch('extensions.sowatch.');
-var PrefValue = {
-  'autoupdate': {
-    get: function () {
-      return PrefBranch.getBoolPref('autoupdate.enabled');
-    },
-    set: function (aBool) {
-      if (aBool) PrefBranch.setBoolPref('autoupdate.enabled', aBool);
-      else PrefBranch.setBoolPref('autoupdate.enabled', false);
-    },
-  },
-  'lastdate': {
-    get: function () {
-      return PrefBranch.getIntPref('autoupdate.lastdate');
-    },
-    set: function () {
-      PrefBranch.setIntPref('autoupdate.lastdate', Date.now() / 1000);
-    },
-  },
-  'period': {
-    get: function () {
-      return PrefBranch.getIntPref('autoupdate.period');
-    },
-    set: function () {
-      PrefBranch.setIntPref('autoupdate.period', 7);
-    },
-  },
-  'remote': {
-    get: function () {
-      return PrefBranch.getBoolPref('remote.access.enabled');
-    },
-    set: function (aBool) {
-      if (aBool) PrefBranch.setBoolPref('remote.access.enabled', aBool);
-      else PrefBranch.setBoolPref('remote.access.enabled', false);
-    },
-  },
-  'override': {
-    get: function () {
-      return PrefBranch.getBoolPref('remote.override.enabled');
-    },
-    set: function (aBool) {
-      if (aBool) PrefBranch.setBoolPref('remote.override.enabled', aBool);
-      else PrefBranch.setBoolPref('remote.override.enabled', false);
-    },
-  },
-  'directory': {
-    get: function () {
-      return PrefBranch.getComplexValue('file.directory', Ci.nsISupportsString).data;
-    },
-    set: function () {
-      var aString = Cc["@mozilla.org/supports-string;1"].createInstance(Ci.nsISupportsString);
-      aString.data = OS.Path.join(OS.Constants.Path.profileDir, 'soWatch');
-      PrefBranch.setComplexValue('file.directory', Ci.nsISupportsString, aString);
-    },
-  },
-  'server': {
-    get: function () {
-      return PrefBranch.getComplexValue('remote.server.defined', Ci.nsISupportsString).data;
-    },
-    set: function () {
-      var aString = Cc["@mozilla.org/supports-string;1"].createInstance(Ci.nsISupportsString);
-      aString.data = '';
-      PrefBranch.setComplexValue('remote.server.defined', Ci.nsISupportsString, aString);
-    },
-  },
-  'bitbucket': {
-    get: function () {
-      return PrefBranch.getCharPref('remote.server.bitbucket');
-    },
-    set: function () {
-      PrefBranch.setCharPref('remote.server.bitbucket', 'https://bitbucket.org/kafan15536900/haoutil/raw/master/player/testmod/');
-    },
-  },
-  'player': {
-    get: function () {
-      return PrefBranch.getBoolPref('general.player.enabled');
-    },
-    set: function () {
-      PrefBranch.setBoolPref('general.player.enabled', true);
-    },
-  },
-  'filter': {
-    get: function () {
-      return PrefBranch.getBoolPref('general.filter.enabled');
-    },
-    set: function () {
-      PrefBranch.setBoolPref('general.filter.enabled', true);
-    },
-  },
-  'referer': {
-    get: function () {
-      return PrefBranch.getBoolPref('general.referer.enabled');
-    },
-    set: function () {
-      PrefBranch.setBoolPref('general.referer.enabled', true);
-    },
-  },
-  'toolbar': {
-    get: function () {
-      return PrefBranch.getBoolPref('general.interface.enabled');
-    },
-    set: function () {
-      PrefBranch.setBoolPref('general.interface.enabled', true);
-    },
-  },
-  'firstrun': {
-    get: function () {
-      return PrefBranch.getBoolPref('general.firstrun.done');
-    },
-    set: function (aBool) {
-      if (aBool) PrefBranch.setBoolPref('general.firstrun.done', aBool);
-      else PrefBranch.setBoolPref('general.firstrun.done', false);
-    },
-  },
-};
-var Preferences = {
-  remove: function () {
-    Services.prefs.deleteBranch('extensions.sowatch.');
-  },
-  setDefault: function () {
-    for (var i in PrefValue) {
-      if (i == 'directory' || i == 'server') continue;
-      PrefValue[i].set();
-    }
-  },
-  pending: function () {
-    for (var i in PrefValue) {
-      try {
-        PrefValue[i].get();
-      } catch (e) {
-        PrefValue[i].set();
-      }
-    }
-    this.manifest();
-    this.resolver();
-  },
-  manifest: function () {
-    PrefValue['bitbucket'].set();  // 禁止修改bitbucket否则会影响扩展工作
-
-    if (PrefValue['remote'].get() == true) PrefValue['autoupdate'].set(false);
-
-    if (PrefValue['directory'].get()) FileIO.extDir = PrefValue['directory'].get();
-
-    if (PrefValue['server'].get()) {
-      FileIO.server = PrefValue['server'].get();
+    if (this.getChar(PrefValue['server'].pref)) {
+      FileIO.server = this.getChar(PrefValue['server'].pref);
     } else {
-      PrefValue['override'].set(false);
+      this.setBool(PrefValue['override'].pref, false);
       FileIO.server = 'https://raw.githubusercontent.com/jc3213/soWatch/master/player/';
     }
 
-    if (PrefValue['override'].get()) FileIO.link = PrefValue['server'].get();
-    else FileIO.link = PrefValue['bitbucket'].get()
+    if (this.getBool(PrefValue['remote'].pref)) this.setBool(PrefValue['autoupdate'].pref, false);
 
-    FileIO.path = OS.Path.toFileURI(PrefValue['directory'].get()) + '/';
+    if (this.getBool(PrefValue['override'].pref)) FileIO.link = this.getChar(PrefValue['server'].pref);
+    else FileIO.link = this.getChar(PrefValue['bitbucket'].pref);
 
-    if (PrefValue['autoupdate'].get()) {
-      if (PrefValue['lastdate'].get() + PrefValue['period'].get() * 86400 < Date.now() / 1000) QueryFiles.start(0);
+    FileIO.path = OS.Path.toFileURI(this.getChar(PrefValue['directory'].pref)) + '/';
+
+    if (this.getBool(PrefValue['autoupdate'].pref)) {
+      if (this.getInteger(PrefValue['lastdate'].pref) + this.getInteger(PrefValue['period'].pref) * 86400 < Date.now() / 1000) QueryFiles.start(0);
     }
 
-    if (!PrefValue['firstrun'].get()) {
+    if (!this.getBool(PrefValue['firstrun'].pref)) {
       QueryFiles.start(0);
-      PrefValue['firstrun'].set(true);
+      this.setBool(PrefValue['firstrun'].pref, true);
     }
+
+    this.manifest();
   },
-  resolver: function () {
+  manifest: function () {
     RuleManager.player();
     RuleManager.filter();
     RuleManager.referer();
@@ -326,8 +173,18 @@ var Preferences = {
       if (RuleResolver[i].refererOn) RuleResolver[i].refererOn();
     }
 
-    if (PrefValue['toolbar'].get()) Toolbar.addIcon();
+    if (this.getBool(PrefValue['toolbar'].pref) Toolbar.addIcon();
     else Toolbar.removeIcon();
+  },
+  setDefault: function () {
+    for (var i in PrefValue) {
+      if (i == 'directory' || i == 'server') continue;
+      var PrefValue[i] = aValue;
+      this.setValue(aValue);
+    }
+  },
+  remove: function () {
+    Services.prefs.deleteBranch('extensions.sowatch.');
   },
 };
 
@@ -397,7 +254,7 @@ var QueryFiles = {
         QueryFiles.hash(aMode, aLink, aFile, aName);
       }
     }
-    PrefValue['lastdate'].set();  // 下载完成后记录时间以供下次更新时检测
+    Preferences.setInteger(PrefValue['lastdate'].pref, PrefValue['lastdate'].integer);  // 下载完成后记录时间以供下次更新时检测
   },
 };
 
@@ -468,28 +325,28 @@ var Toolbar = {
         if (aEvent.target.id == 'sowatch-default') Preferences.setDefault();
 
         if (aEvent.target.id == 'sowatch-remote') {
-          if (PrefValue['remote'].get()) PrefValue['remote'].set(false);
-          else PrefValue['remote'].set(true);
+          if (Preferences.getBool(PrefValue['remote'].pref)) Preferences.setBool(PrefValue['remote'].pref, false);
+          else Preferences.setBool(PrefValue['remote'].pref, true);
         }
 
         if (aEvent.target.id == 'sowatch-autoupdate') {
-          if (PrefValue['autoupdate'].get()) PrefValue['autoupdate'].set(false);
-          else PrefValue['autoupdate'].set(true);
+          if (Preferences.getBool(PrefValue['autoupdate'].pref)) Preferences.setBool(PrefValue['autoupdate'].pref, false);
+          else Preferences.setBool(PrefValue['autoupdate'].pref, true);
         }
 
         if (aEvent.target.id == 'sowatch-checkupdate') {
-          if (PrefValue['remote'].get()) return;
+          if (Preferences.getBool(PrefValue['remote'].pref)) return;
           QueryFiles.start(0);
         }
 
         if (aEvent.target.id == 'sowatch-forceupdate') {
-          if (PrefValue['remote'].get()) return;
+          if (Preferences.getBool(PrefValue['remote'].pref)) return;
           QueryFiles.start(1);
         }
       },
       onPopup: function (aEvent) {
         if (aEvent.target.id == 'sowatch-popup') {
-          if (PrefValue['remote'].get()) {
+          if (Preferences.getBool(PrefValue['remote'].pref)) {
             aEvent.target.querySelector('#sowatch-remote').setAttribute('checked', 'true');
             aEvent.target.querySelector('#sowatch-autoupdate').setAttribute('disabled', 'true');
             aEvent.target.querySelector('#sowatch-checkupdate').setAttribute('disabled', 'true');
@@ -501,7 +358,7 @@ var Toolbar = {
             aEvent.target.querySelector('#sowatch-forceupdate').setAttribute('disabled', 'false');
           }
 
-          if (PrefValue['autoupdate'].get()) aEvent.target.querySelector('#sowatch-autoupdate').setAttribute('checked', 'true');
+          if (Preferences.getBool(PrefValue['autoupdate'].pref)) aEvent.target.querySelector('#sowatch-autoupdate').setAttribute('checked', 'true');
           else aEvent.target.querySelector('#sowatch-autoupdate').setAttribute('checked', 'false');
         }
       },
@@ -759,7 +616,7 @@ var RuleExecution = {
     return Cr.NS_ERROR_NO_INTERFACE;
   },
   referer: function (aSubject) {
-    if (!PrefValue['referer'].get()) return;
+    if (!Preferences.getBool(PrefValue['referer'].pref)) return;
 
     var httpChannel = aSubject.QueryInterface(Ci.nsIHttpChannel);
 
@@ -771,7 +628,7 @@ var RuleExecution = {
     }
   },
   filter: function (aSubject) {
-    if (!PrefValue['filter'].get()) return;
+    if (!Preferences.getBool(PrefValue['filter'].pref)) return;
 
     var httpChannel = aSubject.QueryInterface(Ci.nsIHttpChannel);
 
@@ -793,7 +650,7 @@ var RuleExecution = {
     }
   },
   player: function (aSubject) {
-    if (!PrefValue['player'].get()) return;
+    if (!Preferences.getBool(PrefValue['player'].pref)) return;
 
     var httpChannel = aSubject.QueryInterface(Ci.nsIHttpChannel);
 
@@ -808,7 +665,7 @@ var RuleExecution = {
         if (typeof rule['preHandle'] === 'function') rule['preHandle'].apply(fn, args);
         if (!rule['storageStream'] || !rule['count']) {
           httpChannel.suspend();
-          if (PrefValue['remote'].get()) {
+          if (Preferences.getBool(PrefValue['remote'].pref)) {
             this.getObject(true, rule, function () {
               httpChannel.resume();
               if (typeof rule['callback'] === 'function') rule['callback'].apply(fn, args);
