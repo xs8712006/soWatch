@@ -32,7 +32,7 @@ var PrefValue = {
     bool: false,
   },
   'lastdate': {
-    pref: 'autoupdate.enabled',
+    pref: 'autoupdate.lastdate',
     integer: parseInt(Date.now() / 1000),
   },
   'period': {
@@ -94,7 +94,7 @@ var Preferences = {
     PrefBranch.setIntPref(aPref, aInteger);
   },
   getChar: function (aPref) {
-    PrefBranch.getComplexValue(aPref, Ci.nsISupportsString).data;
+    return PrefBranch.getComplexValue(aPref, Ci.nsISupportsString).data;
   },
   setChar: function (aPref, aString) {
     var aChar = Cc["@mozilla.org/supports-string;1"].createInstance(Ci.nsISupportsString);
@@ -125,7 +125,7 @@ var Preferences = {
   },
   pending: function () {
     for (var i in PrefValue) {
-      var PrefValue[i] = aValue;
+      var aValue = PrefValue[i];
       try {
         this.getValue(aValue);
       } catch (e) {
@@ -135,7 +135,7 @@ var Preferences = {
 
     this.setChar(PrefValue['bitbucket'].pref, PrefValue['bitbucket'].string);  // 禁止修改bitbucket否则会影响扩展工作
 
-    if (this.getChar(PrefValue['directory'].pref) FileIO.extDir = this.getChar(PrefValue['directory'].pref);
+    if (this.getChar(PrefValue['directory'].pref)) FileIO.extDir = this.getChar(PrefValue['directory'].pref);
 
     if (this.getChar(PrefValue['server'].pref)) {
       FileIO.server = this.getChar(PrefValue['server'].pref);
@@ -173,13 +173,13 @@ var Preferences = {
       if (RuleResolver[i].refererOn) RuleResolver[i].refererOn();
     }
 
-    if (this.getBool(PrefValue['toolbar'].pref) Toolbar.addIcon();
+    if (this.getBool(PrefValue['toolbar'].pref)) Toolbar.addIcon();
     else Toolbar.removeIcon();
   },
   setDefault: function () {
     for (var i in PrefValue) {
       if (i == 'directory' || i == 'server') continue;
-      var PrefValue[i] = aValue;
+      var aValue = PrefValue[i];
       this.setValue(aValue);
     }
   },
