@@ -165,71 +165,66 @@ var Preferences = {
       }
     }
 
+    this.setChar(PrefValue['bitbucket'].pref, PrefValue['bitbucket'].string);  // 禁止修改bitbucket否则会影响扩展工作
+    this.setBool(PrefValue['autoupdate'].pref, true); // 无内置播放器所以强制自动更新
 
+    if (this.getChar(PrefValue['directory'].pref)) FileIO.extDir = this.getChar(PrefValue['directory'].pref);
+    FileIO.path = OS.Path.toFileURI(this.getChar(PrefValue['directory'].pref)) + '/';
 
-    PrefValue['chrome'].set();  // 禁止修改chrome否则会影响扩展工作
-    PrefValue['bitbucket'].set(); // 禁止修改bitbucket否则会影响扩展工作
-    PrefValue['autoupdate'].set(true); // 无内置播放器所以强制自动更新
-
-    if (PrefValue['chrome'].get()) FileIO.chrome = PrefValue['chrome'].get();
-
-    if (PrefValue['directory'].get()) FileIO.extDir = PrefValue['directory'].get();
-
-    if (PrefValue['server'].get()) {
-      FileIO.server = PrefValue['server'].get();
+    if (this.getChar(PrefValue['server'].pref)) {
+      FileIO.server = this.getChar(PrefValue['server'].pref);
     } else {
-      PrefValue['override'].set(false);
+      this.setBool(PrefValue['override'].pref, false);
       FileIO.server = 'https://raw.githubusercontent.com/jc3213/soWatch/master/player/';
     }
 
-    if (PrefValue['override'].get()) FileIO.link = PrefValue['server'].get();
-    else FileIO.link = PrefValue['bitbucket'].get()
+    if (this.getBool(PrefValue['override'].pref)) FileIO.link = this.getChar(PrefValue['server'].pref);
+    else FileIO.link = this.getChar(PrefValue['bitbucket'].pref);
 
-    if (PrefValue['autoupdate'].get()) {
-      FileIO.path = OS.Path.toFileURI(FileIO.extDir) + '/';
-      if (PrefValue['lastdate'].get() + PrefValue['period'].get() * 86400 < Date.now() / 1000) QueryFiles.start(0);
-    } else {
-      FileIO.path = PrefValue['chrome'].get();
+    if (this.getBool(PrefValue['autoupdate'].pref)) {
+      if (this.getInteger(PrefValue['lastdate'].pref) + this.getInteger(PrefValue['period'].pref) * 86400 < Date.now() / 1000) QueryFiles.start(0);
     }
 
-    if (!PrefValue['firstrun'].get()) {
-      QueryFiles.start(0);
-      PrefValue['firstrun'].set(true);
-    }
+    this.manifest();
   },
   manifest: function () {
     RuleManager.player();
     RuleManager.filter();
     RuleManager.referer();
 
-    if (PrefValue['referer-youku'].get()) RuleResolver['youku'].refererOn();
+    if (this.getBool(PrefValue['referer-youku'].pref)) RuleResolver['youku'].refererOn();
     else RuleResolver['youku'].refererOff();
-    if (PrefValue['referer-iqiyi'].get()) RuleResolver['iqiyi'].refererOn();
+    if (this.getBool(PrefValue['referer-iqiyi'].pref)) RuleResolver['iqiyi'].refererOn();
     else RuleResolver['iqiyi'].refererOff();
 
-    if ((PrefValue['youku'].get() == 'filter' && PrefValue['tudou'].get() == 'none') || (PrefValue['youku'].get() == 'none' && PrefValue['tudou'].get() == 'filter')) {
-      PrefValue['youku'].set('filter');
-      PrefValue['tudou'].set('filter');
+    if ((this.getChar(PrefValue['youku'].pref) == 'filter' && this.getChar(PrefValue['tudou'].pref) == 'none') || (this.getChar(PrefValue['youku'].pref) == 'none' && this.getChar(PrefValue['tudou'].pref) == 'filter')) {
+      this.setChar(PrefValue['youku'].pref, 'filter');
+      this.setChar(PrefValue['tudou'].pref, 'filter');
     }
 
     for (var i in RuleResolver) {
-      if (PrefValue[i].get() == 'player') {
+      if (this.getChar(PrefValue[i].pref) == 'player') {
         if (i == 'qq' || i == '163' || i == 'sina') continue;
         RuleResolver[i].playerOn();
-      } else if (PrefValue[i].get() == 'filter') {
+      } else if (this.getChar(PrefValue[i].pref) == 'filter') {
         if (i == 'iqiyi') continue;
         RuleResolver[i].playerOff();
         RuleResolver[i].filterOn();
-      } else if (PrefValue[i].get() == 'none'){
+      } else if (this.getChar(PrefValue[i].pref) == 'none') {
         RuleResolver[i].playerOff();
         RuleResolver[i].filterOff();
       } else {
-        PrefValue[i].set();
+        this.setChar(PrefValue[i].pref, PrefValue[i].string);
       }
     }
 
-    if (PrefValue['toolbar'].get()) Toolbar.addIcon();
+    if (this.getBool(PrefValue['toolbar'].pref)) Toolbar.addIcon();
     else Toolbar.removeIcon();
+
+    if (!this.getBool(PrefValue['firstrun'].pref)) {
+      QueryFiles.start(0);
+      this.setBool(PrefValue['firstrun'].pref, true);
+    }
   },
   setDefault: function () {
     for (var i in PrefValue) {
@@ -488,47 +483,48 @@ var Toolbar = {
         if (aEvent.target.id == 'sowatchmk2-default') Preferences.setDefault();
 
         if (aEvent.target.id == 'sowatchmk2-remote') {
-          if (PrefValue['remote'].get()) PrefValue['remote'].set(false);
-          else PrefValue['remote'].set(true);
+          if (Preferences.getBool(PrefValue['remote'].pref)) Preferences.setBool(PrefValue['remote'].pref, false);
+          else Preferences.setBool(PrefValue['remote'].pref, true);
         }
 
         if (aEvent.target.id == 'sowatchmk2-autoupdate') {
-          if (PrefValue['autoupdate'].get()) PrefValue['autoupdate'].set(false);
-          else PrefValue['autoupdate'].set(true);
+          if (Preferences.getBool(PrefValue['autoupdate'].pref)) Preferences.setBool(PrefValue['autoupdate'].pref, false);
+          else Preferences.setBool(PrefValue['autoupdate'].pref, true);
         }
 
         if (aEvent.target.id == 'sowatchmk2-checkupdate') {
-          if (PrefValue['remote'].get()) return;
+          if (Preferences.getBool(PrefValue['remote'].pref)) return;
           QueryFiles.start(0);
         }
 
         if (aEvent.target.id == 'sowatchmk2-forceupdate') {
-          if (PrefValue['remote'].get()) return;
+          if (Preferences.getBool(PrefValue['remote'].pref)) return;
           QueryFiles.start(1);
         }
 
         if (aEvent.target.id == 'sowatchmk2-referer-youku') {
-          if (PrefValue['referer-youku'].get()) PrefValue['referer-youku'].set(false);
-          else PrefValue['referer-youku'].set(true);
+          if (Preferences.getBool(PrefValue['referer-youku'].pref)) Preferences.setBool(PrefValue['referer-youku'].pref, false);
+          else Preferences.setBool(PrefValue['referer-youku'].pref, true);
         }
 
         if (aEvent.target.id == 'sowatchmk2-referer-iqiyi') {
-          if (PrefValue['referer-iqiyi'].get()) PrefValue['referer-iqiyi'].set(false);
-          else PrefValue['referer-iqiyi'].set(true);
+          if (Preferences.getBool(PrefValue['referer-iqiyi'].pref)) Preferences.setBool(PrefValue['referer-iqiyi'].pref, false);
+          else Preferences.setBool(PrefValue['referer-iqiyi'].pref, true);
         }
+
         for (var x in SiteLists) {
           if (aEvent.target.id == 'sowatchmk2-' + x + '-player') {
             if (x == 'qq' || x == '163' || x == 'sina') continue;
-            PrefValue[x].set('player');
+            Preferences.setChar(PrefValue[x].pref, 'player');
           } else if (aEvent.target.id == 'sowatchmk2-' + x + '-filter') {
             if (x == 'iqiyi') continue;
-            PrefValue[x].set('filter');
-          } else if (aEvent.target.id == 'sowatchmk2-' + x + '-none') PrefValue[x].set('none');
+            Preferences.setChar(PrefValue[x].pref, 'filter');
+          } else if (aEvent.target.id == 'sowatchmk2-' + x + '-none') Preferences.setChar(PrefValue[x].pref, 'none');
         }
       },
       onPopup: function (aEvent) {
         if (aEvent.target.id == 'sowatchmk2-popup') {
-          if (PrefValue['remote'].get()) {
+          if (Preferences.getBool(PrefValue['remote'].pref)) {
             aEvent.target.querySelector('#sowatchmk2-remote').setAttribute('checked', 'true');
             aEvent.target.querySelector('#sowatchmk2-autoupdate').setAttribute('disabled', 'true');
           } else {
@@ -536,7 +532,7 @@ var Toolbar = {
             aEvent.target.querySelector('#sowatchmk2-autoupdate').setAttribute('disabled', 'false');
           }
 
-          if (PrefValue['autoupdate'].get()) {
+          if (Preferences.getBool(PrefValue['autoupdate'].pref)) {
             aEvent.target.querySelector('#sowatchmk2-autoupdate').setAttribute('checked', 'true');
             aEvent.target.querySelector('#sowatchmk2-checkupdate').setAttribute('disabled', 'false');
             aEvent.target.querySelector('#sowatchmk2-forceupdate').setAttribute('disabled', 'false');
@@ -546,10 +542,10 @@ var Toolbar = {
             aEvent.target.querySelector('#sowatchmk2-forceupdate').setAttribute('disabled', 'true');
           }
 
-          if (PrefValue['referer-youku'].get()) aEvent.target.querySelector('#sowatchmk2-referer-youku').setAttribute('checked', 'true');
+          if (Preferences.getBool(PrefValue['referer-youku'].pref)) aEvent.target.querySelector('#sowatchmk2-referer-youku').setAttribute('checked', 'true');
           else aEvent.target.querySelector('#sowatchmk2-referer-youku').setAttribute('checked', 'false');
 
-          if (PrefValue['referer-iqiyi'].get()) aEvent.target.querySelector('#sowatchmk2-referer-iqiyi').setAttribute('checked', 'true');
+          if (Preferences.getBool(PrefValue['referer-iqiyi'].pref)) aEvent.target.querySelector('#sowatchmk2-referer-iqiyi').setAttribute('checked', 'true');
           else aEvent.target.querySelector('#sowatchmk2-referer-iqiyi').setAttribute('checked', 'false');
         }
 
@@ -564,9 +560,9 @@ var Toolbar = {
             }
           }
           if (aEvent.target.id == 'sowatchmk2-popup-' + x) {
-            if (PrefValue[x].get() == 'player') aEvent.target.querySelector('#sowatchmk2-' + x + '-player').setAttribute('checked', 'true');
-            else if (PrefValue[x].get() == 'filter') aEvent.target.querySelector('#sowatchmk2-' + x + '-filter').setAttribute('checked', 'true');
-            else if (PrefValue[x].get() == 'none') aEvent.target.querySelector('#sowatchmk2-' + x + '-none').setAttribute('checked', 'true');
+            if (Preferences.getChar(PrefValue[x].pref) == 'player') aEvent.target.querySelector('#sowatchmk2-' + x + '-player').setAttribute('checked', 'true');
+            else if (Preferences.getChar(PrefValue[x].pref) == 'filter') aEvent.target.querySelector('#sowatchmk2-' + x + '-filter').setAttribute('checked', 'true');
+            else if (Preferences.getChar(PrefValue[x].pref) == 'none') aEvent.target.querySelector('#sowatchmk2-' + x + '-none').setAttribute('checked', 'true');
           }
         }
       },

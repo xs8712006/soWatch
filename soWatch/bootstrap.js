@@ -136,6 +136,7 @@ var Preferences = {
     this.setChar(PrefValue['bitbucket'].pref, PrefValue['bitbucket'].string);  // 禁止修改bitbucket否则会影响扩展工作
 
     if (this.getChar(PrefValue['directory'].pref)) FileIO.extDir = this.getChar(PrefValue['directory'].pref);
+    FileIO.path = OS.Path.toFileURI(this.getChar(PrefValue['directory'].pref)) + '/';
 
     if (this.getChar(PrefValue['server'].pref)) {
       FileIO.server = this.getChar(PrefValue['server'].pref);
@@ -148,8 +149,6 @@ var Preferences = {
 
     if (this.getBool(PrefValue['override'].pref)) FileIO.link = this.getChar(PrefValue['server'].pref);
     else FileIO.link = this.getChar(PrefValue['bitbucket'].pref);
-
-    FileIO.path = OS.Path.toFileURI(this.getChar(PrefValue['directory'].pref)) + '/';
 
     if (this.getBool(PrefValue['autoupdate'].pref)) {
       if (this.getInteger(PrefValue['lastdate'].pref) + this.getInteger(PrefValue['period'].pref) * 86400 < Date.now() / 1000) QueryFiles.start(0);
