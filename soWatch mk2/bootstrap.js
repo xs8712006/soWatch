@@ -1,19 +1,18 @@
 'use strict';
 
-const {classes: Cc, interfaces: Ci, results: Cr, utils: Cu} = Components;
-Cu.import('resource:///modules/CustomizableUI.jsm'); //Require Gecko 29 and later
-Cu.import('resource://gre/modules/osfile.jsm'); //Require Gecko 27 and later
-Cu.import('resource://gre/modules/Downloads.jsm'); //Require Gecko 26 and later
-Cu.import('resource://gre/modules/NetUtil.jsm'); //Promise chain that require Gecko 25 and later
+Components.utils.import('resource:///modules/CustomizableUI.jsm'); //Require Gecko 29 and later
+Components.utils.import('resource://gre/modules/osfile.jsm'); //Require Gecko 27 and later
+Components.utils.import('resource://gre/modules/Downloads.jsm'); //Require Gecko 26 and later
+Components.utils.import('resource://gre/modules/NetUtil.jsm'); //Promise chain that require Gecko 25 and later
 
 var Utilities = {}, SiteLists = {}, PlayerRules = {}, FilterRules = {}, RefererRules = {};
 
 var Services = {
-  io: Cc['@mozilla.org/network/io-service;1'].getService(Ci.nsIIOService),
-  obs: Cc['@mozilla.org/observer-service;1'].getService(Ci.nsIObserverService),
-  prefs: Cc['@mozilla.org/preferences-service;1'].getService(Ci.nsIPrefService).QueryInterface(Ci.nsIPrefBranch),
-  sss: Cc['@mozilla.org/content/style-sheet-service;1'].getService(Ci.nsIStyleSheetService),
-  strings: Cc['@mozilla.org/intl/stringbundle;1'].getService(Ci.nsIStringBundleService),
+  io: Components.classes['@mozilla.org/network/io-service;1'].getService(Components.interfaces.nsIIOService),
+  obs: Components.classes['@mozilla.org/observer-service;1'].getService(Components.interfaces.nsIObserverService),
+  prefs: Components.classes['@mozilla.org/preferences-service;1'].getService(Components.interfaces.nsIPrefService).QueryInterface(Components.interfaces.nsIPrefBranch),
+  sss: Components.classes['@mozilla.org/content/style-sheet-service;1'].getService(Components.interfaces.nsIStyleSheetService),
+  strings: Components.classes['@mozilla.org/intl/stringbundle;1'].getService(Components.interfaces.nsIStringBundleService),
 };
 
 var FileIO = {
@@ -126,12 +125,12 @@ var Preferences = {
     PrefBranch.setIntPref(aPref, aInteger);
   },
   getChar: function (aPref) {
-    return PrefBranch.getComplexValue(aPref, Ci.nsISupportsString).data;
+    return PrefBranch.getComplexValue(aPref, Components.interfaces.nsISupportsString).data;
   },
   setChar: function (aPref, aString) {
-    var aChar = Cc["@mozilla.org/supports-string;1"].createInstance(Ci.nsISupportsString);
+    var aChar = Components.classes["@mozilla.org/supports-string;1"].createInstance(Components.interfaces.nsISupportsString);
     aChar.data = aString;
-    PrefBranch.setComplexValue(aPref, Ci.nsISupportsString, aChar);
+    PrefBranch.setComplexValue(aPref, Components.interfaces.nsISupportsString, aChar);
   },
   getValue: function (aValue) {
     if ('bool' in aValue) {
@@ -243,7 +242,7 @@ var QueryFiles = {
     if (!aProbe) var aProbe = 0;
     if (aProbe <= 3) {
       aProbe = aProbe + 1;
-      var aClient = Cc['@mozilla.org/xmlextras/xmlhttprequest;1'].createInstance(Ci.nsIXMLHttpRequest);
+      var aClient = Components.classes['@mozilla.org/xmlextras/xmlhttprequest;1'].createInstance(Components.interfaces.nsIXMLHttpRequest);
       aClient.open('HEAD', aLink, false);
       aClient.onload = function () {
         var aSize = new Number(aClient.getResponseHeader('Content-Length'));
@@ -577,7 +576,7 @@ var Toolbar = {
     this.buttonOn = false;
   },
   UserInterface: function (aSubject) {
-    var httpChannel = aSubject.QueryInterface(Ci.nsIHttpChannel);
+    var httpChannel = aSubject.QueryInterface(Components.interfaces.nsIHttpChannel);
 
     var aVisitor = new HttpHeaderVisitor();
     httpChannel.visitResponseHeaders(aVisitor);
@@ -813,8 +812,8 @@ var RuleExecution = {
     if (aMode == 0) var aObject = rule['object'];
     if (aMode == 1) var aObject = rule['remote'];
     NetUtil.asyncFetch(aObject, function (inputStream, status) {
-      var binaryOutputStream = Cc['@mozilla.org/binaryoutputstream;1'].createInstance(Ci['nsIBinaryOutputStream']);
-      var storageStream = Cc['@mozilla.org/storagestream;1'].createInstance(Ci['nsIStorageStream']);
+      var binaryOutputStream = Components.classes['@mozilla.org/binaryoutputstream;1'].createInstance(Components.interfaces.nsIBinaryOutputStream);
+      var storageStream = Components.classes['@mozilla.org/storagestream;1'].createInstance(Components.interfaces.nsIStorageStream);
       var count = inputStream.available();
       var data = NetUtil.readInputStreamToString(inputStream, count);
         storageStream.init(512, count, null);
@@ -828,11 +827,11 @@ var RuleExecution = {
     });
   },
   QueryInterface: function (aIID) {
-    if (aIID.equals(Ci.nsISupports) || aIID.equals(Ci.nsIObserver)) return this;
-    return Cr.NS_ERROR_NO_INTERFACE;
+    if (aIID.equals(Components.interfaces.nsISupports) || aIID.equals(Components.interfaces.nsIObserver)) return this;
+    return Components.results.NS_ERROR_NO_INTERFACE;
   },
   referer: function (aSubject) {
-    var httpChannel = aSubject.QueryInterface(Ci.nsIHttpChannel);
+    var httpChannel = aSubject.QueryInterface(Components.interfaces.nsIHttpChannel);
 
     for (var i in RefererRules) {
       var rule = RefererRules[i];
@@ -842,7 +841,7 @@ var RuleExecution = {
     }
   },
   filter: function (aSubject) {
-    var httpChannel = aSubject.QueryInterface(Ci.nsIHttpChannel);
+    var httpChannel = aSubject.QueryInterface(Components.interfaces.nsIHttpChannel);
 
     for (var i in FilterRules) {
       var rule = FilterRules[i];
@@ -854,7 +853,7 @@ var RuleExecution = {
           });
         }
         var newListener = new TrackingListener();
-        aSubject.QueryInterface(Ci.nsITraceableChannel);
+        aSubject.QueryInterface(Components.interfaces.nsITraceableChannel);
         newListener.originalListener = aSubject.setNewListener(newListener);
         newListener.rule = rule;
         break;
@@ -862,7 +861,7 @@ var RuleExecution = {
     }
   },
   player: function (aSubject) {
-    var httpChannel = aSubject.QueryInterface(Ci.nsIHttpChannel);
+    var httpChannel = aSubject.QueryInterface(Components.interfaces.nsIHttpChannel);
 
     var aVisitor = new HttpHeaderVisitor();
     httpChannel.visitResponseHeaders(aVisitor);
@@ -888,7 +887,7 @@ var RuleExecution = {
           }
         }
         var newListener = new TrackingListener();
-        aSubject.QueryInterface(Ci.nsITraceableChannel);
+        aSubject.QueryInterface(Components.interfaces.nsITraceableChannel);
         newListener.originalListener = aSubject.setNewListener(newListener);
         newListener.rule = rule;
         break;
@@ -896,15 +895,15 @@ var RuleExecution = {
     }
   },
   getWindowForRequest: function (aRequest) {
-    if (aRequest instanceof Ci.nsIRequest) {
+    if (aRequest instanceof Components.interfaces.nsIRequest) {
       try {
         if (aRequest.notificationCallbacks) {
-          return aRequest.notificationCallbacks.getInterface(Ci.nsILoadContext).associatedWindow;
+          return aRequest.notificationCallbacks.getInterface(Components.interfaces.nsILoadContext).associatedWindow;
         }
       } catch (e) {}
       try {
         if (aRequest.loadGroup && aRequest.loadGroup.notificationCallbacks) {
-          return aRequest.loadGroup.notificationCallbacks.getInterface(Ci.nsILoadContext).associatedWindow;
+          return aRequest.loadGroup.notificationCallbacks.getInterface(Components.interfaces.nsILoadContext).associatedWindow;
         }
       } catch (e) {}
     }
@@ -956,7 +955,7 @@ TrackingListener.prototype = {
     this.originalListener.onStartRequest(aRequest, aContext);
   },
   onStopRequest: function (aRequest, aContext) {
-    this.originalListener.onStopRequest(aRequest, aContext, Cr.NS_OK);
+    this.originalListener.onStopRequest(aRequest, aContext, Components.results.NS_OK);
   },
   onDataAvailable: function (aRequest, aContext) {
     this.originalListener.onDataAvailable(aRequest, aContext, this.rule['storageStream'].newInputStream(0), 0, this.rule['count']);
