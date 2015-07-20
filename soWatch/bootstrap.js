@@ -245,7 +245,7 @@ var QueryFiles = {
   start: function (aMode) {
     FileIO.addFolder();
     for (var i in PlayerRules) {
-      if (PlayerRules[i]['remote']) {
+      if ('remote' in PlayerRules[i]) {
         var aLink = PlayerRules[i]['remote'];
         var aFile = OS.Path.fromFileURI(PlayerRules[i]['object']);
         var aName = OS.Path.split(aFile).components[OS.Path.split(aFile).components.length - 1];
@@ -377,215 +377,242 @@ var RuleManager = {
     PlayerRules['youku_loader'] = {
       'object': FileIO.path + 'loader.swf',
       'remote': FileIO.link + 'loader.swf',
+      'string': /http:\/\/static\.youku\.com\/.*\/v\/swf\/loaders?\.swf/i,
     };
     PlayerRules['youku_player'] = {
       'object': FileIO.path + 'player.swf',
       'remote': FileIO.link + 'player.swf',
+      'string': /http:\/\/static\.youku\.com\/.*\/v\/swf\/q?player.*\.swf/i,
     };
     PlayerRules['tudou_portal'] = {
       'object': FileIO.path + 'tudou.swf',
       'remote': FileIO.link + 'tudou.swf',
+      'string': /http:\/\/js\.tudouui\.com\/bin\/lingtong\/PortalPlayer.*\.swf/i,
     };
     PlayerRules['tudou_olc'] = {
       'object': 'http://js.tudouui.com/bin/player2/olc.swf',
+      'string': /http:\/\/js\.tudouui\.com\/bin\/player2\/olc.+\.swf/i,
     };
     PlayerRules['tudou_social'] = {
       'object': FileIO.path + 'sp.swf',
       'remote': FileIO.link + 'sp.swf',
+      'string': /http:\/\/js\.tudouui\.com\/bin\/lingtong\/SocialPlayer.*\.swf/i,
     };
     PlayerRules['iqiyi5'] = {
       'object': FileIO.path + 'iqiyi5.swf',
       'remote': FileIO.link + 'iqiyi5.swf',
+      'string': /http:\/\/www\.iqiyi\.com\/common\/flashplayer\/\d+\/MainPlayer.*\.swf/i,
     };
     PlayerRules['iqiyi_out'] = {
       'object': FileIO.path + 'iqiyi_out.swf',
       'remote': FileIO.link + 'iqiyi_out.swf',
+      'string': /https?:\/\/www\.iqiyi\.com\/(common\/flash)?player\/\d+\/(Share|Enjoy)?Player.*\.swf/i,
     };
     PlayerRules['letv'] = {
       'object': FileIO.path + 'letv.swf',
       'remote': FileIO.link + 'letv.swf',
+      'string': /http:\/\/.*\.letv(cdn)?\.com\/.*(new)?player\/((SDK)?Letv|swf)Player\.swf/i,
     };
     PlayerRules['letv_skin'] = {
       'object': 'http://player.letvcdn.com/p/201407/24/15/newplayer/1/SSLetvPlayer.swf',
+      'string': /http:\/\/player\.letvcdn\.com\/p\/((?!15)\d+\/){3}newplayer\/1\/S?SLetvPlayer\.swf/i,
     };
     PlayerRules['sohu'] = {
       'object': FileIO.path + 'sohu_live.swf',
       'remote': FileIO.link + 'sohu_live.swf',
+      'string': /http:\/\/(tv\.sohu\.com\/upload\/swf\/(p2p\/|56\/)?\d+|(\d+\.){3}\d+\/webplayer)\/Main\.swf/i,
     };
     PlayerRules['pptv'] = {
       'object': FileIO.path + 'player4player2.swf',
       'remote': FileIO.link + 'player4player2.swf',
+      'string': /http:\/\/player.pplive.cn\/ikan\/.*\/player4player2\.swf/i,
     };
     PlayerRules['pptv_live'] = {
       'object': FileIO.path + 'pptv.in.Live.swf',
       'remote': FileIO.server + 'pptv.in.Live.swf',
+      'string': /http:\/\/player.pplive.cn\/live\/.*\/player4live2\.swf/i,
     };
   },
   filter: function () {
     FilterRules['youku_tudou'] = {
       'object': 'http://valf.atm.youku.com/vf',
+      'string': /http:\/\/val[fcopb]\.atm\.youku\.com\/v[fcopb]/i,
     };
     FilterRules['letv'] = {
       'object': 'http://ark.letv.com/s',
+      'string': /http:\/\/(ark|fz)\.letv\.com\/s\?ark/i,
     };
     FilterRules['sohu'] = {
       'object': 'http://v.aty.sohu.com/v',
+      'string': /http:\/\/v\.aty\.sohu\.com\/v\?/i,
     };
     FilterRules['pptv'] = {
       'object': 'http://de.as.pptv.com/ikandelivery/vast/draft',
+      'string': /http:\/\/de\.as\.pptv\.com\/ikandelivery\/vast\/.+draft/i,
     };
     FilterRules['qq'] = {
       'object': 'http://livep.l.qq.com/livemsg',
+      'string': /http:\/\/livew\.l\.qq\.com\/livemsg\?/i,
     };
     FilterRules['163'] = {
       'object': 'http://v.163.com',
+      'string': /http:\/\/v\.163\.com\/special\/.*\.xml/i,
     };
     FilterRules['sina'] = {
       'object': 'http://sax.sina.com.cn/video/newimpress',
+      'string': /http:\/\/sax\.sina\.com\.cn\/video\/newimpress/i,
     };
   },
   referer: function () {
     RefererRules['referer-youku'] = {
       'object': 'http://www.youku.com/',
+      'string': /http:\/\/.*\.youku\.com/i,
     };
     RefererRules['referer-iqiyi'] = {
       'object': 'http://www.iqiyi.com/',
+      'string': /http:\/\/.*\.qiyi\.com/i,
     };
+  },
+  toggleOn: function (aTarget, aString) {
+    aTarget = aString;
+  },
+  toggleOff: function (aTarget) {
+    aTarget = null;
   },
 };
 var RuleResolver = {
   'youku': {
     playerOn: function () {
-      PlayerRules['youku_loader']['target'] = /http:\/\/static\.youku\.com\/.*\/v\/swf\/loaders?\.swf/i;
-      PlayerRules['youku_player']['target'] = /http:\/\/static\.youku\.com\/.*\/v\/swf\/q?player.*\.swf/i;
+      RuleManager.toggleOn(PlayerRules['youku_loader']['target'], PlayerRules['youku_loader']['string']);
+      RuleManager.toggleOn(PlayerRules['youku_player']['target'], PlayerRules['youku_player']['string']);
     },
     playerOff: function () {
-      PlayerRules['youku_loader']['target'] = null;
-      PlayerRules['youku_player']['target'] = null;
+      RuleManager.toggleOff(PlayerRules['youku_loader']['target']);
+      RuleManager.toggleOff(PlayerRules['youku_player']['target']);
     },
     filterOn: function () {
-      FilterRules['youku_tudou']['target'] = /http:\/\/val[fcopb]\.atm\.youku\.com\/v[fcopb]/i;
+      RuleManager.toggleOn(FilterRules['youku_tudou']['target'], FilterRules['youku_tudou']['string']);
     },
     filterOff: function () {
-      FilterRules['youku_tudou']['target'] = null;
+      RuleManager.toggleOff(FilterRules['youku_tudou']['target']);
     },
     refererOn: function () {
-      RefererRules['referer-youku']['target'] = /http:\/\/.*\.youku\.com/i;
+      RuleManager.toggleOn(RefererRules['referer-youku']['target']. RefererRules['referer-youku']['string']);
     },
     refererOff: function () {
-      RefererRules['referer-youku']['target'] = null;
+      RuleManager.toggleOff(RefererRules['referer-youku']['target']);
     },
   },
   'tudou': {
     playerOn: function () {
-      PlayerRules['tudou_portal']['target'] = /http:\/\/js\.tudouui\.com\/bin\/lingtong\/PortalPlayer.*\.swf/i;
-      PlayerRules['tudou_olc']['target'] = /http:\/\/js\.tudouui\.com\/bin\/player2\/olc.+\.swf/i;
-      PlayerRules['tudou_social']['target'] = /http:\/\/js\.tudouui\.com\/bin\/lingtong\/SocialPlayer.*\.swf/i;
+      RuleManager.toggleOn(PlayerRules['tudou_portal']['target'], PlayerRules['tudou_portal']['string']);
+      RuleManager.toggleOn(PlayerRules['tudou_olc']['target'], PlayerRules['tudou_olc']['string']);
+      RuleManager.toggleOn(PlayerRules['tudou_social']['target'], PlayerRules['tudou_social']['string']);
     },
     playerOff: function () {
-      PlayerRules['tudou_portal']['target'] = null;
-      PlayerRules['tudou_olc']['target'] = null;
-      PlayerRules['tudou_social']['target'] = null;
+      RuleManager.toggleOff(PlayerRules['tudou_portal']['target']);
+      RuleManager.toggleOff(PlayerRules['tudou_olc']['target']);
+      RuleManager.toggleOff(PlayerRules['tudou_social']['target']);
     },
     filterOn: function () {
-      FilterRules['youku_tudou']['target'] = /http:\/\/val[fcopb]\.atm\.youku\.com\/v[fcopb]/i;
+      RuleManager.toggleOn(FilterRules['youku_tudou']['target'], FilterRules['youku_tudou']['string']);
     },
     filterOff: function () {
-      FilterRules['youku_tudou']['target'] = null;
+      RuleManager.toggleOff(FilterRules['youku_tudou']['target']);
     },
   },
   'iqiyi': {
     playerOn: function () {
-      PlayerRules['iqiyi5']['target'] = /http:\/\/www\.iqiyi\.com\/common\/flashplayer\/\d+\/MainPlayer.*\.swf/i;
-      PlayerRules['iqiyi_out']['target'] = /https?:\/\/www\.iqiyi\.com\/(common\/flash)?player\/\d+\/(Share|Enjoy)?Player.*\.swf/i;
+      RuleManager.toggleOn(PlayerRules['iqiyi5']['target'], PlayerRules['iqiyi5']['string']);
+      RuleManager.toggleOn(PlayerRules['iqiyi_out']['target'], PlayerRules['iqiyi_out']['string']);
     },
     playerOff: function () {
-      PlayerRules['iqiyi5']['target'] = null;
-      PlayerRules['iqiyi_out']['target'] = null;
+      RuleManager.toggleOff(PlayerRules['iqiyi5']['target']);
+      RuleManager.toggleOff(PlayerRules['iqiyi_out']['target']);
     },
     filterOn: function () {},
     filterOff: function () {},
     refererOn: function () {
-      RefererRules['referer-iqiyi']['target'] = /http:\/\/.*\.qiyi\.com/i;
+      RuleManager.toggleOn(RefererRules['referer-iqiyi']['target'], RefererRules['referer-iqiyi']['string']);
     },
     refererOff: function () {
-      RefererRules['referer-iqiyi']['target'] = null;
+      RuleManager.toggleOff(RefererRules['referer-iqiyi']['target']);
     },
   },
   'letv': {
     playerOn: function () {
-      PlayerRules['letv']['target'] = /http:\/\/.*\.letv(cdn)?\.com\/.*(new)?player\/((SDK)?Letv|swf)Player\.swf/i;
-      PlayerRules['letv_skin']['target'] = /http:\/\/player\.letvcdn\.com\/p\/((?!15)\d+\/){3}newplayer\/1\/S?SLetvPlayer\.swf/i;
+      RuleManager.toggleOn(PlayerRules['letv']['target'], PlayerRules['letv']['string']);
+      RuleManager.toggleOn(PlayerRules['letv_skin']['target'], PlayerRules['letv_skin']['string']);
     },
     playerOff: function () {
-      PlayerRules['letv']['target'] = null;
-      PlayerRules['letv_skin']['target'] = null;
+      RuleManager.toggleOff(PlayerRules['letv']['target']);
+      RuleManager.toggleOff(PlayerRules['letv_skin']['target']);
     },
     filterOn: function () {
-      FilterRules['letv']['target'] = /http:\/\/(ark|fz)\.letv\.com\/s\?ark/i;
+      RuleManager.toggleOn(FilterRules['letv']['target'], FilterRules['letv']['string']);
     },
     filterOff: function () {
-      FilterRules['letv']['target'] = null;
+      RuleManager.toggleOff(FilterRules['letv']['target']);
     },
   },
   'sohu': {
     playerOn: function () {
-      PlayerRules['sohu']['target'] = /http:\/\/(tv\.sohu\.com\/upload\/swf\/(p2p\/|56\/)?\d+|(\d+\.){3}\d+\/webplayer)\/Main\.swf/i;
+      RuleManager.toggleOn(PlayerRules['sohu']['target'], PlayerRules['sohu']['string']);
     },
     playerOff: function () {
-      PlayerRules['sohu']['target'] = null;
+      RuleManager.toggleOff(PlayerRules['sohu']['target']);
     },
     filterOn: function () {
-      FilterRules['sohu']['target'] = /http:\/\/v\.aty\.sohu\.com\/v\?/i;
+      RuleManager.toggleOn(FilterRules['sohu']['target'], FilterRules['sohu']['string']);
     },
     filterOff: function () {
-      FilterRules['sohu']['target'] = null;
+      RuleManager.toggleOff(FilterRules['sohu']['target']);
     },
   },
   'pptv': {
     playerOn: function () {
-      PlayerRules['pptv']['target'] = /http:\/\/player.pplive.cn\/ikan\/.*\/player4player2\.swf/i;
-      PlayerRules['pptv_live']['target'] = /http:\/\/player.pplive.cn\/live\/.*\/player4live2\.swf/i;
+      RuleManager.toggleOn(PlayerRules['pptv']['target'], PlayerRules['pptv']['string']);
+      RuleManager.toggleOn(PlayerRules['pptv_live']['target'], PlayerRules['pptv_live']['string']);
     },
     playerOff: function () {
-      PlayerRules['pptv']['target'] = null;
-      PlayerRules['pptv_live']['target'] = null;
+      RuleManager.toggleOff(PlayerRules['pptv']['target']);
+      RuleManager.toggleOff(PlayerRules['pptv_live']['target']);
     },
     filterOn: function () {
-      FilterRules['pptv']['target'] = /http:\/\/de\.as\.pptv\.com\/ikandelivery\/vast\/.+draft/i;
+      RuleManager.toggleOn(FilterRules['pptv']['target'], FilterRules['pptv']['string']);
     },
     filterOff: function () {
-      FilterRules['pptv']['target'] = null;
+      RuleManager.toggleOff(FilterRules['pptv']['target']);
     },
   },
   'qq': {
     playerOn: function () {},
     playerOff: function () {},
     filterOn: function () {
-      FilterRules['qq']['target'] = /http:\/\/livew\.l\.qq\.com\/livemsg\?/i;
+      RuleManager.toggleOn(FilterRules['qq']['target'], FilterRules['qq']['string']);
     },
     filterOff: function () {
-      FilterRules['qq']['target'] = null;
+      RuleManager.toggleOff(FilterRules['qq']['target']);
     },
   },
   '163': {
     playerOn: function () {},
     playerOff: function () {},
     filterOn: function () {
-      FilterRules['163']['target'] = /http:\/\/v\.163\.com\/special\/.*\.xml/i
+      RuleManager.toggleOn(FilterRules['163']['target'], FilterRules['163']['string']);
     },
     filterOff: function () {
-      FilterRules['163']['target'] = null;
+      RuleManager.toggleOff(FilterRules['163']['target']);
     },
   },
   'sina': {
     playerOn: function () {},
     playerOff: function () {},
     filterOn: function () {
-      FilterRules['sina']['target'] = /http:\/\/sax\.sina\.com\.cn\/video\/newimpress/i;
+      RuleManager.toggleOn(FilterRules['sina']['target'], FilterRules['sina']['string']);
     },
     filterOff: function () {
-      FilterRules['sina']['target'] = null;
+      RuleManager.toggleOff(FilterRules['sina']['target']);
     },
   },
 };

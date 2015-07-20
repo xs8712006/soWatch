@@ -290,7 +290,7 @@ var QueryFiles = {
   start: function (aMode) {
     FileIO.addFolder();
     for (var i in PlayerRules) {
-      if (PlayerRules[i]['remote']) {
+      if ('remote' in PlayerRules[i]) {
         var aLink = PlayerRules[i]['remote'];
         var aFile = OS.Path.fromFileURI(PlayerRules[i]['object']);
         var aName = OS.Path.split(aFile).components[OS.Path.split(aFile).components.length - 1];
