@@ -684,86 +684,86 @@ var RuleManager = {
       string: /http:\/\/.*\.qiyi\.com/i,
     };
   },
-  toggle: function (aState, aTarget, aString) {
-    if (aState == 'on') aTarget = aString;
-    if (aState == 'off') aTarget = null;
+  toggle: function (aState, aRule, aString) {
+    if (aState == 'on') aRule['target'] = aString;
+    if (aState == 'off') aRule['target'] = null;
   },
 };
 var RuleResolver = {
   'youku': {
     player: function (aState) {
-      RuleManager.toggle(aState, PlayerRules['youku_loader']['target'], PlayerRules['youku_loader']['string']);
-      RuleManager.toggle(aState, PlayerRules['youku_player']['target'], PlayerRules['youku_player']['string']);
+      RuleManager.toggle(aState, PlayerRules['youku_loader'], PlayerRules['youku_loader']['string']);
+      RuleManager.toggle(aState, PlayerRules['youku_player'], PlayerRules['youku_player']['string']);
     },
     filter: function (aState) {
-      RuleManager.toggle(aState, FilterRules['youku_tudou']['target'], FilterRules['youku_tudou']['string']);
+      RuleManager.toggle(aState, FilterRules['youku_tudou'], FilterRules['youku_tudou']['string']);
     },
     referer: function (aState) {
-      RuleManager.toggle(aState, RefererRules['referer-youku']['target'], RefererRules['referer-youku']['string']);
+      RuleManager.toggle(aState, RefererRules['referer-youku'], RefererRules['referer-youku']['string']);
     },
   },
   'tudou': {
     player: function (aState) {
-      RuleManager.toggle(aState, PlayerRules['tudou_portal']['target'], PlayerRules['tudou_portal']['string']);
-      RuleManager.toggle(aState, PlayerRules['tudou_olc']['target'], PlayerRules['tudou_olc']['string']);
-      RuleManager.toggle(aState, PlayerRules['tudou_social']['target'], PlayerRules['tudou_social']['string']);
+      RuleManager.toggle(aState, PlayerRules['tudou_portal'], PlayerRules['tudou_portal']['string']);
+      RuleManager.toggle(aState, PlayerRules['tudou_olc'], PlayerRules['tudou_olc']['string']);
+      RuleManager.toggle(aState, PlayerRules['tudou_social'], PlayerRules['tudou_social']['string']);
     },
     filter: function (aState) {
-      RuleManager.toggle(aState, FilterRules['youku_tudou']['target'], FilterRules['youku_tudou']['string']);
+      RuleManager.toggle(aState, FilterRules['youku_tudou'], FilterRules['youku_tudou']['string']);
     },
   },
   'iqiyi': {
     player: function (aState) {
-      RuleManager.toggle(aState, PlayerRules['iqiyi5']['target'], PlayerRules['iqiyi5']['string']);
-      RuleManager.toggle(aState, PlayerRules['iqiyi_out']['target'], PlayerRules['iqiyi_out']['string']);
+      RuleManager.toggle(aState, PlayerRules['iqiyi5'], PlayerRules['iqiyi5']['string']);
+      RuleManager.toggle(aState, PlayerRules['iqiyi_out'], PlayerRules['iqiyi_out']['string']);
     },
     filter: function (aState) {},
     referer: function (aState) {
-      RuleManager.toggle(aState, RefererRules['referer-iqiyi']['target'], RefererRules['referer-iqiyi']['string']);
+      RuleManager.toggle(aState, RefererRules['referer-iqiyi'], RefererRules['referer-iqiyi']['string']);
     },
   },
   'letv': {
     player: function (aState) {
-      RuleManager.toggle(aState, PlayerRules['letv']['target'], PlayerRules['letv']['string']);
-      RuleManager.toggle(aState, PlayerRules['letv_skin']['target'], PlayerRules['letv_skin']['string']);
+      RuleManager.toggle(aState, PlayerRules['letv'], PlayerRules['letv']['string']);
+      RuleManager.toggle(aState, PlayerRules['letv_skin'], PlayerRules['letv_skin']['string']);
     },
     filter: function (aState) {
-      RuleManager.toggle(aState, FilterRules['letv']['target'], FilterRules['letv']['string']);
+      RuleManager.toggle(aState, FilterRules['letv'], FilterRules['letv']['string']);
     },
   },
   'sohu': {
     player: function (aState) {
-      RuleManager.toggle(aState, PlayerRules['sohu']['target'], PlayerRules['sohu']['string']);
+      RuleManager.toggle(aState, PlayerRules['sohu'], PlayerRules['sohu']['string']);
     },
     filter: function (aState) {
-      RuleManager.toggle(aState, FilterRules['sohu']['target'], FilterRules['sohu']['string']);
+      RuleManager.toggle(aState, FilterRules['sohu'], FilterRules['sohu']['string']);
     },
   },
   'pptv': {
     player: function (aState) {
-      RuleManager.toggle(aState, PlayerRules['pptv']['target'], PlayerRules['pptv']['string']);
-      RuleManager.toggle(aState, PlayerRules['pptv_live']['target'], PlayerRules['pptv_live']['string']);
+      RuleManager.toggle(aState, PlayerRules['pptv'], PlayerRules['pptv']['string']);
+      RuleManager.toggle(aState, PlayerRules['pptv_live'], PlayerRules['pptv_live']['string']);
     },
     filter: function (aState) {
-      RuleManager.toggle(aState, FilterRules['pptv']['target'], FilterRules['pptv']['string']);
+      RuleManager.toggle(aState, FilterRules['pptv'], FilterRules['pptv']['string']);
     },
   },
   'qq': {
     player: function (aState) {},
     filter: function (aState) {
-      RuleManager.toggle(aState, FilterRules['qq']['target'], FilterRules['qq']['string']);
+      RuleManager.toggle(aState, FilterRules['qq'], FilterRules['qq']['string']);
     },
   },
   '163': {
     player: function (aState) {},
     filter: function (aState) {
-      RuleManager.toggle(aState, FilterRules['163']['target'], FilterRules['163']['string']);
+      RuleManager.toggle(aState, FilterRules['163'], FilterRules['163']['string']);
     },
   },
   'sina': {
     player: function (aState) {},
     filter: function (aState) {
-      RuleManager.toggle(aState, FilterRules['sina']['target'], FilterRules['sina']['string']);
+      RuleManager.toggle(aState, FilterRules['sina'], FilterRules['sina']['string']);
     },
   },
 };
