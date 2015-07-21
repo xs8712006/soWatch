@@ -161,9 +161,9 @@ var Preferences = {
     RuleManager.referer();
 
     for (var i in RuleResolver) {
-      if (RuleResolver[i].playerOn) RuleResolver[i].playerOn();
-      if (RuleResolver[i].filterOn) RuleResolver[i].filterOn();
-      if (RuleResolver[i].refererOn) RuleResolver[i].refererOn();
+      if (RuleResolver[i].player) RuleResolver[i].player('on');
+      if (RuleResolver[i].filter) RuleResolver[i].filter('on');
+      if (RuleResolver[i].referer) RuleResolver[i].referer('on');
     }
 
     if (this.getBool(PrefValue['toolbar'].pref)) Toolbar.addIcon();
@@ -473,154 +473,94 @@ var RuleManager = {
       'string': /http:\/\/.*\.qiyi\.com/i,
     };
   },
-  toggleOn: function (aTarget, aString) {
-    aTarget = aString;
-  },
-  toggleOff: function (aTarget) {
-    aTarget = null;
+  toggle: function (aState, aTarget, aString) {
+    if (aState == 'on') aTarget = aString;
+    if (aState == 'off') aTarget = null;
   },
 };
 var RuleResolver = {
   'youku': {
-    playerOn: function () {
-      RuleManager.toggleOn(PlayerRules['youku_loader']['target'], PlayerRules['youku_loader']['string']);
-      RuleManager.toggleOn(PlayerRules['youku_player']['target'], PlayerRules['youku_player']['string']);
+    player: function (aState) {
+      RuleManager.toggle(aState, PlayerRules['youku_loader']['target'], PlayerRules['youku_loader']['string']);
+      RuleManager.toggle(aState, PlayerRules['youku_player']['target'], PlayerRules['youku_player']['string']);
     },
-    playerOff: function () {
-      RuleManager.toggleOff(PlayerRules['youku_loader']['target']);
-      RuleManager.toggleOff(PlayerRules['youku_player']['target']);
+    filter: function (aState) {
+      RuleManager.toggle(aState, FilterRules['youku_tudou']['target'], FilterRules['youku_tudou']['string']);
     },
-    filterOn: function () {
-      RuleManager.toggleOn(FilterRules['youku_tudou']['target'], FilterRules['youku_tudou']['string']);
-    },
-    filterOff: function () {
-      RuleManager.toggleOff(FilterRules['youku_tudou']['target']);
-    },
-    refererOn: function () {
-      RuleManager.toggleOn(RefererRules['referer-youku']['target']. RefererRules['referer-youku']['string']);
-    },
-    refererOff: function () {
-      RuleManager.toggleOff(RefererRules['referer-youku']['target']);
+    referer: function (aState) {
+      RuleManager.toggle(aState, RefererRules['referer-youku']['target'], RefererRules['referer-youku']['string']);
     },
   },
   'tudou': {
-    playerOn: function () {
-      RuleManager.toggleOn(PlayerRules['tudou_portal']['target'], PlayerRules['tudou_portal']['string']);
-      RuleManager.toggleOn(PlayerRules['tudou_olc']['target'], PlayerRules['tudou_olc']['string']);
-      RuleManager.toggleOn(PlayerRules['tudou_social']['target'], PlayerRules['tudou_social']['string']);
+    player: function (aState) {
+      RuleManager.toggle(aState, PlayerRules['tudou_portal']['target'], PlayerRules['tudou_portal']['string']);
+      RuleManager.toggle(aState, PlayerRules['tudou_olc']['target'], PlayerRules['tudou_olc']['string']);
+      RuleManager.toggle(aState, PlayerRules['tudou_social']['target'], PlayerRules['tudou_social']['string']);
     },
-    playerOff: function () {
-      RuleManager.toggleOff(PlayerRules['tudou_portal']['target']);
-      RuleManager.toggleOff(PlayerRules['tudou_olc']['target']);
-      RuleManager.toggleOff(PlayerRules['tudou_social']['target']);
-    },
-    filterOn: function () {
-      RuleManager.toggleOn(FilterRules['youku_tudou']['target'], FilterRules['youku_tudou']['string']);
-    },
-    filterOff: function () {
-      RuleManager.toggleOff(FilterRules['youku_tudou']['target']);
+    filter: function (aState) {
+      RuleManager.toggle(aState, FilterRules['youku_tudou']['target'], FilterRules['youku_tudou']['string']);
     },
   },
   'iqiyi': {
-    playerOn: function () {
-      RuleManager.toggleOn(PlayerRules['iqiyi5']['target'], PlayerRules['iqiyi5']['string']);
-      RuleManager.toggleOn(PlayerRules['iqiyi_out']['target'], PlayerRules['iqiyi_out']['string']);
+    player: function (aState) {
+      RuleManager.toggle(aState, PlayerRules['iqiyi5']['target'], PlayerRules['iqiyi5']['string']);
+      RuleManager.toggle(aState, PlayerRules['iqiyi_out']['target'], PlayerRules['iqiyi_out']['string']);
     },
-    playerOff: function () {
-      RuleManager.toggleOff(PlayerRules['iqiyi5']['target']);
-      RuleManager.toggleOff(PlayerRules['iqiyi_out']['target']);
-    },
-    filterOn: function () {},
-    filterOff: function () {},
-    refererOn: function () {
-      RuleManager.toggleOn(RefererRules['referer-iqiyi']['target'], RefererRules['referer-iqiyi']['string']);
-    },
-    refererOff: function () {
-      RuleManager.toggleOff(RefererRules['referer-iqiyi']['target']);
+    filter: function (aState) {},
+    referer: function (aState) {
+      RuleManager.toggle(aState, RefererRules['referer-iqiyi']['target'], RefererRules['referer-iqiyi']['string']);
     },
   },
   'letv': {
-    playerOn: function () {
-      RuleManager.toggleOn(PlayerRules['letv']['target'], PlayerRules['letv']['string']);
-      RuleManager.toggleOn(PlayerRules['letv_skin']['target'], PlayerRules['letv_skin']['string']);
+    player: function (aState) {
+      RuleManager.toggle(aState, PlayerRules['letv']['target'], PlayerRules['letv']['string']);
+      RuleManager.toggle(aState, PlayerRules['letv_skin']['target'], PlayerRules['letv_skin']['string']);
     },
-    playerOff: function () {
-      RuleManager.toggleOff(PlayerRules['letv']['target']);
-      RuleManager.toggleOff(PlayerRules['letv_skin']['target']);
-    },
-    filterOn: function () {
-      RuleManager.toggleOn(FilterRules['letv']['target'], FilterRules['letv']['string']);
-    },
-    filterOff: function () {
-      RuleManager.toggleOff(FilterRules['letv']['target']);
+    filter: function (aState) {
+      RuleManager.toggle(aState, FilterRules['letv']['target'], FilterRules['letv']['string']);
     },
   },
   'sohu': {
-    playerOn: function () {
-      RuleManager.toggleOn(PlayerRules['sohu']['target'], PlayerRules['sohu']['string']);
+    player: function (aState) {
+      RuleManager.toggle(aState, PlayerRules['sohu']['target'], PlayerRules['sohu']['string']);
     },
-    playerOff: function () {
-      RuleManager.toggleOff(PlayerRules['sohu']['target']);
-    },
-    filterOn: function () {
-      RuleManager.toggleOn(FilterRules['sohu']['target'], FilterRules['sohu']['string']);
-    },
-    filterOff: function () {
-      RuleManager.toggleOff(FilterRules['sohu']['target']);
+    filter: function (aState) {
+      RuleManager.toggle(aState, FilterRules['sohu']['target'], FilterRules['sohu']['string']);
     },
   },
   'pptv': {
-    playerOn: function () {
-      RuleManager.toggleOn(PlayerRules['pptv']['target'], PlayerRules['pptv']['string']);
-      RuleManager.toggleOn(PlayerRules['pptv_live']['target'], PlayerRules['pptv_live']['string']);
+    player: function (aState) {
+      RuleManager.toggle(aState, PlayerRules['pptv']['target'], PlayerRules['pptv']['string']);
+      RuleManager.toggle(aState, PlayerRules['pptv_live']['target'], PlayerRules['pptv_live']['string']);
     },
-    playerOff: function () {
-      RuleManager.toggleOff(PlayerRules['pptv']['target']);
-      RuleManager.toggleOff(PlayerRules['pptv_live']['target']);
-    },
-    filterOn: function () {
-      RuleManager.toggleOn(FilterRules['pptv']['target'], FilterRules['pptv']['string']);
-    },
-    filterOff: function () {
-      RuleManager.toggleOff(FilterRules['pptv']['target']);
+    filter: function (aState) {
+      RuleManager.toggle(aState, FilterRules['pptv']['target'], FilterRules['pptv']['string']);
     },
   },
   'qq': {
-    playerOn: function () {},
-    playerOff: function () {},
-    filterOn: function () {
-      RuleManager.toggleOn(FilterRules['qq']['target'], FilterRules['qq']['string']);
-    },
-    filterOff: function () {
-      RuleManager.toggleOff(FilterRules['qq']['target']);
+    player: function (aState) {},
+    filter: function (aState) {
+      RuleManager.toggle(aState, FilterRules['qq']['target'], FilterRules['qq']['string']);
     },
   },
   '163': {
-    playerOn: function () {},
-    playerOff: function () {},
-    filterOn: function () {
-      RuleManager.toggleOn(FilterRules['163']['target'], FilterRules['163']['string']);
-    },
-    filterOff: function () {
-      RuleManager.toggleOff(FilterRules['163']['target']);
+    player: function (aState) {},
+    filter: function (aState) {
+      RuleManager.toggle(aState, FilterRules['163']['target'], FilterRules['163']['string']);
     },
   },
   'sina': {
-    playerOn: function () {},
-    playerOff: function () {},
-    filterOn: function () {
-      RuleManager.toggleOn(FilterRules['sina']['target'], FilterRules['sina']['string']);
-    },
-    filterOff: function () {
-      RuleManager.toggleOff(FilterRules['sina']['target']);
+    player: function (aState) {},
+    filter: function (aState) {
+      RuleManager.toggle(aState, FilterRules['sina']['target'], FilterRules['sina']['string']);
     },
   },
 };
 
 var RuleExecution = {
-  getObject: function (aMode, rule, callback) {
-    if (aMode == 0) var aObject = rule['object'];
-    if (aMode == 1) var aObject = rule['remote'];
+  getObject: function (remote, rule, callback) {
+    if (remote == 'on') var aObject = rule['remote'];
+    if (remote == 'off') var aObject = rule['object'];
     NetUtil.asyncFetch(aObject, function (inputStream, status) {
       var binaryOutputStream = Components.classes['@mozilla.org/binaryoutputstream;1'].createInstance(Components.interfaces.nsIBinaryOutputStream);
       var storageStream = Components.classes['@mozilla.org/storagestream;1'].createInstance(Components.interfaces.nsIStorageStream);
@@ -662,7 +602,7 @@ var RuleExecution = {
       if (rule['target'] && rule['target'].test(httpChannel.URI.spec)) {
         if (!rule['storageStream'] || !rule['count']) {
           httpChannel.suspend();
-          this.getObject(0, rule, function () {
+          this.getObject('off', rule, function () {
             httpChannel.resume();
           });
         }
@@ -691,12 +631,12 @@ var RuleExecution = {
         if (!rule['storageStream'] || !rule['count']) {
           httpChannel.suspend();
           if (Preferences.getBool(PrefValue['remote'].pref)) {
-            this.getObject(1, rule, function () {
+            this.getObject('on', rule, function () {
               httpChannel.resume();
               if (typeof rule['callback'] === 'function') rule['callback'].apply(fn, args);
             });
           } else {
-            this.getObject(0, rule, function () {
+            this.getObject('off', rule, function () {
               httpChannel.resume();
               if (typeof rule['callback'] === 'function') rule['callback'].apply(fn, args);
             });
