@@ -181,7 +181,7 @@ var Preferences = {
     else FileIO.link = this.getChar(PrefValue['bitbucket'].pref);
 
     if (this.getBool(PrefValue['autoupdate'].pref)) {
-      if (this.getInteger(PrefValue['lastdate'].pref) + this.getInteger(PrefValue['period'].pref) * 86400 < Date.now() / 1000) QueryFiles.start(0);
+      if (this.getInteger(PrefValue['lastdate'].pref) + this.getInteger(PrefValue['period'].pref) * 86400 < Date.now() / 1000) QueryFiles.start('no');
     }
 
     this.manifest();
@@ -221,7 +221,7 @@ var Preferences = {
     else Toolbar.removeIcon();
 
     if (!this.getBool(PrefValue['firstrun'].pref)) {
-      QueryFiles.start(0);
+      QueryFiles.start('no');
       this.setBool(PrefValue['firstrun'].pref, true);
     }
   },
@@ -249,8 +249,8 @@ var QueryFiles = {
         if (aSize < 5000) aClient.onerror();
         var aHash = aSize.toString(16);
         aLink = aClient.responseURL;
-        if (aMode == 0) QueryFiles.check(aLink, aFile, aName, aHash);
-        if (aMode == 1) QueryFiles.fetch(aLink, aFile, aName, aHash);
+        if (aMode == 'no') QueryFiles.check(aLink, aFile, aName, aHash);
+        if (aMode == 'yes') QueryFiles.fetch(aLink, aFile, aName, aHash);
       }
       aClient.onerror = function () {
         aClient.abort();
@@ -491,9 +491,9 @@ var Toolbar = {
           else Preferences.setBool(PrefValue['autoupdate'].pref, true);
         }
 
-        if (aEvent.target.id == 'sowatchmk2-checkupdate') QueryFiles.start(0);
+        if (aEvent.target.id == 'sowatchmk2-checkupdate') QueryFiles.start('no');
 
-        if (aEvent.target.id == 'sowatchmk2-forceupdate') QueryFiles.start(1);
+        if (aEvent.target.id == 'sowatchmk2-forceupdate') QueryFiles.start('yes');
 
         if (aEvent.target.id == 'sowatchmk2-referer-youku') {
           if (Preferences.getBool(PrefValue['referer-youku'].pref)) Preferences.setBool(PrefValue['referer-youku'].pref, false);
