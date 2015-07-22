@@ -129,26 +129,14 @@ var Preferences = {
     PrefBranch.setComplexValue(aPref, Components.interfaces.nsISupportsString, aChar);
   },
   getValue: function (aValue) {
-    if ('bool' in aValue) {
-      this.getBool(aValue.pref);
-    }
-    if ('integer' in aValue) {
-      this.getInteger(aValue.pref);
-    }
-    if ('string' in aValue) {
-      this.getChar(aValue.pref);
-    }
+    if ('bool' in aValue) this.getBool(aValue.pref);
+    if ('integer' in aValue) this.getInteger(aValue.pref);
+    if ('string' in aValue) this.getChar(aValue.pref);
   },
   setValue: function (aValue) {
-    if ('bool' in aValue) {
-      this.setBool(aValue.pref, aValue.bool);
-    }
-    if ('integer' in aValue) {
-      this.setInteger(aValue.pref, aValue.integer);
-    }
-    if ('string' in aValue) {
-      this.setChar(aValue.pref, aValue.string);
-    }
+    if ('bool' in aValue) this.setBool(aValue.pref, aValue.bool);
+    if ('integer' in aValue) this.setInteger(aValue.pref, aValue.integer);
+    if ('string' in aValue) this.setChar(aValue.pref, aValue.string);
   },
   pending: function () {
     for (var i in PrefValue) {
