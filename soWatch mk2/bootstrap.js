@@ -505,23 +505,11 @@ var Toolbar = {
       },
       onPopup: function (aEvent) {
         if (aEvent.target.id == 'sowatchmk2-popup') {
-          if (Preferences.getBool(PrefValue['remote'].pref)) {
-            aEvent.target.querySelector('#sowatchmk2-remote').setAttribute('checked', 'true');
-            aEvent.target.querySelector('#sowatchmk2-autoupdate').setAttribute('disabled', 'true');
-          } else {
-            aEvent.target.querySelector('#sowatchmk2-remote').setAttribute('checked', 'false');
-            aEvent.target.querySelector('#sowatchmk2-autoupdate').setAttribute('disabled', 'false');
-          }
+          if (Preferences.getBool(PrefValue['remote'].pref)) aEvent.target.querySelector('#sowatchmk2-remote').setAttribute('checked', 'true');
+          else aEvent.target.querySelector('#sowatchmk2-remote').setAttribute('checked', 'false');
 
-          if (Preferences.getBool(PrefValue['autoupdate'].pref)) {
-            aEvent.target.querySelector('#sowatchmk2-autoupdate').setAttribute('checked', 'true');
-            aEvent.target.querySelector('#sowatchmk2-checkupdate').setAttribute('disabled', 'false');
-            aEvent.target.querySelector('#sowatchmk2-forceupdate').setAttribute('disabled', 'false');
-          } else {
-            aEvent.target.querySelector('#sowatchmk2-autoupdate').setAttribute('checked', 'false');
-            aEvent.target.querySelector('#sowatchmk2-checkupdate').setAttribute('disabled', 'true');
-            aEvent.target.querySelector('#sowatchmk2-forceupdate').setAttribute('disabled', 'true');
-          }
+          if (Preferences.getBool(PrefValue['autoupdate'].pref)) aEvent.target.querySelector('#sowatchmk2-autoupdate').setAttribute('checked', 'true');
+          else aEvent.target.querySelector('#sowatchmk2-autoupdate').setAttribute('checked', 'false');
 
           if (Preferences.getBool(PrefValue['referer-youku'].pref)) aEvent.target.querySelector('#sowatchmk2-referer-youku').setAttribute('checked', 'true');
           else aEvent.target.querySelector('#sowatchmk2-referer-youku').setAttribute('checked', 'false');
