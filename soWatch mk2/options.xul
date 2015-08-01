@@ -10,7 +10,7 @@
 <setting pref="extensions.sowatchmk2.autoupdate.enabled" type="radio" title="&sowatchmk2-auto;" desc="&sowatchmk2-auto-desc;">
   <radiogroup>
     <radio value="true" label="&sowatchmk2-enable;"/>
-    <radio value="false" label="&sowatchmk2-disable;"/>
+    <radio value="false" label="&sowatchmk2-disable;" disabled="true"/>
   </radiogroup>
 </setting>
 <setting pref="extensions.sowatchmk2.autoupdate.period" type="integer" min="1" max="365" size="1" title="&sowatchmk2-period;" desc="&sowatchmk2-period-desc;"/>
