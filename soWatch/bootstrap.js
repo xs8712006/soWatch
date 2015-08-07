@@ -647,7 +647,6 @@ var Observers = {
       RuleExecution.referer(aSubject);
     }
     if (aTopic == 'http-on-examine-response') {
-      Toolbar.UserInterface(aSubject);
       RuleExecution.player(aSubject);
     }
   },
@@ -666,7 +665,9 @@ var Observers = {
 function startup(aData, aReason) {
   Utilities = Services.strings.createBundle('chrome://sowatch/locale/global.properties?' + Math.random());
   Preferences.pending();
+/**
   RuleExecution.iqiyi();
+*/
   Observers.startUp();
 }
 
