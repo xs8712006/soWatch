@@ -10,6 +10,7 @@ var Utilities = {}, SiteLists = {}, PlayerRules = {}, FilterRules = {}, RefererR
 var Services = {
   io: Components.classes['@mozilla.org/network/io-service;1'].getService(Components.interfaces.nsIIOService),
   obs: Components.classes['@mozilla.org/observer-service;1'].getService(Components.interfaces.nsIObserverService),
+  pps: Components.classes['@mozilla.org/network/protocol-proxy-service;1'].getService(Components.interfaces.nsIProtocolProxyService),
   prefs: Components.classes['@mozilla.org/preferences-service;1'].getService(Components.interfaces.nsIPrefService).QueryInterface(Components.interfaces.nsIPrefBranch),
   sss: Components.classes['@mozilla.org/content/style-sheet-service;1'].getService(Components.interfaces.nsIStyleSheetService),
   strings: Components.classes['@mozilla.org/intl/stringbundle;1'].getService(Components.interfaces.nsIStringBundleService),
@@ -505,23 +506,11 @@ var Toolbar = {
       },
       onPopup: function (aEvent) {
         if (aEvent.target.id == 'sowatchmk2-popup') {
-          if (Preferences.getBool(PrefValue['remote'].pref)) {
-            aEvent.target.querySelector('#sowatchmk2-remote').setAttribute('checked', 'true');
-            aEvent.target.querySelector('#sowatchmk2-autoupdate').setAttribute('disabled', 'true');
-          } else {
-            aEvent.target.querySelector('#sowatchmk2-remote').setAttribute('checked', 'false');
-            aEvent.target.querySelector('#sowatchmk2-autoupdate').setAttribute('disabled', 'false');
-          }
+          if (Preferences.getBool(PrefValue['remote'].pref)) aEvent.target.querySelector('#sowatchmk2-remote').setAttribute('checked', 'true');
+          else aEvent.target.querySelector('#sowatchmk2-remote').setAttribute('checked', 'false');
 
-          if (Preferences.getBool(PrefValue['autoupdate'].pref)) {
-            aEvent.target.querySelector('#sowatchmk2-autoupdate').setAttribute('checked', 'true');
-            aEvent.target.querySelector('#sowatchmk2-checkupdate').setAttribute('disabled', 'false');
-            aEvent.target.querySelector('#sowatchmk2-forceupdate').setAttribute('disabled', 'false');
-          } else {
-            aEvent.target.querySelector('#sowatchmk2-autoupdate').setAttribute('checked', 'false');
-            aEvent.target.querySelector('#sowatchmk2-checkupdate').setAttribute('disabled', 'true');
-            aEvent.target.querySelector('#sowatchmk2-forceupdate').setAttribute('disabled', 'true');
-          }
+          if (Preferences.getBool(PrefValue['autoupdate'].pref)) aEvent.target.querySelector('#sowatchmk2-autoupdate').setAttribute('checked', 'true');
+          else aEvent.target.querySelector('#sowatchmk2-autoupdate').setAttribute('checked', 'false');
 
           if (Preferences.getBool(PrefValue['referer-youku'].pref)) aEvent.target.querySelector('#sowatchmk2-referer-youku').setAttribute('checked', 'true');
           else aEvent.target.querySelector('#sowatchmk2-referer-youku').setAttribute('checked', 'false');
@@ -634,31 +623,24 @@ var RuleManager = {
   },
   filter: function () {
     FilterRules['youku_tudou'] = {
-      object: 'http://valf.atm.youku.com/vf',
-      string: /http:\/\/val[fcopb]\.atm\.youku\.com\/v[fcopb]/i,
+      string: /http:\/\/[^\.]+\.atm\.youku\.com\//i,
     };
     FilterRules['letv'] = {
-      object: 'http://ark.letv.com/s',
       string: /http:\/\/(ark|fz)\.letv\.com\/s\?ark/i,
     };
     FilterRules['sohu'] = {
-      object: 'http://v.aty.sohu.com/v',
       string: /http:\/\/v\.aty\.sohu\.com\/v\?/i,
     };
     FilterRules['pptv'] = {
-      object: 'http://de.as.pptv.com/ikandelivery/vast/draft',
-      string: /http:\/\/de\.as\.pptv\.com\/ikandelivery\/vast\/.+draft/i,
+      string: /http:\/\/de\.as\.pptv\.com\/ikandelivery\/vast\/.*draft/i,
     };
     FilterRules['qq'] = {
-      object: 'http://livep.l.qq.com/livemsg',
       string: /http:\/\/livew\.l\.qq\.com\/livemsg\?/i,
     };
     FilterRules['163'] = {
-      object: 'http://v.163.com',
       string: /http:\/\/v\.163\.com\/special\/.*\.xml/i,
     };
     FilterRules['sina'] = {
-      object: 'http://sax.sina.com.cn/video/newimpress',
       string: /http:\/\/sax\.sina\.com\.cn\/video\/newimpress/i,
     };
   },
@@ -757,7 +739,7 @@ var RuleResolver = {
 };
 
 var RuleExecution = {
-  getObject: function (remote, rule, callback) {
+  getPlayer: function (remote, rule, callback) {
     if (remote == 'on') var aObject = rule['remote'];
     if (remote == 'off') var aObject = rule['object'];
     NetUtil.asyncFetch(aObject, function (inputStream, status) {
@@ -783,29 +765,8 @@ var RuleExecution = {
     var httpChannel = aSubject.QueryInterface(Components.interfaces.nsIHttpChannel);
 
     for (var i in RefererRules) {
-      var rule = RefererRules[i];
-      if (rule['target'] && rule['target'].test(httpChannel.originalURI.spec)) {
-        httpChannel.setRequestHeader('Referer', rule['host'], false);
-      }
-    }
-  },
-  filter: function (aSubject) {
-    var httpChannel = aSubject.QueryInterface(Components.interfaces.nsIHttpChannel);
-
-    for (var i in FilterRules) {
-      var rule = FilterRules[i];
-      if (rule['target'] && rule['target'].test(httpChannel.URI.spec)) {
-        if (!rule['storageStream'] || !rule['count']) {
-          httpChannel.suspend();
-          this.getObject('off', rule, function () {
-            httpChannel.resume();
-          });
-        }
-        var newListener = new TrackingListener();
-        aSubject.QueryInterface(Components.interfaces.nsITraceableChannel);
-        newListener.originalListener = aSubject.setNewListener(newListener);
-        newListener.rule = rule;
-        break;
+      if (RefererRules[i]['target'] && RefererRules[i]['target'].test(httpChannel.originalURI.spec)) {
+        httpChannel.setRequestHeader('Referer', RefererRules[i]['host'], false);
       }
     }
   },
@@ -824,12 +785,12 @@ var RuleExecution = {
         if (!rule['storageStream'] || !rule['count']) {
           httpChannel.suspend();
           if (Preferences.getBool(PrefValue['remote'].pref)) {
-            this.getObject('on', rule, function () {
+            this.getPlayer('on', rule, function () {
               httpChannel.resume();
               if (typeof rule['callback'] === 'function') rule['callback'].apply(fn, args);
             });
           } else {
-            this.getObject('off', rule, function () {
+            this.getPlayer('off', rule, function () {
               httpChannel.resume();
               if (typeof rule['callback'] === 'function') rule['callback'].apply(fn, args);
             });
@@ -843,6 +804,7 @@ var RuleExecution = {
       }
     }
   },
+/**
   getWindowForRequest: function (aRequest) {
     if (aRequest instanceof Components.interfaces.nsIRequest) {
       try {
@@ -893,6 +855,7 @@ var RuleExecution = {
       }
     };
   },
+*/
 };
 
 function TrackingListener() {
@@ -928,6 +891,16 @@ HttpHeaderVisitor.prototype = {
 }
 
 var Observers = {
+  applyFilter: function (aService, aURI, aProxy) {
+    this.defaultProxy = Services.pps.newProxyInfo('http', '127.0.0.1', '8086', 1, 0, null);
+    this.directProxy = Services.pps.newProxyInfo('direct', '', - 1, 0, 0, null);
+    for (var i in FilterRules) {
+      if (FilterRules[i]['target'] && FilterRules[i]['target'].target.test(aURI.spec)) {
+        return this.defaultProxy;     
+      }      
+    }
+    return this.directProxy;
+  },
   observe: function (aSubject, aTopic, aData) {
     if (aTopic == 'nsPref:changed') {
       Preferences.pending();
@@ -937,17 +910,18 @@ var Observers = {
     }
     if (aTopic == 'http-on-examine-response') {
       Toolbar.UserInterface(aSubject);
-      RuleExecution.filter(aSubject);
       RuleExecution.player(aSubject);
     }
   },
   startUp: function () {
     PrefBranch.addObserver('', this, false);
+    Services.pps.registerFilter(this, 0);
     Services.obs.addObserver(this, 'http-on-examine-response', false);
     Services.obs.addObserver(this, 'http-on-modify-request', false);
   },
   shutDown: function () {
     PrefBranch.removeObserver('', this);
+    Services.pps.unregisterFilter(this);
     Services.obs.removeObserver(this, 'http-on-examine-response', false);
     Services.obs.removeObserver(this, 'http-on-modify-request', false);
   },
@@ -956,13 +930,16 @@ var Observers = {
 function startup(aData, aReason) {
   Utilities = Services.strings.createBundle('chrome://sowatchmk2/locale/global.properties?' + Math.random());
   Preferences.pending();
+/**
   RuleExecution.iqiyi();
+*/
   Observers.startUp();
 }
 
 function shutdown(aData, aReason) {
   Toolbar.removeIcon();
   Observers.shutDown();
+  Proxy.shutdown();
 }
 
 function install(aData, aReason) {}
