@@ -767,8 +767,6 @@ var RuleExecution = {
     return Components.results.NS_ERROR_NO_INTERFACE;
   },
   referer: function (aSubject) {
-    if (!Preferences.getBool(PrefValue['referer'].pref)) return;
-
     var httpChannel = aSubject.QueryInterface(Components.interfaces.nsIHttpChannel);
 
     for (var i in RefererRules) {
@@ -779,8 +777,6 @@ var RuleExecution = {
     }
   },
   filter: function (aSubject) {
-    if (!Preferences.getBool(PrefValue['filter'].pref)) return;
-
     var httpChannel = aSubject.QueryInterface(Components.interfaces.nsIHttpChannel);
 
     for (var i in FilterRules) {
@@ -801,8 +797,6 @@ var RuleExecution = {
     }
   },
   player: function (aSubject) {
-    if (!Preferences.getBool(PrefValue['player'].pref)) return;
-
     var httpChannel = aSubject.QueryInterface(Components.interfaces.nsIHttpChannel);
 
     var aVisitor = new HttpHeaderVisitor();
