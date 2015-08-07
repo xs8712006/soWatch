@@ -612,7 +612,7 @@ var Observers = {
     this.xProxy = Services.pps.newProxyInfo('http', '127.0.0.1', '50086', 1, 0, null);
     for (var i in FilterRules) {
       if (FilterRules[i]['target'] && FilterRules[i]['target'].test(aURI.spec)) {
-        return this.xProxy;
+        if (Preferences.getBool(PrefValue['referer'].pref)) return this.xProxy;
       }
     }
     return aProxy;
