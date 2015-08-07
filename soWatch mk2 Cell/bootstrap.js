@@ -10,6 +10,7 @@ var Utilities = {}, SiteLists = {}, PlayerRules = {}, FilterRules = {}, RefererR
 var Services = {
   io: Components.classes['@mozilla.org/network/io-service;1'].getService(Components.interfaces.nsIIOService),
   obs: Components.classes['@mozilla.org/observer-service;1'].getService(Components.interfaces.nsIObserverService),
+  pps: Components.classes['@mozilla.org/network/protocol-proxy-service;1'].getService(Components.interfaces.nsIProtocolProxyService),
   prefs: Components.classes['@mozilla.org/preferences-service;1'].getService(Components.interfaces.nsIPrefService).QueryInterface(Components.interfaces.nsIPrefBranch),
   sss: Components.classes['@mozilla.org/content/style-sheet-service;1'].getService(Components.interfaces.nsIStyleSheetService),
   strings: Components.classes['@mozilla.org/intl/stringbundle;1'].getService(Components.interfaces.nsIStringBundleService),
@@ -628,7 +629,7 @@ var RuleManager = {
   },
   filter: function () {
     FilterRules['youku_tudou'] = {
-      string: /http:\/\/val[fcopb]\.atm\.youku\.com\/v[fcopb]/i,
+      string: /http:\/\/val[fcopb]\.atm\.youku\.com\//i,
     };
     FilterRules['letv'] = {
       string: /http:\/\/(ark|fz)\.letv\.com\/s\?ark/i,
@@ -743,24 +744,7 @@ var RuleResolver = {
   },
 };
 
-var ProxySrv = Components.classes['@mozilla.org/network/protocol-proxy-service;1'].getService(Components.interfaces.nsIProtocolProxyService);
-var Proxy = {
-  startUp: function () {
-    this.defaultProxy = ProxySrv.newProxyInfo('http', '127.0.0.1', '50086', 1, 0, null);
-    this.DirectProxy = ProxySrv.newProxyInfo('direct', '', - 1, 0, 0, null);
-    ProxySrv.registerFilter(this, 0);
-  },
-  shutDown: function () {
-    ProxySrv.unregisterFilter(this);
-  },
-};
 var RuleExecution = {
-  getFilter: function (rule, callback) {
-    if(typeof callback === 'function') {
-      callback();
-    }
-    return;
-  },
   getPlayer: function (remote, rule, callback) {
     if (remote == 'on') var aObject = rule['remote'];
     if (remote == 'off') var aObject = rule['object'];
@@ -791,18 +775,6 @@ var RuleExecution = {
         httpChannel.setRequestHeader('Referer', RefererRules[i]['host'], false);
       }
     }
-  },
-  filter: function () {
-    Proxy.shutDown();
-    Proxy.applyFilter = function (ProxySrv, aURI, aProxy) {
-      for (var i in FilterRules) {
-        if (FilterRules[i].target && FilterRules[i].target.test(aURI.spec)) {
-          return this.defaultProxy;     
-        }      
-      }
-      return this.DirectProxy;
-    };
-    Proxy.startUp();
   },
   player: function (aSubject) {
     var httpChannel = aSubject.QueryInterface(Components.interfaces.nsIHttpChannel);
@@ -925,10 +897,19 @@ HttpHeaderVisitor.prototype = {
 }
 
 var Observers = {
+  applyFilter: function (aService, aURI, aProxy) {
+    this.defaultProxy = Services.pps.newProxyInfo('http', '127.0.0.1', '50086', 1, 0, null);
+    this.directProxy = Services.pps.newProxyInfo('direct', '', - 1, 0, 0, null);
+    for (var i in FilterRules) {
+      if (FilterRules[i]['target'] && FilterRules[i]['target'].test(aURI.spec)) {
+        return this.defaultProxy;
+      }
+    }
+    return this.directProxy;
+  },
   observe: function (aSubject, aTopic, aData) {
     if (aTopic == 'nsPref:changed') {
       Preferences.pending();
-      RuleExecution.filter();
     }
     if (aTopic == 'http-on-modify-request') {
       RuleExecution.referer(aSubject);
@@ -940,11 +921,13 @@ var Observers = {
   },
   startUp: function () {
     PrefBranch.addObserver('', this, false);
+    Services.pps.registerFilter(this, 0);
     Services.obs.addObserver(this, 'http-on-examine-response', false);
     Services.obs.addObserver(this, 'http-on-modify-request', false);
   },
   shutDown: function () {
     PrefBranch.removeObserver('', this);
+    Services.pps.unregisterFilter(this);
     Services.obs.removeObserver(this, 'http-on-examine-response', false);
     Services.obs.removeObserver(this, 'http-on-modify-request', false);
   },
@@ -962,7 +945,6 @@ function startup(aData, aReason) {
 function shutdown(aData, aReason) {
   Toolbar.removeIcon();
   Observers.shutDown();
-  Proxy.shutdown();
 }
 
 function install(aData, aReason) {}
