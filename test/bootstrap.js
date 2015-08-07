@@ -623,7 +623,7 @@ var RuleManager = {
   },
   filter: function () {
     FilterRules['youku_tudou'] = {
-      string: /http:\/\/[^\.]+\.atm\.youku\.com\//i,
+      string: /http:\/\/val[fcopb]\.atm\.youku\.com\//i,
     };
     FilterRules['letv'] = {
       string: /http:\/\/(ark|fz)\.letv\.com\/s\?ark/i,
@@ -892,12 +892,12 @@ HttpHeaderVisitor.prototype = {
 
 var Observers = {
   applyFilter: function (aService, aURI, aProxy) {
-    this.defaultProxy = Services.pps.newProxyInfo('http', '127.0.0.1', '8086', 1, 0, null);
+    this.defaultProxy = Services.pps.newProxyInfo('http', '127.0.0.1', '50086', 1, 0, null);
     this.directProxy = Services.pps.newProxyInfo('direct', '', - 1, 0, 0, null);
     for (var i in FilterRules) {
-      if (FilterRules[i]['target'] && FilterRules[i]['target'].target.test(aURI.spec)) {
-        return this.defaultProxy;     
-      }      
+      if (FilterRules[i]['target'] && FilterRules[i]['target'].test(aURI.spec)) {
+        return this.defaultProxy;
+      }
     }
     return this.directProxy;
   },
@@ -939,7 +939,6 @@ function startup(aData, aReason) {
 function shutdown(aData, aReason) {
   Toolbar.removeIcon();
   Observers.shutDown();
-  Proxy.shutdown();
 }
 
 function install(aData, aReason) {}
