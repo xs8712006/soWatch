@@ -622,7 +622,7 @@ var RuleManager = {
   },
   filter: function () {
     FilterRules['youku_tudou'] = {
-      string: /http:\/\/val[fcopb]\.atm\.youku\.com\/v[fcopb]/i,
+      string: /http:\/\/val[fcopb]\.atm\.youku\.com\//i,
     };
     FilterRules['letv'] = {
       string: /http:\/\/(ark|fz)\.letv\.com\/s\?ark/i,
@@ -737,13 +737,18 @@ var RuleResolver = {
   },
 };
 
-var RuleExecution = {
-  getFilter: function (rule, callback) {
-    if(typeof callback === 'function') {
-      callback();
-    }
-    return;
+var ProxySrv = Components.classes['@mozilla.org/network/protocol-proxy-service;1'].getService(Components.interfaces.nsIProtocolProxyService);
+var Proxy = {
+  startUp: function () {
+    this.defaultProxy = ProxySrv.newProxyInfo('http', '127.0.0.1', '50086', 1, 0, null);
+    this.DirectProxy = ProxySrv.newProxyInfo('direct', '', - 1, 0, 0, null);
+    ProxySrv.registerFilter(this, 0);
   },
+  shutDown: function () {
+    ProxySrv.unregisterFilter(this);
+  },
+};
+var RuleExecution = {
   getPlayer: function (remote, rule, callback) {
     if (remote == 'on') var aObject = rule['remote'];
     if (remote == 'off') var aObject = rule['object'];
@@ -770,31 +775,22 @@ var RuleExecution = {
     var httpChannel = aSubject.QueryInterface(Components.interfaces.nsIHttpChannel);
 
     for (var i in RefererRules) {
-      var rule = RefererRules[i];
-      if (rule['target'] && rule['target'].test(httpChannel.originalURI.spec)) {
-        httpChannel.setRequestHeader('Referer', rule['host'], false);
+      if (RefererRules[i]['target'] && RefererRules[i]['target'].test(httpChannel.originalURI.spec)) {
+        httpChannel.setRequestHeader('Referer', RefererRules[i]['host'], false);
       }
     }
   },
-  filter: function (aSubject) {
-    var httpChannel = aSubject.QueryInterface(Components.interfaces.nsIHttpChannel);
-
-    for (var i in FilterRules) {
-      var rule = FilterRules[i];
-      if (rule['target'] && rule['target'].test(httpChannel.URI.spec)) {
-        if (!rule['storageStream'] || !rule['count']) {
-          httpChannel.suspend();
-          this.getFilter(rule, function () {
-            httpChannel.resume();
-          });
-        }
-        var newListener = new TrackingListener();
-        aSubject.QueryInterface(Components.interfaces.nsITraceableChannel);
-        newListener.originalListener = aSubject.setNewListener(newListener);
-        newListener.rule = rule;
-        break;
+  filter: function () {
+    Proxy.shutDown();
+    Proxy.applyFilter = function (ProxySrv, aURI, aProxy) {
+      for (var i in FilterRules) {
+        if (FilterRules[i].target && FilterRules[i].target.test(aURI.spec)) {
+          return this.defaultProxy;     
+        }      
       }
-    }
+      return this.DirectProxy;
+    };
+    Proxy.startUp();
   },
   player: function (aSubject) {
     var httpChannel = aSubject.QueryInterface(Components.interfaces.nsIHttpChannel);
@@ -920,13 +916,13 @@ var Observers = {
   observe: function (aSubject, aTopic, aData) {
     if (aTopic == 'nsPref:changed') {
       Preferences.pending();
+      RuleExecution.filter();
     }
     if (aTopic == 'http-on-modify-request') {
       RuleExecution.referer(aSubject);
     }
     if (aTopic == 'http-on-examine-response') {
       Toolbar.UserInterface(aSubject);
-      RuleExecution.filter(aSubject);
       RuleExecution.player(aSubject);
     }
   },
@@ -954,6 +950,7 @@ function startup(aData, aReason) {
 function shutdown(aData, aReason) {
   Toolbar.removeIcon();
   Observers.shutDown();
+  Proxy.shutdown();
 }
 
 function install(aData, aReason) {}
