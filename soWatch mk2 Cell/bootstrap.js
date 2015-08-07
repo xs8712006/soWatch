@@ -628,31 +628,24 @@ var RuleManager = {
   },
   filter: function () {
     FilterRules['youku_tudou'] = {
-      object: 'http://valf.atm.youku.com/vf',
       string: /http:\/\/val[fcopb]\.atm\.youku\.com\/v[fcopb]/i,
     };
     FilterRules['letv'] = {
-      object: 'http://ark.letv.com/s',
       string: /http:\/\/(ark|fz)\.letv\.com\/s\?ark/i,
     };
     FilterRules['sohu'] = {
-      object: 'http://v.aty.sohu.com/v',
       string: /http:\/\/v\.aty\.sohu\.com\/v\?/i,
     };
     FilterRules['pptv'] = {
-      object: 'http://de.as.pptv.com/ikandelivery/vast/draft',
-      string: /http:\/\/de\.as\.pptv\.com\/ikandelivery\/vast\/.+draft/i,
+      string: /http:\/\/de\.as\.pptv\.com\/ikandelivery\/vast\/.*draft/i,
     };
     FilterRules['qq'] = {
-      object: 'http://livep.l.qq.com/livemsg',
       string: /http:\/\/livew\.l\.qq\.com\/livemsg\?/i,
     };
     FilterRules['163'] = {
-      object: 'http://v.163.com',
       string: /http:\/\/v\.163\.com\/special\/.*\.xml/i,
     };
     FilterRules['sina'] = {
-      object: 'http://sax.sina.com.cn/video/newimpress',
       string: /http:\/\/sax\.sina\.com\.cn\/video\/newimpress/i,
     };
   },
@@ -751,7 +744,13 @@ var RuleResolver = {
 };
 
 var RuleExecution = {
-  getObject: function (remote, rule, callback) {
+  getFilter: function (rule, callback) {
+    if(typeof callback === 'function') {
+      callback();
+    }
+    return;
+  },
+  getPlayer: function (remote, rule, callback) {
     if (remote == 'on') var aObject = rule['remote'];
     if (remote == 'off') var aObject = rule['object'];
     NetUtil.asyncFetch(aObject, function (inputStream, status) {
@@ -791,7 +790,7 @@ var RuleExecution = {
       if (rule['target'] && rule['target'].test(httpChannel.URI.spec)) {
         if (!rule['storageStream'] || !rule['count']) {
           httpChannel.suspend();
-          this.getObject('off', rule, function () {
+          this.getFilter(rule, function () {
             httpChannel.resume();
           });
         }
@@ -818,12 +817,12 @@ var RuleExecution = {
         if (!rule['storageStream'] || !rule['count']) {
           httpChannel.suspend();
           if (Preferences.getBool(PrefValue['remote'].pref)) {
-            this.getObject('on', rule, function () {
+            this.getPlayer('on', rule, function () {
               httpChannel.resume();
               if (typeof rule['callback'] === 'function') rule['callback'].apply(fn, args);
             });
           } else {
-            this.getObject('off', rule, function () {
+            this.getPlayer('off', rule, function () {
               httpChannel.resume();
               if (typeof rule['callback'] === 'function') rule['callback'].apply(fn, args);
             });
@@ -837,6 +836,7 @@ var RuleExecution = {
       }
     }
   },
+/**
   getWindowForRequest: function (aRequest) {
     if (aRequest instanceof Components.interfaces.nsIRequest) {
       try {
@@ -887,6 +887,7 @@ var RuleExecution = {
       }
     };
   },
+*/
 };
 
 function TrackingListener() {
