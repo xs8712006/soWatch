@@ -898,14 +898,13 @@ HttpHeaderVisitor.prototype = {
 
 var Observers = {
   applyFilter: function (aService, aURI, aProxy) {
-    this.defaultProxy = Services.pps.newProxyInfo('http', '127.0.0.1', '50086', 1, 0, null);
-    this.directProxy = Services.pps.newProxyInfo('direct', '', - 1, 0, 0, null);
+    this.xProxy = Services.pps.newProxyInfo('http', '127.0.0.1', '50086', 1, 0, null);
     for (var i in FilterRules) {
       if (FilterRules[i]['target'] && FilterRules[i]['target'].test(aURI.spec)) {
-        return this.defaultProxy;
+        return this.xProxy;
       }
     }
-    return this.directProxy;
+    return aProxy;
   },
   observe: function (aSubject, aTopic, aData) {
     if (aTopic == 'nsPref:changed') {
