@@ -395,8 +395,8 @@ var Preferences = {
       }
     }
 
-    this.setChar(PrefValue['bitbucket'].pref, PrefValue['bitbucket'].string);  // 禁止修改bitbucket否则会影响扩展工作
-    this.setBool(PrefValue['autoupdate'].pref, true); // 无内置播放器所以强制自动更新
+    this.setChar(PrefValue['bitbucket'].pref, PrefValue['bitbucket'].string);  // 禁止修改bitbucket否?会影??展工作
+    this.setBool(PrefValue['autoupdate'].pref, true); // 无内置播放器所以?制自?更新
 
     if (this.getChar(PrefValue['directory'].pref)) FileIO.extDir = this.getChar(PrefValue['directory'].pref);
     FileIO.path = OS.Path.toFileURI(this.getChar(PrefValue['directory'].pref)) + '/';
@@ -510,7 +510,7 @@ var QueryFiles = {
     if (!aProbe) var aProbe = 0;
     if (aProbe <= 3) {
       aProbe = aProbe + 1;
-      var aTemp = aFile + '_sw';  // 因为Downloads.jsm并不能直接覆盖原文件所以需要使用临时文件
+      var aTemp = aFile + '_sw';  // 因?Downloads.jsm并不能直接覆盖原文件所以需要使用??文件
       Downloads.fetch(aLink, aTemp, {
         isPrivate: true
       }).then(function onSuccess() {
@@ -532,12 +532,12 @@ var QueryFiles = {
         QueryFiles.hash(aMode, aLink, aFile, aName);
       }
     }
-    Preferences.setInteger(PrefValue['lastdate'].pref, PrefValue['lastdate'].integer);  // 下载完成后记录时间以供下次更新时检测
+    Preferences.setInteger(PrefValue['lastdate'].pref, PrefValue['lastdate'].integer);  // 下?完成后????以供下次更新???
   },
 };
 
 // Add toolbar ui for quick management
-// 添加工具栏界面以快速管理设置
+// 添加工具?界面以快速管理?置
 var Toolbar = {
   css: Services.io.newURI('chrome://sowatchmk2/skin/toolbar.css', null, null),
   addIcon: function () {
@@ -641,14 +641,14 @@ var Toolbar = {
 
         for (var x in SiteLists) {
           if (SiteLists[x].hasReferer) {
-            var rItem = aDocument.createElement('menu');
+            var rItem = aDocument.createElement('menuitem');
             rItem.setAttribute('id', 'sowatchmk2-referer-' + x);
             rItem.setAttribute('label', SiteLists[x].refererlabel);
             rItem.setAttribute('tooltiptext', SiteLists[x].referertooltiptext);
             rItem.setAttribute('class', 'menuitem-iconic');
             rItem.setAttribute('type', 'checkbox');
             aPopup.appendChild(rItem);
-		  }
+          }
 
           var xItem = aDocument.createElement('menu');
           xItem.setAttribute('id', 'sowatchmk2-' + x);
