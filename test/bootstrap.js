@@ -573,14 +573,11 @@ var Toolbar = {
           S3: null,  // Menu separator
         };
 
-        SiteLists['referer-youku'] = {
-          label: Utilities.GetStringFromName('youkuRefererLabel'),
-          tooltiptext: Utilities.GetStringFromName('youkuRefererDescription'),
-        };
-        SiteLists['referer-iqiyi'] = {
-          label: Utilities.GetStringFromName('iqiyiRefererLabel'),
-          tooltiptext: Utilities.GetStringFromName('iqiyiRefererDescription'),
-        };
+        SiteLists['youku'].refererlabel = Utilities.GetStringFromName('youkuRefererLabel');
+        SiteLists['youku'].referertooltiptext = Utilities.GetStringFromName('youkuRefererDescription');
+        SiteLists['youku'].refererlabel = Utilities.GetStringFromName('iqiyiRefererLabel');
+        SiteLists['youku'].referertooltiptext = Utilities.GetStringFromName('iqiyiRefererDescription');
+
         SiteLists['youku'].label = Utilities.GetStringFromName('youkuSiteLabel');
         SiteLists['youku'].tooltiptext = 'http://www.youku.com/';
         SiteLists['tudou'].label = Utilities.GetStringFromName('tudouSiteLabel');
@@ -646,8 +643,8 @@ var Toolbar = {
           if (SiteLists[x].hasReferer) {
             var rItem = aDocument.createElement('menu');
             rItem.setAttribute('id', 'sowatchmk2-referer-' + x);
-            rItem.setAttribute('label', SiteLists['referer-' + x].label);
-            rItem.setAttribute('tooltiptext', SiteLists['referer-' + x].tooltiptext);
+            rItem.setAttribute('label', SiteLists[x].refererlabel);
+            rItem.setAttribute('tooltiptext', SiteLists[x].referertooltiptext);
             rItem.setAttribute('class', 'menuitem-iconic');
             rItem.setAttribute('type', 'checkbox');
             aPopup.appendChild(rItem);
