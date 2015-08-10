@@ -30,7 +30,10 @@ var SiteLists = {
     label: 'Youku.com',
     tooltiptext: 'http://www.youku.com/',
     target: /http:\/\/static\.youku\.com\/.+player.*\.swf/i,
-    url: /https?:\/\/[^\/]+youku\.com\//i,
+    url: /http:\/\/[^\/]+youku\.com\//i,
+    hasPlayer: true,
+    hasFilter: true,
+    hasReferer: true,
     getPlayer: function () {
       PlayerRules['youku_loader'] = {
         object: FileIO.path + 'loader.swf',
@@ -69,7 +72,10 @@ var SiteLists = {
     label: 'Tudou.com',
     tooltiptext: 'http://www.tudou.com/',
     target: /http:\/\/js\.tudouui\.com\/.+player.+\.swf/i,
-    url: /https?:\/\/[^\/]+tudou\.com\//i,
+    url: /http:\/\/[^\/]+tudou\.com\//i,
+    hasPlayer: true,
+    hasFilter: true,
+    hasReferer: false,
     getPlayer: function () {
       PlayerRules['tudou_portal'] = {
         object: FileIO.path + 'tudou.swf',
@@ -99,14 +105,15 @@ var SiteLists = {
     setFilter: function (aState) {
       RuleExecution.toggle(aState, FilterRules['youku_tudou']);
     },
-    getReferer: function () {},
-    setReferer: function (aState) {},
   },
   'iqiyi': {
     label: 'iQiyi.com',
     tooltiptext: 'http://www.iqiyi.com/',
     target: /http:\/\/www\.iqiyi\.com\/.+\/(Main|Share|Enjoy)Player.+\.swf/i,
-    url: /https?:\/\/[^\/]+(iqiyi\.com)\//i,
+    url: /http:\/\/[^\/]+(iqiyi\.com)\//i,
+    hasPlayer: true,
+    hasFilter: false,
+    hasReferer: true,
     getPlayer: function () {
       PlayerRules['iqiyi5'] = {
         object: FileIO.path + 'iqiyi5.swf',
@@ -123,8 +130,6 @@ var SiteLists = {
       RuleExecution.toggle(aState, PlayerRules['iqiyi5']);
       RuleExecution.toggle(aState, PlayerRules['iqiyi_out']);
     },
-    getFilter: function () {},
-    setFilter: function (aState) {},
     getReferer: function () {
       RefererRules['referer-iqiyi'] = {
         object: 'http://www.iqiyi.com/',
@@ -139,7 +144,10 @@ var SiteLists = {
     label: 'Letv.com',
     tooltiptext: 'http://www.letv.com/',
     target: /http:\/\/player\.letvcdn\.com\/.+player\.swf/i,
-    url: /https?:\/\/[^\/]+letv\.com\//i,
+    url: /http:\/\/[^\/]+letv\.com\//i,
+    hasPlayer: true,
+    hasFilter: true,
+    hasReferer: false,
     getPlayer: function () {
       PlayerRules['letv'] = {
         object: FileIO.path + 'letv.swf',
@@ -163,14 +171,15 @@ var SiteLists = {
     setFilter: function (aState) {
       RuleExecution.toggle(aState, FilterRules['letv']);
     },
-    getReferer: function () {},
-    setReferer: function (aState) {},
   },
   'sohu': {
     label: 'Sohu.com',
     tooltiptext: 'http://tv.sohu.com/',
     target: /http:\/\/tv\.sohu\.com\/.+main\.swf/i,
-    url: /https?:\/\/(tv\.sohu|[^\/]+56)\.com\//i,
+    url: /http:\/\/(tv\.sohu|[^\/]+56)\.com\//i,
+    hasPlayer: true,
+    hasFilter: true,
+    hasReferer: false,
     getPlayer: function () {
       PlayerRules['sohu'] = {
         object: FileIO.path + 'sohu_live.swf',
@@ -189,14 +198,15 @@ var SiteLists = {
     setFilter: function (aState) {
       RuleExecution.toggle(aState, FilterRules['sohu']);
     },
-    getReferer: function () {},
-    setReferer: function (aState) {},
   },
   'pptv': {
     label: 'PPTV.com',
     tooltiptext: 'http://www.pptv.com/',
     target: /http:\/\/player\.pplive\.cn\/.+(player|live).+\.swf/i,
-    url: /https?:\/\/[^\/]+pptv\.com\//i,
+    url: /http:\/\/[^\/]+pptv\.com\//i,
+    hasPlayer: true,
+    hasFilter: true,
+    hasReferer: false,
     getPlayer: function () {
       PlayerRules['pptv'] = {
         object: FileIO.path + 'player4player2.swf',
@@ -221,16 +231,15 @@ var SiteLists = {
     setFilter: function (aState) {
       RuleExecution.toggle(aState, FilterRules['pptv']);
     },
-    getReferer: function () {},
-    setReferer: function (aState) {},
   },
   'qq': {
     label: 'QQ.com',
     tooltiptext: 'http://v.qq.com/',
     target: /http:\/\/imgcache\.qq\.com\/.+mediaplugin\.swf/i,
-    url: /https?:\/\/v\.qq\.com\//i,
-    getPlayer: function () {},
-    setPlayer: function (aState) {},
+    url: /http:\/\/v\.qq\.com\//i,
+    hasPlayer: false,
+    hasFilter: true,
+    hasReferer: false,
     getFilter: function () {
       FilterRules['qq'] = {
         string: /http:\/\/livew\.l\.qq\.com\/livemsg\?/i,
@@ -239,16 +248,15 @@ var SiteLists = {
     setFilter: function (aState) {
       RuleExecution.toggle(aState, FilterRules['qq']);
     },
-    getReferer: function () {},
-    setReferer: function (aState) {},
   },
   '163': {
     label: '163.com',
     tooltiptext: 'http://v.163.com/',
     target: /http:\/\/v\.163\.com\/.+player.+\.swf/i,
-    url: /https?:\/\/v\.163\.com\//i,
-    getPlayer: function () {},
-    setPlayer: function (aState) {},
+    url: /http:\/\/v\.163\.com\//i,
+    hasPlayer: false,
+    hasFilter: true,
+    hasReferer: false,
     getFilter: function () {
       FilterRules['163'] = {
         string: /http:\/\/v\.163\.com\/special\/.*\.xml/i,
@@ -257,16 +265,15 @@ var SiteLists = {
     setFilter: function (aState) {
       RuleExecution.toggle(aState, FilterRules['163']);
     },
-    getReferer: function () {},
-    setReferer: function (aState) {},
   },
   'sina': {
     label: 'Sina.com.cn',
     tooltiptext: 'http://video.sina.com.cn/',
     target: /http:\/\/[^/]+\.sina\.com\.cn\/.+player.+\.swf/i,
-    url: /https?:\/\/video\.+sina\.com\.cn\//i,
-    getPlayer: function () {},
-    setPlayer: function (aState) {},
+    url: /http:\/\/video\.+sina\.com\.cn\//i,
+    hasPlayer: false,
+    hasFilter: true,
+    hasReferer: false,
     getFilter: function () {
       FilterRules['sina'] = {
         string: /http:\/\/sax\.sina\.com\.cn\/video\/newimpress/i,
@@ -275,8 +282,6 @@ var SiteLists = {
     setFilter: function (aState) {
       RuleExecution.toggle(aState, FilterRules['sina']);
     },
-    getReferer: function () {},
-    setReferer: function (aState) {},
   },
 };
 
@@ -431,36 +436,32 @@ var Preferences = {
     this.manifest();
   },
   manifest: function () {
-    for (var i in SiteLists) {
-      if ('getPlayer' in SiteLists[i]) SiteLists[i].getPlayer();
-      if ('getFilter' in SiteLists[i]) SiteLists[i].getFilter();
-      if ('getReferer' in SiteLists[i]) SiteLists[i].getReferer();
-    }
-
-    if (this.getBool(PrefValue['referer-youku'].pref)) SiteLists['youku'].setReferer('on');
-    else SiteLists['youku'].setReferer('off');
-    if (this.getBool(PrefValue['referer-iqiyi'].pref)) SiteLists['iqiyi'].setReferer('on');
-    else SiteLists['iqiyi'].setReferer('off');
-
     if ((this.getChar(PrefValue['youku'].pref) == 'filter' && this.getChar(PrefValue['tudou'].pref) == 'none') || (this.getChar(PrefValue['youku'].pref) == 'none' && this.getChar(PrefValue['tudou'].pref) == 'filter')) {
       this.setChar(PrefValue['youku'].pref, 'filter');
       this.setChar(PrefValue['tudou'].pref, 'filter');
     }
 
     for (var i in SiteLists) {
-      if (this.getChar(PrefValue[i].pref) == 'player') {
-        if (i == 'qq' || i == '163' || i == 'sina') continue;
-        SiteLists[i].setPlayer('on');
-      } else if (this.getChar(PrefValue[i].pref) == 'filter') {
-        if (i == 'iqiyi') continue;
-        SiteLists[i].setPlayer('off');
-        SiteLists[i].setFilter('on');
-      } else if (this.getChar(PrefValue[i].pref) == 'none') {
-        SiteLists[i].setPlayer('off');
-        SiteLists[i].setFilter('off');
-      } else {
-        this.setChar(PrefValue[i].pref, PrefValue[i].string);
+      if (SiteLists[i].hasReferer) {
+        SiteLists[i].getReferer();
+        if (this.getBool(PrefValue['referer-' + i].pref)) SiteLists[i].setReferer('on')
+        else SiteLists[i].setReferer('off');
       }
+
+      if (SiteLists[i].hasPlayer) {
+        SiteLists[i].getPlayer();
+        if (this.getChar(PrefValue[i].pref) == 'player') SiteLists[i].setPlayer('on');
+        else SiteLists[i].setPlayer('off');
+      }
+
+      if (SiteLists[i].hasFilter) {
+        SiteLists[i].getFilter();
+        if (this.getChar(PrefValue[i].pref) == 'filter') SiteLists[i].setFilter('on');
+        else SiteLists[i].setFilter('off');
+      }
+      
+      if (this.getChar(PrefValue[i].pref) == 'player' || this.getChar(PrefValue[i].pref) == 'filter' || this.getChar(PrefValue[i].pref) == 'none') continue;
+      else this.setChar(PrefValue[i].pref, PrefValue[i].string);
     }
 
     if (this.getBool(PrefValue['toolbar'].pref)) Toolbar.addIcon();
@@ -684,22 +685,18 @@ var Toolbar = {
 
         if (aEvent.target.id == 'sowatchmk2-forceupdate') QueryFiles.start('yes');
 
-        if (aEvent.target.id == 'sowatchmk2-referer-youku') {
-          if (Preferences.getBool(PrefValue['referer-youku'].pref)) Preferences.setBool(PrefValue['referer-youku'].pref, false);
-          else Preferences.setBool(PrefValue['referer-youku'].pref, true);
-        }
-
-        if (aEvent.target.id == 'sowatchmk2-referer-iqiyi') {
-          if (Preferences.getBool(PrefValue['referer-iqiyi'].pref)) Preferences.setBool(PrefValue['referer-iqiyi'].pref, false);
-          else Preferences.setBool(PrefValue['referer-iqiyi'].pref, true);
-        }
-
         for (var x in SiteLists) {
+          if (aEvent.target.id == 'sowatchmk2-referer-' + x) {
+            if (!SiteLists[x].hasReferer) continue;
+            if (Preferences.getBool(PrefValue['referer-' + x].pref)) Preferences.setBool(PrefValue['referer-' + x].pref, false);
+            else Preferences.setBool(PrefValue['referer-' + x].pref, true);
+          }
+
           if (aEvent.target.id == 'sowatchmk2-' + x + '-player') {
-            if (x == 'qq' || x == '163' || x == 'sina') continue;
+            if (!SiteLists[x].hasPlayer) continue;
             Preferences.setChar(PrefValue[x].pref, 'player');
           } else if (aEvent.target.id == 'sowatchmk2-' + x + '-filter') {
-            if (x == 'iqiyi') continue;
+            if (!SiteLists[x].hasFilter) continue;
             Preferences.setChar(PrefValue[x].pref, 'filter');
           } else if (aEvent.target.id == 'sowatchmk2-' + x + '-none') Preferences.setChar(PrefValue[x].pref, 'none');
         }
@@ -711,24 +708,24 @@ var Toolbar = {
 
           if (Preferences.getBool(PrefValue['autoupdate'].pref)) aEvent.target.querySelector('#sowatchmk2-autoupdate').setAttribute('checked', 'true');
           else aEvent.target.querySelector('#sowatchmk2-autoupdate').setAttribute('checked', 'false');
-
-          if (Preferences.getBool(PrefValue['referer-youku'].pref)) aEvent.target.querySelector('#sowatchmk2-referer-youku').setAttribute('checked', 'true');
-          else aEvent.target.querySelector('#sowatchmk2-referer-youku').setAttribute('checked', 'false');
-
-          if (Preferences.getBool(PrefValue['referer-iqiyi'].pref)) aEvent.target.querySelector('#sowatchmk2-referer-iqiyi').setAttribute('checked', 'true');
-          else aEvent.target.querySelector('#sowatchmk2-referer-iqiyi').setAttribute('checked', 'false');
         }
 
         for (var x in SiteLists) {
           if (aEvent.target.id == 'sowatchmk2-popup') {
             if (!SiteLists[x].url.test(aEvent.target.ownerDocument.defaultView.content.location.href) && !SiteLists[x].popup) {
               aEvent.target.querySelector('#sowatchmk2-' + x).setAttribute('hidden', 'true');
-              if (x == 'youku' || x == 'iqiyi') aEvent.target.querySelector('#sowatchmk2-referer-' + x).setAttribute('hidden', 'true');
+              if (SiteLists[x].hasReferer) aEvent.target.querySelector('#sowatchmk2-referer-' + x).setAttribute('hidden', 'true');
             } else {
               aEvent.target.querySelector('#sowatchmk2-' + x).setAttribute('hidden', 'false');
-              if (x == 'youku' || x == 'iqiyi') aEvent.target.querySelector('#sowatchmk2-referer-' + x).setAttribute('hidden', 'false');
+              if (SiteLists[x].hasReferer) aEvent.target.querySelector('#sowatchmk2-referer-' + x).setAttribute('hidden', 'false');
+            }
+
+            if (SiteLists[x].hasReferer) {
+              if (Preferences.getBool(PrefValue['referer-' + x].pref)) aEvent.target.querySelector('#sowatchmk2-referer-' + x).setAttribute('checked', 'true');
+              else aEvent.target.querySelector('#sowatchmk2-referer-' + x).setAttribute('checked', 'false');
             }
           }
+
           if (aEvent.target.id == 'sowatchmk2-popup-' + x) {
             if (Preferences.getChar(PrefValue[x].pref) == 'player') aEvent.target.querySelector('#sowatchmk2-' + x + '-player').setAttribute('checked', 'true');
             else if (Preferences.getChar(PrefValue[x].pref) == 'filter') aEvent.target.querySelector('#sowatchmk2-' + x + '-filter').setAttribute('checked', 'true');
