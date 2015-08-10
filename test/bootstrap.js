@@ -575,8 +575,8 @@ var Toolbar = {
 
         SiteLists['youku'].refererlabel = Utilities.GetStringFromName('youkuRefererLabel');
         SiteLists['youku'].referertooltiptext = Utilities.GetStringFromName('youkuRefererDescription');
-        SiteLists['youku'].refererlabel = Utilities.GetStringFromName('iqiyiRefererLabel');
-        SiteLists['youku'].referertooltiptext = Utilities.GetStringFromName('iqiyiRefererDescription');
+        SiteLists['iqiyi'].refererlabel = Utilities.GetStringFromName('iqiyiRefererLabel');
+        SiteLists['iqiyi'].referertooltiptext = Utilities.GetStringFromName('iqiyiRefererDescription');
 
         SiteLists['youku'].label = Utilities.GetStringFromName('youkuSiteLabel');
         SiteLists['youku'].tooltiptext = 'http://www.youku.com/';
