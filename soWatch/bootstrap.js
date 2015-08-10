@@ -25,6 +25,180 @@ var FileIO = {
   },
 };
 
+var SiteLists = {
+/**  Template sample to add new site
+     请参考下面模板添加新的网站  */
+  'youku': {
+    hasPlayer: true,
+    hasFilter: true,
+    hasReferer: true,
+    getPlayer: function () {
+      PlayerRules['youku_loader'] = {
+        object: FileIO.path + 'loader.swf',
+        remote: FileIO.link + 'loader.swf',
+        target: /http:\/\/static\.youku\.com\/.*\/v\/swf\/loaders?\.swf/i,
+      };
+      PlayerRules['youku_player'] = {
+        object: FileIO.path + 'player.swf',
+        remote: FileIO.link + 'player.swf',
+        target: /http:\/\/static\.youku\.com\/.*\/v\/swf\/q?player.*\.swf/i,
+      };
+    },
+    getFilter: function () {
+      FilterRules['youku_tudou'] = {
+        target: /http:\/\/val[fcopb]\.atm\.youku\.com\//i,
+      };
+    },
+    getReferer: function () {
+      RefererRules['referer-youku'] = {
+        object: 'http://www.youku.com/',
+        target: /http:\/\/.*\.youku\.com/i,
+      };
+    },
+  },
+/**  Template End
+     模板结束  */
+  'tudou': {
+    hasPlayer: true,
+    hasFilter: true,
+    hasReferer: false,
+    getPlayer: function () {
+      PlayerRules['tudou_portal'] = {
+        object: FileIO.path + 'tudou.swf',
+        remote: FileIO.link + 'tudou.swf',
+        target: /http:\/\/js\.tudouui\.com\/bin\/lingtong\/PortalPlayer.*\.swf/i,
+      };
+      PlayerRules['tudou_olc'] = {
+        object: 'http://js.tudouui.com/bin/player2/olc.swf',
+        target: /http:\/\/js\.tudouui\.com\/bin\/player2\/olc.+\.swf/i,
+      };
+      PlayerRules['tudou_social'] = {
+        object: FileIO.path + 'sp.swf',
+        remote: FileIO.link + 'sp.swf',
+        target: /http:\/\/js\.tudouui\.com\/bin\/lingtong\/SocialPlayer.*\.swf/i,
+      };
+    },
+    getFilter: function () {
+      FilterRules['youku_tudou'] = {
+        target: /http:\/\/val[fcopb]\.atm\.youku\.com\//i,
+      };
+    },
+  },
+  'iqiyi': {
+    hasPlayer: true,
+    hasFilter: false,
+    hasReferer: true,
+    getPlayer: function () {
+      PlayerRules['iqiyi5'] = {
+        object: FileIO.path + 'iqiyi5.swf',
+        remote: FileIO.link + 'iqiyi5.swf',
+        target: /http:\/\/www\.iqiyi\.com\/common\/flashplayer\/\d+\/MainPlayer.*\.swf/i,
+      };
+      PlayerRules['iqiyi_out'] = {
+        object: FileIO.path + 'iqiyi_out.swf',
+        remote: FileIO.link + 'iqiyi_out.swf',
+        target: /https?:\/\/www\.iqiyi\.com\/(common\/flash)?player\/\d+\/(Share|Enjoy)?Player.*\.swf/i,
+      };
+    },
+    getReferer: function () {
+      RefererRules['referer-iqiyi'] = {
+        object: 'http://www.iqiyi.com/',
+        target: /http:\/\/.*\.qiyi\.com/i,
+      };
+    },
+  },
+  'letv': {
+    hasPlayer: true,
+    hasFilter: true,
+    hasReferer: false,
+    getPlayer: function () {
+      PlayerRules['letv'] = {
+        object: FileIO.path + 'letv.swf',
+        remote: FileIO.link + 'letv.swf',
+        target: /http:\/\/.*\.letv(cdn)?\.com\/.*(new)?player\/((SDK)?Letv|swf)Player\.swf/i,
+      };
+      PlayerRules['letv_skin'] = {
+        object: 'http://player.letvcdn.com/p/201407/24/15/newplayer/1/SSLetvPlayer.swf',
+        target: /http:\/\/player\.letvcdn\.com\/p\/((?!15)\d+\/){3}newplayer\/1\/S?SLetvPlayer\.swf/i,
+      };
+    },
+    getFilter: function () {
+      FilterRules['letv'] = {
+        target: /http:\/\/(ark|fz)\.letv\.com\/s\?ark/i,
+      };
+    },
+  },
+  'sohu': {
+    hasPlayer: true,
+    hasFilter: true,
+    hasReferer: false,
+    getPlayer: function () {
+      PlayerRules['sohu'] = {
+        object: FileIO.path + 'sohu_live.swf',
+        remote: FileIO.link + 'sohu_live.swf',
+        target: /http:\/\/(tv\.sohu\.com\/upload\/swf\/(p2p\/|56\/)?\d+|(\d+\.){3}\d+\/webplayer)\/Main\.swf/i,
+      };
+    },
+    getFilter: function () {
+      FilterRules['sohu'] = {
+        target: /http:\/\/v\.aty\.sohu\.com\/v\?/i,
+      };
+    },
+  },
+  'pptv': {
+    hasPlayer: true,
+    hasFilter: true,
+    hasReferer: false,
+    getPlayer: function () {
+      PlayerRules['pptv'] = {
+        object: FileIO.path + 'player4player2.swf',
+        remote: FileIO.link + 'player4player2.swf',
+        target: /http:\/\/player.pplive.cn\/ikan\/.*\/player4player2\.swf/i,
+      };
+      PlayerRules['pptv_live'] = {
+        object: FileIO.path + 'pptv.in.Live.swf',
+        remote: FileIO.server + 'pptv.in.Live.swf',
+        target: /http:\/\/player.pplive.cn\/live\/.*\/player4live2\.swf/i,
+      };
+    },
+    getFilter: function () {
+      FilterRules['pptv'] = {
+        target: /http:\/\/de\.as\.pptv\.com\/ikandelivery\/vast\/.*draft/i,
+      };
+    },
+  },
+  'qq': {
+    hasPlayer: false,
+    hasFilter: true,
+    hasReferer: false,
+    getFilter: function () {
+      FilterRules['qq'] = {
+        target: /http:\/\/livew\.l\.qq\.com\/livemsg\?/i,
+      };
+    },
+  },
+  '163': {
+    hasPlayer: false,
+    hasFilter: true,
+    hasReferer: false,
+    getFilter: function () {
+      FilterRules['163'] = {
+        target: /http:\/\/v\.163\.com\/special\/.*\.xml/i,
+      };
+    },
+  },
+  'sina': {
+    hasPlayer: false,
+    hasFilter: true,
+    hasReferer: false,
+    getFilter: function () {
+      FilterRules['sina'] = {
+        target: /http:\/\/sax\.sina\.com\.cn\/video\/newimpress/i,
+      };
+    },
+  },
+};
+
 var PrefBranch = Services.prefs.getBranch('extensions.sowatch.');
 var PrefValue = {
   'autoupdate': {
@@ -113,11 +287,10 @@ var Preferences = {
   },
   pending: function () {
     for (var i in PrefValue) {
-      var aValue = PrefValue[i];
       try {
-        this.getValue(aValue);
+        this.getValue(PrefValue[i]);
       } catch (e) {
-        this.setValue(aValue);
+        this.setValue(PrefValue[i]);
       }
     }
 
@@ -145,9 +318,11 @@ var Preferences = {
     this.manifest();
   },
   manifest: function () {
-    RuleManager.player();
-    RuleManager.filter();
-    RuleManager.referer();
+    for (var i in SiteLists) {
+      if (SiteLists[i].hasPlayer) SiteLists[i].getPlayer();
+      if (SiteLists[i].hasFilter) SiteLists[i].getFilter();
+      if (SiteLists[i].hasReferer) SiteLists[i].getReferer();
+    }
 
     if (this.getBool(PrefValue['toolbar'].pref)) Toolbar.addIcon();
     else Toolbar.removeIcon();
@@ -159,9 +334,8 @@ var Preferences = {
   },
   setDefault: function () {
     for (var i in PrefValue) {
-      if (i == 'directory' || i == 'server') continue;
-      var aValue = PrefValue[i];
-      this.setValue(aValue);
+      if (i == 'directory' || i == 'server' || i == 'firstrun' ) continue; // 这里是那些不受“恢复默认”功能限制的参数
+      this.setValue(PrefValue[i]);
     }
   },
   remove: function () {
@@ -253,7 +427,7 @@ var Toolbar = {
             label: Utilities.GetStringFromName('setDefaultLabel'),
             tooltiptext: Utilities.GetStringFromName('setDefaultDescription'),
           },
-          S1: null,  // Menu separator
+          S1: null, // Menu separator
           'remote': {
             label: Utilities.GetStringFromName('remoteAccessLabel'),
             tooltiptext: Utilities.GetStringFromName('remoteAccessDescription'),
@@ -262,7 +436,7 @@ var Toolbar = {
             label: Utilities.GetStringFromName('autoUpdateLabel'),
             tooltiptext: Utilities.GetStringFromName('autoUpdateDescription'),
           },
-          S2: null,  // Menu separator
+          S2: null, // Menu separator
           'checkupdate': {
             label: Utilities.GetStringFromName('checkUpdateLabel'),
             tooltiptext: Utilities.GetStringFromName('checkUpdateDescription'),
@@ -277,7 +451,7 @@ var Toolbar = {
         aMenu.setAttribute('id', 'sowatch-button');
         aMenu.setAttribute('class', 'toolbarbutton-1');
         aMenu.setAttribute('type', 'menu');
-        aMenu.setAttribute('label', 'soWatch! ');
+        aMenu.setAttribute('label', 'soWatch!');
 
         var aPopup = aDocument.createElement('menupopup');
         aPopup.setAttribute('id', 'sowatch-popup');
@@ -355,102 +529,6 @@ var Toolbar = {
   },
 };
 
-var RuleManager = {
-  player: function () {
-    PlayerRules['youku_loader'] = {
-      object: FileIO.path + 'loader.swf',
-      remote: FileIO.link + 'loader.swf',
-      target: /http:\/\/static\.youku\.com\/.*\/v\/swf\/loaders?\.swf/i,
-    };
-    PlayerRules['youku_player'] = {
-      object: FileIO.path + 'player.swf',
-      remote: FileIO.link + 'player.swf',
-      target: /http:\/\/static\.youku\.com\/.*\/v\/swf\/q?player.*\.swf/i,
-    };
-    PlayerRules['tudou_portal'] = {
-      object: FileIO.path + 'tudou.swf',
-      remote: FileIO.link + 'tudou.swf',
-      target: /http:\/\/js\.tudouui\.com\/bin\/lingtong\/PortalPlayer.*\.swf/i,
-    };
-    PlayerRules['tudou_olc'] = {
-      object: 'http://js.tudouui.com/bin/player2/olc.swf',
-      target: /http:\/\/js\.tudouui\.com\/bin\/player2\/olc.+\.swf/i,
-    };
-    PlayerRules['tudou_social'] = {
-      object: FileIO.path + 'sp.swf',
-      remote: FileIO.link + 'sp.swf',
-      target: /http:\/\/js\.tudouui\.com\/bin\/lingtong\/SocialPlayer.*\.swf/i,
-    };
-    PlayerRules['iqiyi5'] = {
-      object: FileIO.path + 'iqiyi5.swf',
-      remote: FileIO.link + 'iqiyi5.swf',
-      target: /http:\/\/www\.iqiyi\.com\/common\/flashplayer\/\d+\/MainPlayer.*\.swf/i,
-    };
-    PlayerRules['iqiyi_out'] = {
-      object: FileIO.path + 'iqiyi_out.swf',
-      remote: FileIO.link + 'iqiyi_out.swf',
-      target: /https?:\/\/www\.iqiyi\.com\/(common\/flash)?player\/\d+\/(Share|Enjoy)?Player.*\.swf/i,
-    };
-    PlayerRules['letv'] = {
-      object: FileIO.path + 'letv.swf',
-      remote: FileIO.link + 'letv.swf',
-      target: /http:\/\/.*\.letv(cdn)?\.com\/.*(new)?player\/((SDK)?Letv|swf)Player\.swf/i,
-    };
-    PlayerRules['letv_skin'] = {
-      object: 'http://player.letvcdn.com/p/201407/24/15/newplayer/1/SSLetvPlayer.swf',
-      target: /http:\/\/player\.letvcdn\.com\/p\/((?!15)\d+\/){3}newplayer\/1\/S?SLetvPlayer\.swf/i,
-    };
-    PlayerRules['sohu'] = {
-      object: FileIO.path + 'sohu_live.swf',
-      remote: FileIO.link + 'sohu_live.swf',
-      target: /http:\/\/(tv\.sohu\.com\/upload\/swf\/(p2p\/|56\/)?\d+|(\d+\.){3}\d+\/webplayer)\/Main\.swf/i,
-    };
-    PlayerRules['pptv'] = {
-      object: FileIO.path + 'player4player2.swf',
-      remote: FileIO.link + 'player4player2.swf',
-      target: /http:\/\/player.pplive.cn\/ikan\/.*\/player4player2\.swf/i,
-    };
-    PlayerRules['pptv_live'] = {
-      object: FileIO.path + 'pptv.in.Live.swf',
-      remote: FileIO.server + 'pptv.in.Live.swf',
-      target: /http:\/\/player.pplive.cn\/live\/.*\/player4live2\.swf/i,
-    };
-  },
-  filter: function () {
-    FilterRules['youku_tudou'] = {
-      target: /http:\/\/val[fcopb]\.atm\.youku\.com\//i,
-    };
-    FilterRules['letv'] = {
-      target: /http:\/\/(ark|fz)\.letv\.com\/s\?ark/i,
-    };
-    FilterRules['sohu'] = {
-      target: /http:\/\/v\.aty\.sohu\.com\/v\?/i,
-    };
-    FilterRules['pptv'] = {
-      target: /http:\/\/de\.as\.pptv\.com\/ikandelivery\/vast\/.+draft/i,
-    };
-    FilterRules['qq'] = {
-      target: /http:\/\/livew\.l\.qq\.com\/livemsg\?/i,
-    };
-    FilterRules['163'] = {
-      target: /http:\/\/v\.163\.com\/special\/.*\.xml/i,
-    };
-    FilterRules['sina'] = {
-      target: /http:\/\/sax\.sina\.com\.cn\/video\/newimpress/i,
-    };
-  },
-  referer: function () {
-    RefererRules['referer-youku'] = {
-      object: 'http://www.youku.com/',
-      target: /http:\/\/.*\.youku\.com/i,
-    };
-    RefererRules['referer-iqiyi'] = {
-      object: 'http://www.iqiyi.com/',
-      target: /http:\/\/.*\.qiyi\.com/i,
-    };
-  },
-};
-
 var RuleExecution = {
   getPlayer: function (remote, rule, callback) {
     if (remote == 'on') var aObject = rule['remote'];
@@ -470,6 +548,7 @@ var RuleExecution = {
       }
     });
   },
+  getFilter: Services.pps.newProxyInfo('http', '127.0.0.1', '50086', 1, 0, null),
   QueryInterface: function (aIID) {
     if (aIID.equals(Components.interfaces.nsISupports) || aIID.equals(Components.interfaces.nsIObserver)) return this;
     return Components.results.NS_ERROR_NO_INTERFACE;
@@ -521,58 +600,6 @@ var RuleExecution = {
       }
     }
   },
-/**
-  getWindowForRequest: function (aRequest) {
-    if (aRequest instanceof Components.interfaces.nsIRequest) {
-      try {
-        if (aRequest.notificationCallbacks) {
-          return aRequest.notificationCallbacks.getInterface(Components.interfaces.nsILoadContext).associatedWindow;
-        }
-      } catch (e) {}
-      try {
-        if (aRequest.loadGroup && aRequest.loadGroup.notificationCallbacks) {
-          return aRequest.loadGroup.notificationCallbacks.getInterface(Components.interfaces.nsILoadContext).associatedWindow;
-        }
-      } catch (e) {}
-    }
-    return null;
-  },
-  iqiyi: function () {
-    var rule = PlayerRules['iqiyi'];
-    if (!rule) return;
-    rule['preHandle'] = function (aSubject) {
-      var wnd = this.getWindowForRequest(aSubject);
-      if (wnd) {
-        rule['command'] = [
-          !/(^((?!baidu|61|178).)*\.iqiyi\.com|pps\.tv)/i.test(wnd.self.location.host),
-          wnd.self.document.querySelector('span[data-flashplayerparam-flashurl]'),
-          true
-        ];
-        if (!rule['command']) return;
-        for (var i = 0; i < rule['command'].length; i++) {
-          if (rule['command'][i]) {
-            if (rule['object'] != rule['object' + i]) {
-              rule['object'] = rule['object' + i];
-              rule['storageStream'] = rule['storageStream' + i] ? rule['storageStream' + i] : null;
-              rule['count'] = rule['count' + i] ? rule['count' + i] : null;
-            }
-            break;
-          }
-        }
-      }
-    };
-    rule['callback'] = function () {
-      if (!rule['command']) return;
-      for (var i = 0; i < rule['command'].length; i++) {
-        if (rule['object' + i] == rule['object']) {
-          rule['storageStream' + i] = rule['storageStream'];
-          rule['count' + i] = rule['count'];
-          break;
-        }
-      }
-    };
-  },
-*/
 };
 
 function TrackingListener() {
@@ -609,10 +636,9 @@ HttpHeaderVisitor.prototype = {
 
 var Observers = {
   applyFilter: function (aService, aURI, aProxy) {
-    this.xProxy = Services.pps.newProxyInfo('http', '127.0.0.1', '50086', 1, 0, null);
     for (var i in FilterRules) {
       if (FilterRules[i]['target'] && FilterRules[i]['target'].test(aURI.spec)) {
-        if (Preferences.getBool(PrefValue['referer'].pref)) return this.xProxy;
+        if (Preferences.getBool(PrefValue['filter'].pref)) return RuleExecution.getFilter;
       }
     }
     return aProxy;
@@ -645,9 +671,6 @@ var Observers = {
 function startup(aData, aReason) {
   Utilities = Services.strings.createBundle('chrome://sowatch/locale/global.properties?' + Math.random());
   Preferences.pending();
-/**
-  RuleExecution.iqiyi();
-*/
   Observers.startUp();
 }
 
