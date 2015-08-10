@@ -27,8 +27,6 @@ var FileIO = {
 
 var SiteLists = {
   'youku': {
-    label: 'Youku.com',
-    tooltiptext: 'http://www.youku.com/',
     target: /http:\/\/static\.youku\.com\/.+player.*\.swf/i,
     url: /http:\/\/[^\/]+youku\.com\//i,
     hasPlayer: true,
@@ -69,8 +67,6 @@ var SiteLists = {
     },
   },
   'tudou': {
-    label: 'Tudou.com',
-    tooltiptext: 'http://www.tudou.com/',
     target: /http:\/\/js\.tudouui\.com\/.+player.+\.swf/i,
     url: /http:\/\/[^\/]+tudou\.com\//i,
     hasPlayer: true,
@@ -107,8 +103,6 @@ var SiteLists = {
     },
   },
   'iqiyi': {
-    label: 'iQiyi.com',
-    tooltiptext: 'http://www.iqiyi.com/',
     target: /http:\/\/www\.iqiyi\.com\/.+\/(Main|Share|Enjoy)Player.+\.swf/i,
     url: /http:\/\/[^\/]+(iqiyi\.com)\//i,
     hasPlayer: true,
@@ -141,8 +135,6 @@ var SiteLists = {
     },
   },
   'letv': {
-    label: 'Letv.com',
-    tooltiptext: 'http://www.letv.com/',
     target: /http:\/\/player\.letvcdn\.com\/.+player\.swf/i,
     url: /http:\/\/[^\/]+letv\.com\//i,
     hasPlayer: true,
@@ -173,8 +165,6 @@ var SiteLists = {
     },
   },
   'sohu': {
-    label: 'Sohu.com',
-    tooltiptext: 'http://tv.sohu.com/',
     target: /http:\/\/tv\.sohu\.com\/.+main\.swf/i,
     url: /http:\/\/(tv\.sohu|[^\/]+56)\.com\//i,
     hasPlayer: true,
@@ -200,8 +190,6 @@ var SiteLists = {
     },
   },
   'pptv': {
-    label: 'PPTV.com',
-    tooltiptext: 'http://www.pptv.com/',
     target: /http:\/\/player\.pplive\.cn\/.+(player|live).+\.swf/i,
     url: /http:\/\/[^\/]+pptv\.com\//i,
     hasPlayer: true,
@@ -233,8 +221,6 @@ var SiteLists = {
     },
   },
   'qq': {
-    label: 'QQ.com',
-    tooltiptext: 'http://v.qq.com/',
     target: /http:\/\/imgcache\.qq\.com\/.+mediaplugin\.swf/i,
     url: /http:\/\/v\.qq\.com\//i,
     hasPlayer: false,
@@ -250,8 +236,6 @@ var SiteLists = {
     },
   },
   '163': {
-    label: '163.com',
-    tooltiptext: 'http://v.163.com/',
     target: /http:\/\/v\.163\.com\/.+player.+\.swf/i,
     url: /http:\/\/v\.163\.com\//i,
     hasPlayer: false,
@@ -267,8 +251,6 @@ var SiteLists = {
     },
   },
   'sina': {
-    label: 'Sina.com.cn',
-    tooltiptext: 'http://video.sina.com.cn/',
     target: /http:\/\/[^/]+\.sina\.com\.cn\/.+player.+\.swf/i,
     url: /http:\/\/video\.+sina\.com\.cn\//i,
     hasPlayer: false,
@@ -589,15 +571,34 @@ var Toolbar = {
             tooltiptext: Utilities.GetStringFromName('forceUpdateDescription'),
           },
           S3: null,  // Menu separator
-          'referer-youku': {
-            label: Utilities.GetStringFromName('youkuRefererLabel'),
-            tooltiptext: Utilities.GetStringFromName('youkuRefererDescription'),
-          },
-          'referer-iqiyi': {
-            label: Utilities.GetStringFromName('iqiyiRefererLabel'),
-            tooltiptext: Utilities.GetStringFromName('iqiyiRefererDescription'),
-          },
         };
+
+        SiteLists['referer-youku'] = {
+          label: Utilities.GetStringFromName('youkuRefererLabel'),
+          tooltiptext: Utilities.GetStringFromName('youkuRefererDescription'),
+        };
+        SiteLists['referer-iqiyi'] = {
+          label: Utilities.GetStringFromName('iqiyiRefererLabel'),
+          tooltiptext: Utilities.GetStringFromName('iqiyiRefererDescription'),
+        };
+        SiteLists['youku'].label = Utilities.GetStringFromName('youkuSiteLabel');
+        SiteLists['youku'].tooltiptext = 'http://www.youku.com/';
+        SiteLists['tudou'].label = Utilities.GetStringFromName('tudouSiteLabel');
+        SiteLists['tudou'].tooltiptext = 'http://www.tudou.com/';
+        SiteLists['iqiyi'].label = Utilities.GetStringFromName('iqiyiSiteLabel');
+        SiteLists['iqiyi'].tooltiptext = 'http://www.iqiyi.com/';
+        SiteLists['letv'].label = Utilities.GetStringFromName('letvSiteLabel');
+        SiteLists['letv'].tooltiptext = 'http://www.letv.com/';
+        SiteLists['sohu'].label = Utilities.GetStringFromName('sohuSiteLabel');
+        SiteLists['sohu'].tooltiptext = 'http://tv.sohu.com/';
+        SiteLists['pptv'].label = Utilities.GetStringFromName('pptvSiteLabel');
+        SiteLists['pptv'].tooltiptext = 'http://www.pptv.com/';
+        SiteLists['qq'].label = Utilities.GetStringFromName('qqSiteLabel');
+        SiteLists['qq'].tooltiptext = 'http://v.qq.com/';
+        SiteLists['163'].label = Utilities.GetStringFromName('163SiteLabel');
+        SiteLists['163'].tooltiptext = 'http://v.163.com/';
+        SiteLists['sina'].label = Utilities.GetStringFromName('sinaSiteLabel');
+        SiteLists['sina'].tooltiptext = 'http://video.sina.com.cn/';
 
         var nLists = {
           'player': {
@@ -636,12 +637,22 @@ var Toolbar = {
             aItem.setAttribute('label', aLists[i].label);
             aItem.setAttribute('tooltiptext', aLists[i].tooltiptext);
             aItem.setAttribute('class', 'menuitem-iconic');
-            if (i == 'remote' || i == 'referer-youku' || i == 'referer-iqiyi') aItem.setAttribute('type', 'checkbox');
+            if (i == 'remote') aItem.setAttribute('type', 'checkbox');
             aPopup.appendChild(aItem);
           }
         }
 
         for (var x in SiteLists) {
+          if (SiteLists[x].hasReferer) {
+            var rItem = aDocument.createElement('menu');
+            rItem.setAttribute('id', 'sowatchmk2-referer-' + x);
+            rItem.setAttribute('label', SiteLists['referer-' + x].label);
+            rItem.setAttribute('tooltiptext', SiteLists['referer-' + x].tooltiptext);
+            rItem.setAttribute('class', 'menuitem-iconic');
+            rItem.setAttribute('type', 'checkbox');
+            aPopup.appendChild(rItem);
+		  }
+
           var xItem = aDocument.createElement('menu');
           xItem.setAttribute('id', 'sowatchmk2-' + x);
           xItem.setAttribute('label', SiteLists[x].label);
@@ -660,8 +671,8 @@ var Toolbar = {
             nItem.setAttribute('tooltiptext', nLists[n].tooltiptext);
             nItem.setAttribute('type', 'radio');
             nItem.setAttribute('name', x);
-            if ((x == 'qq' || x == '163' || x == 'sina') && n == 'player') nItem.setAttribute('disabled', 'true');
-            if ((x == 'iqiyi') && n == 'filter') nItem.setAttribute('disabled', 'true');
+            if (!SiteLists[x].hasPlayer && n == 'player') nItem.setAttribute('disabled', 'true');
+            if (!SiteLists[x].hasFilter && n == 'filter') nItem.setAttribute('disabled', 'true');
             xPopup.appendChild(nItem);
           }
         }
@@ -686,10 +697,11 @@ var Toolbar = {
         if (aEvent.target.id == 'sowatchmk2-forceupdate') QueryFiles.start('yes');
 
         for (var x in SiteLists) {
-          if (aEvent.target.id == 'sowatchmk2-referer-' + x) {
-            if (!SiteLists[x].hasReferer) continue;
-            if (Preferences.getBool(PrefValue['referer-' + x].pref)) Preferences.setBool(PrefValue['referer-' + x].pref, false);
-            else Preferences.setBool(PrefValue['referer-' + x].pref, true);
+          if (SiteLists[x].hasReferer) {
+            if (aEvent.target.id == 'sowatchmk2-referer-' + x) {
+              if (Preferences.getBool(PrefValue['referer-' + x].pref)) Preferences.setBool(PrefValue['referer-' + x].pref, false);
+              else Preferences.setBool(PrefValue['referer-' + x].pref, true);
+            }
           }
 
           if (aEvent.target.id == 'sowatchmk2-' + x + '-player') {
