@@ -432,9 +432,9 @@ var Preferences = {
   },
   manifest: function () {
     for (var i in SiteLists) {
-      if ('getPlayer' in SiteLists) SiteLists[i].getPlayer();
-      if ('getFilter' in SiteLists) SiteLists[i].getFilter();
-      if ('getReferer' in SiteLists) SiteLists[i].getReferer();
+      if ('getPlayer' in SiteLists[i]) SiteLists[i].getPlayer();
+      if ('getFilter' in SiteLists[i]) SiteLists[i].getFilter();
+      if ('getReferer' in SiteLists[i]) SiteLists[i].getReferer();
     }
 
     if (this.getBool(PrefValue['referer-youku'].pref)) SiteLists['youku'].setReferer('on');
