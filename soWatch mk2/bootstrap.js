@@ -430,7 +430,7 @@ var Preferences = {
   },
   manifest: function () {
 /**  Minor tweak on pref > rule. If nothing special is required, There's need to modify.
-     微调参数于规则间的关系。如果新加网站不需要特殊规则可以不管这部分  */
+     微调参数与规则间的关系。如果新加网站不需要特殊规则可以不管这部分  */
     if ((this.getChar(PrefValue['youku'].pref) == 'filter' && this.getChar(PrefValue['tudou'].pref) == 'none') || (this.getChar(PrefValue['youku'].pref) == 'none' && this.getChar(PrefValue['tudou'].pref) == 'filter')) {
       this.setChar(PrefValue['youku'].pref, 'filter');
       this.setChar(PrefValue['tudou'].pref, 'filter');
@@ -570,8 +570,8 @@ var Toolbar = {
             tooltiptext: Utilities.GetStringFromName('remoteAccessDescription'),
           },
           'autoupdate': {
-            label: Utilities.GetStringFromName('updatePlayerLabel'),
-            tooltiptext: Utilities.GetStringFromName('updatePlayerDescription'),
+            label: Utilities.GetStringFromName('autoUpdateLabel'),
+            tooltiptext: Utilities.GetStringFromName('autoUpdateDescription'),
           },
           S2: null, // Menu separator
           'checkupdate': {
