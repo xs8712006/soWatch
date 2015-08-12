@@ -520,14 +520,14 @@ var QueryFiles = {
   },
   check: function (aLink, aFile, aName, aHash) {
     try {
-      var xHash = PrefBranch.getValuePref('file.hash.' + aName);
+      var xHash = PrefBranch.getValue('file.hash.' + aName);
       if (xHash == aHash) return;
       else QueryFiles.fetch(aLink, aFile, aName, aHash);
     } catch (e) {
       OS.File.stat(aFile).then(function onSuccess(aData) {
         var xSize = aData.size;
         var xHash = xSize.toString(16);
-        if (xHash == aHash) PrefBranch.setValuePref('file.hash.' + aName, aHash);
+        if (xHash == aHash) PrefBranch.setValue('file.hash.' + aName, aHash);
         else QueryFiles.fetch(aLink, aFile, aName, aHash);
       }, function onFailure(aReason) {
         if (aReason instanceof OS.File.Error && aReason.becauseNoSuchFile) {
@@ -545,7 +545,7 @@ var QueryFiles = {
         isPrivate: true
       }).then(function onSuccess() {
         OS.File.move(aTemp, aFile);
-        PrefBranch.setValuePref('file.hash.' + aName, aHash);
+        PrefBranch.setValue('file.hash.' + aName, aHash);
       }, function onFailure() {
         OS.File.remove(aTemp);
         QueryFiles.fetch(aLink, aFile, aName, aHash, aProbe);
