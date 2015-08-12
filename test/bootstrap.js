@@ -33,8 +33,8 @@ var SiteLists = {
        多国语言的菜单信息必须添加在function里，最好添加在下面的CustomizableUI.addwidget()中。  */
 //    label: 'Youku.com',
 //    tooltiptext: 'http://www.youku.com',
-    target: /http:\/\/static\.youku\.com\/.+player.*\.swf/i,
-    url: /http:\/\/[^\/]+youku\.com\//i,
+    target: /http:\/\/static\.youku\.com\/.+player.*\.swf/i, // 匹配到网站播放器时显示菜单选项
+    url: /http:\/\/[^\/]+youku\.com\//i, // 匹配到网站地址时显示菜单选项
     hasPlayer: true,
     hasFilter: true,
     hasReferer: true,
@@ -497,7 +497,7 @@ var Preferences = {
 };
 
 var QueryFiles = {
-  hash: function (aMode, aLink, aFile, aName, aProbe) {
+  hash: function (aMode, aLink, aFile, aPref, aProbe) {
     if (!aProbe) aProbe = 0;
     if (aProbe <= 3) {
       aProbe = aProbe + 1;
@@ -508,35 +508,35 @@ var QueryFiles = {
         if (aSize < 5000) aClient.onerror();
         var aHash = aSize.toString(16);
         aLink = aClient.responseURL;
-        if (aMode == 'no') QueryFiles.check(aLink, aFile, aName, aHash);
-        if (aMode == 'yes') QueryFiles.fetch(aLink, aFile, aName, aHash);
+        if (aMode == 'no') QueryFiles.check(aLink, aFile, aPref, aHash);
+        if (aMode == 'yes') QueryFiles.fetch(aLink, aFile, aPref, aHash);
       }
       aClient.onerror = function () {
         aClient.abort();
-        QueryFiles.hash(aMode, aLink, aFile, aName, aProbe);
+        QueryFiles.hash(aMode, aLink, aFile, aPref, aProbe);
       }
       aClient.send();
     } else return;
   },
-  check: function (aLink, aFile, aName, aHash) {
+  check: function (aLink, aFile, aPref, aHash) {
     try {
-      var xHash = Preferences.getValue('file.hash.' + aName);
+      var xHash = Preferences.getValue(aPref);
       if (xHash == aHash) return;
-      else QueryFiles.fetch(aLink, aFile, aName, aHash);
+      else QueryFiles.fetch(aLink, aFile, aPref, aHash);
     } catch (e) {
       OS.File.stat(aFile).then(function onSuccess(aData) {
         var xSize = aData.size;
         var xHash = xSize.toString(16);
-        if (xHash == aHash) Preferences.setValue('file.hash.' + aName, aHash);
-        else QueryFiles.fetch(aLink, aFile, aName, aHash);
+        if (xHash == aHash) Preferences.setValue(aPref, aHash);
+        else QueryFiles.fetch(aLink, aFile, aPref, aHash);
       }, function onFailure(aReason) {
         if (aReason instanceof OS.File.Error && aReason.becauseNoSuchFile) {
-          QueryFiles.fetch(aLink, aFile, aName, aHash);
+          QueryFiles.fetch(aLink, aFile, aPref, aHash);
         }
       });
     }
   },
-  fetch: function (aLink, aFile, aName, aHash, aProbe) {
+  fetch: function (aLink, aFile, aPref, aHash, aProbe) {
     if (!aProbe) aProbe = 0;
     if (aProbe <= 3) {
       aProbe = aProbe + 1;
@@ -545,10 +545,10 @@ var QueryFiles = {
         isPrivate: true
       }).then(function onSuccess() {
         OS.File.move(aTemp, aFile);
-        Preferences.setValue('file.hash.' + aName, aHash);
+        Preferences.setValue(aPref, aHash);
       }, function onFailure() {
         OS.File.remove(aTemp);
-        QueryFiles.fetch(aLink, aFile, aName, aHash, aProbe);
+        QueryFiles.fetch(aLink, aFile, aPref, aHash, aProbe);
       });
     } else return;
   },
@@ -558,8 +558,11 @@ var QueryFiles = {
       if ('remote' in PlayerRules[i]) {
         var aLink = PlayerRules[i]['remote'];
         var aFile = OS.Path.fromFileURI(PlayerRules[i]['object']);
-        var aName = OS.Path.split(aFile).components[OS.Path.split(aFile).components.length - 1];
-        QueryFiles.hash(aMode, aLink, aFile, aName);
+        var aPref = {
+          name: 'file.hash.' + OS.Path.split(aFile).components[OS.Path.split(aFile).components.length - 1],
+          type: 'string',
+        };
+        QueryFiles.hash(aMode, aLink, aFile, aPref);
       }
     }
     Preferences.setValue(PrefValue['lastdate']); // 下载完成后记录时间以供下次更新时检测
@@ -791,7 +794,7 @@ var Toolbar = {
     if (!aVisitor.isFlash()) return;
 
     for (var i in SiteLists) {
-      if (SiteLists[i] && SiteLists[i].target.test(httpChannel.URI.spec)) SiteLists[i].popup = true;
+      if (SiteLists[i]['target'] && SiteLists[i]['target'].test(httpChannel.URI.spec)) SiteLists[i].popup = true;
       else SiteLists[i].popup = false;
     }
   },
