@@ -29,10 +29,10 @@ var SiteLists = {
 /**  Template sample to add new site
      请参考下面模板添加新的网站  */
   'youku': {
-/**  If no multilingual label & tooltiptext is needed, you can add them here directly
-     如果菜单信息不需要做多国语言，那么你可以直接在下面添加。  */
-//    label: 'some text',
-//    tooltiptext: 'some text',
+  /**  Multilingual label & tooltiptext must be addded in function better in CustomizableUI.addwidget()
+       多国语言的菜单信息必须添加在function里，最好添加在下面的CustomizableUI.addwidget()中。  */
+//    label: 'Youku.com',
+//    tooltiptext: 'http://www.youku.com',
     target: /http:\/\/static\.youku\.com\/.+player.*\.swf/i,
     url: /http:\/\/[^\/]+youku\.com\//i,
     hasPlayer: true,
@@ -400,7 +400,7 @@ var Preferences = {
     }
   },
   setValue: function (aPref, aValue) {
-    if (!aValue) aValue = aPref.value;
+    if (aValue == undefined) aValue = aPref.value;
     if (aPref.type == 'bool') {
       PrefBranch.setBoolPref(aPref.name, aValue);
     }
@@ -498,7 +498,7 @@ var Preferences = {
 
 var QueryFiles = {
   hash: function (aMode, aLink, aFile, aName, aProbe) {
-    if (!aProbe) var aProbe = 0;
+    if (!aProbe) aProbe = 0;
     if (aProbe <= 3) {
       aProbe = aProbe + 1;
       var aClient = Components.classes['@mozilla.org/xmlextras/xmlhttprequest;1'].createInstance(Components.interfaces.nsIXMLHttpRequest);
@@ -520,14 +520,14 @@ var QueryFiles = {
   },
   check: function (aLink, aFile, aName, aHash) {
     try {
-      var xHash = PrefBranch.getValue('file.hash.' + aName);
+      var xHash = Preferences.getValue('file.hash.' + aName);
       if (xHash == aHash) return;
       else QueryFiles.fetch(aLink, aFile, aName, aHash);
     } catch (e) {
       OS.File.stat(aFile).then(function onSuccess(aData) {
         var xSize = aData.size;
         var xHash = xSize.toString(16);
-        if (xHash == aHash) PrefBranch.setValue('file.hash.' + aName, aHash);
+        if (xHash == aHash) Preferences.setValue('file.hash.' + aName, aHash);
         else QueryFiles.fetch(aLink, aFile, aName, aHash);
       }, function onFailure(aReason) {
         if (aReason instanceof OS.File.Error && aReason.becauseNoSuchFile) {
@@ -537,7 +537,7 @@ var QueryFiles = {
     }
   },
   fetch: function (aLink, aFile, aName, aHash, aProbe) {
-    if (!aProbe) var aProbe = 0;
+    if (!aProbe) aProbe = 0;
     if (aProbe <= 3) {
       aProbe = aProbe + 1;
       var aTemp = aFile + '_sw'; // 因为Downloads.jsm并不能直接覆盖原文件所以需要使用临时文件
@@ -545,7 +545,7 @@ var QueryFiles = {
         isPrivate: true
       }).then(function onSuccess() {
         OS.File.move(aTemp, aFile);
-        PrefBranch.setValue('file.hash.' + aName, aHash);
+        Preferences.setValue('file.hash.' + aName, aHash);
       }, function onFailure() {
         OS.File.remove(aTemp);
         QueryFiles.fetch(aLink, aFile, aName, aHash, aProbe);
