@@ -435,6 +435,15 @@ var Preferences = {
 /**  Minor tweak on pref > rule. If nothing special is required, There's need to tweak those codes.
      微调参数与规则间的关系。如果新加网站不需要特殊规则可以不管这部分代码  */
   manifest: function () {
+  /** Since 'youku' and 'tudou' share the same filter rule, so there couldn't be filter/none in pref
+      由于优酷与土豆的filter共用，所以必须限制不出现其中一个是filter而另一个是none的参数 */
+    if ((this.getValue(SiteLists['youku']) == 'filter' && this.getValue(SiteLists['tudou']) == 'none') || (this.getValue(SiteLists['youku']) == 'none' && this.getValue(SiteLists['tudou']) == 'filter')) {
+      this.setValue(SiteLists['youku'], 'filter');
+      this.setValue(SiteLists['tudou'], 'filter');
+    }
+  /** Special code end
+      特殊代码完毕 */
+
     for (var i in SiteLists) {
       if (SiteLists[i].hasReferer) {
         try {
@@ -469,15 +478,6 @@ var Preferences = {
       if (this.getValue(SiteLists[i]) == 'player' || this.getValue(SiteLists[i]) == 'filter' || this.getValue(SiteLists[i]) == 'none') continue;
       else this.setValue(SiteLists[i]);
     }
-
-  /** Since 'youku' and 'tudou' share the same filter rule, so there couldn't be filter/none in pref
-      由于优酷与土豆的filter共用，所以必须限制不出现其中一个是filter而另一个是none的参数 */
-    if ((this.getValue(SiteLists['youku']) == 'filter' && this.getValue(SiteLists['tudou']) == 'none') || (this.getValue(SiteLists['youku']) == 'none' && this.getValue(SiteLists['tudou']) == 'filter')) {
-      this.setValue(SiteLists['youku'], 'filter');
-      this.setValue(SiteLists['tudou'], 'filter');
-    }
-  /** Special code end
-      特殊代码完毕 */
   },
   setDefault: function () {
     for (var i in PrefValue) {
