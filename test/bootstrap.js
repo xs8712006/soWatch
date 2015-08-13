@@ -31,13 +31,23 @@ var SiteLists = {
   'youku': {
   /**  Multilingual label & tooltiptext must be addded in function better in CustomizableUI.addwidget()
        多国语言的菜单信息必须添加在function里，最好添加在下面的CustomizableUI.addwidget()中。  */
-//    label: 'Youku.com',
-//    tooltiptext: 'http://www.youku.com',
+//  label: 'Youku.com',
+//  tooltiptext: 'http://www.youku.com',
     target: /http:\/\/static\.youku\.com\/.+player.*\.swf/i, // 匹配到网站播放器时显示菜单选项
     url: /http:\/\/[^\/]+youku\.com\//i, // 匹配到网站地址时显示菜单选项
+    name: 'rule.youku.defined',
+    type: 'string',
+    value: 'filter',
     hasPlayer: true,
     hasFilter: true,
-    hasReferer: true,
+    hasReferer: true, // true:请按照下面格式添加referer参数
+    referer: {
+//    label: 'Youku Referer',
+//    tooltiptext: 'Spoofing HTTP Referer of Youku.com',
+      name: 'referer.youku.enabled',
+	  type: 'bool',
+      value: true,
+    },
     getPlayer: function () {
       PlayerRules['youku_loader'] = {
         object: FileIO.path + 'loader.swf',
@@ -77,6 +87,9 @@ var SiteLists = {
   'tudou': {
     target: /http:\/\/js\.tudouui\.com\/.+player.+\.swf/i,
     url: /http:\/\/[^\/]+tudou\.com\//i,
+    name: 'rule.tudou.defined',
+    type: 'string',
+    value: 'filter',
     hasPlayer: true,
     hasFilter: true,
     hasReferer: false,
@@ -113,9 +126,17 @@ var SiteLists = {
   'iqiyi': {
     target: /http:\/\/www\.iqiyi\.com\/.+\/(Main|Share|Enjoy)Player.+\.swf/i,
     url: /http:\/\/[^\/]+(iqiyi\.com)\//i,
+    name: 'rule.iqiyi.defined',
+    type: 'string',
+    value: 'player',
     hasPlayer: true,
     hasFilter: false,
     hasReferer: true,
+    referer: {
+      name: 'referer.iqiyi.enabled',
+	  type: 'bool',
+      value: true,
+    },
     getPlayer: function () {
       PlayerRules['iqiyi5'] = {
         object: FileIO.path + 'iqiyi5.swf',
@@ -145,6 +166,9 @@ var SiteLists = {
   'letv': {
     target: /http:\/\/player\.letvcdn\.com\/.+player\.swf/i,
     url: /http:\/\/[^\/]+letv\.com\//i,
+    name: 'rule.letv.defined',
+    type: 'string',
+    value: 'filter',
     hasPlayer: true,
     hasFilter: true,
     hasReferer: false,
@@ -175,6 +199,9 @@ var SiteLists = {
   'sohu': {
     target: /http:\/\/tv\.sohu\.com\/.+main\.swf/i,
     url: /http:\/\/(tv\.sohu|[^\/]+56)\.com\//i,
+    name: 'rule.sohu.defined',
+    type: 'string',
+    value: 'filter',
     hasPlayer: true,
     hasFilter: true,
     hasReferer: false,
@@ -200,6 +227,9 @@ var SiteLists = {
   'pptv': {
     target: /http:\/\/player\.pplive\.cn\/.+(player|live).+\.swf/i,
     url: /http:\/\/[^\/]+pptv\.com\//i,
+    name: 'rule.pptv.defined',
+    type: 'string',
+    value: 'player',
     hasPlayer: true,
     hasFilter: true,
     hasReferer: false,
@@ -231,6 +261,9 @@ var SiteLists = {
   'qq': {
     target: /http:\/\/imgcache\.qq\.com\/.+mediaplugin\.swf/i,
     url: /http:\/\/v\.qq\.com\//i,
+    name: 'rule.qq.defined',
+    type: 'string',
+    value: 'filter',
     hasPlayer: false,
     hasFilter: true,
     hasReferer: false,
@@ -246,6 +279,9 @@ var SiteLists = {
   '163': {
     target: /http:\/\/v\.163\.com\/.+player.+\.swf/i,
     url: /http:\/\/v\.163\.com\//i,
+    name: 'rule.163.defined',
+    type: 'string',
+    value: 'filter',
     hasPlayer: false,
     hasFilter: true,
     hasReferer: false,
@@ -261,6 +297,9 @@ var SiteLists = {
   'sina': {
     target: /http:\/\/[^/]+\.sina\.com\.cn\/.+player.+\.swf/i,
     url: /http:\/\/video\.+sina\.com\.cn\//i,
+    name: 'rule.sina.defined',
+    type: 'string',
+    value: 'filter',
     hasPlayer: false,
     hasFilter: true,
     hasReferer: false,
@@ -316,65 +355,6 @@ var PrefValue = {
     name: 'remote.server.bitbucket',
     type: 'string',
     value: 'https://bitbucket.org/kafan15536900/haoutil/raw/master/player/testmod/',
-  },
-  'referer-youku': {
-    name: 'referer.youku.enabled',
-    type: 'bool',
-    value: true,
-  },
-  'referer-iqiyi': {
-    name: 'referer.iqiyi.enabled',
-    type: 'bool',
-    value: true,
-  },
-/**  When new site is added, you must add pref value for it
-     当你添加新的网站，你必须为其添加参数  */
-  'youku': {
-    name: 'rule.youku.defined',
-    type: 'string',
-    value: 'filter',
-  },
-/**  Pref sample end
-     参数样例完毕  */
-  'tudou': {
-    name: 'rule.tudou.defined',
-    type: 'string',
-    value: 'filter',
-  },
-  'iqiyi': {
-    name: 'rule.iqiyi.defined',
-    type: 'string',
-    value: 'player',
-  },
-  'letv': {
-    name: 'rule.letv.defined',
-    type: 'string',
-    value: 'filter',
-  },
-  'sohu': {
-    name: 'rule.sohu.defined',
-    type: 'string',
-    value: 'filter',
-  },
-  'pptv': {
-    name: 'rule.pptv.defined',
-    type: 'string',
-    value: 'player',
-  },
-  'qq': {
-    name: 'rule.qq.defined',
-    type: 'string',
-    value: 'filter',
-  },
-  '163': {
-    name: 'rule.163.defined',
-    type: 'string',
-    value: 'filter',
-  },
-  'sina': {
-    name: 'rule.sina.defined',
-    type: 'string',
-    value: 'filter',
   },
   'toolbar': {
     name: 'general.interface.enabled',
@@ -442,41 +422,6 @@ var Preferences = {
       if (this.getValue(PrefValue['lastdate']) + this.getValue(PrefValue['period']) * 86400 < Date.now() / 1000) QueryFiles.start('no');
     }
 
-    this.manifest();
-  },
-  manifest: function () {
-/**  Minor tweak on pref > rule. If nothing special is required, There's need to modify.
-     微调参数与规则间的关系。如果新加网站不需要特殊规则可以不管这部分  */
-    if ((this.getValue(PrefValue['youku']) == 'filter' && this.getValue(PrefValue['tudou']) == 'none') || (this.getValue(PrefValue['youku']) == 'none' && this.getValue(PrefValue['tudou']) == 'filter')) {
-      this.setValue(PrefValue['youku'], 'filter');
-      this.setValue(PrefValue['tudou'], 'filter');
-    }
-
-    for (var i in SiteLists) {
-      if (SiteLists[i].hasReferer) {
-        SiteLists[i].getReferer();
-        if (this.getValue(PrefValue['referer-' + i])) SiteLists[i].setReferer('on')
-        else SiteLists[i].setReferer('off');
-      }
-
-      if (SiteLists[i].hasPlayer) {
-        SiteLists[i].getPlayer();
-        if (this.getValue(PrefValue[i]) == 'player') SiteLists[i].setPlayer('on');
-        else SiteLists[i].setPlayer('off');
-      }
-
-      if (SiteLists[i].hasFilter) {
-        SiteLists[i].getFilter();
-        if (this.getValue(PrefValue[i]) == 'filter') SiteLists[i].setFilter('on');
-        else SiteLists[i].setFilter('off');
-      }
-      
-      if (this.getValue(PrefValue[i]) == 'player' || this.getValue(PrefValue[i]) == 'filter' || this.getValue(PrefValue[i]) == 'none') continue;
-      else this.setValue(PrefValue[i]);
-    }
-/**  Pref > rule end
-     规则参数完毕  */
-
     if (this.getValue(PrefValue['toolbar'])) Toolbar.addIcon();
     else Toolbar.removeIcon();
 
@@ -485,10 +430,55 @@ var Preferences = {
       this.setValue(PrefValue['firstrun'], true);
     }
   },
+/**  Minor tweak on pref > rule. If nothing special is required, There's need to modify.
+     微调参数与规则间的关系。如果新加网站不需要特殊规则可以不管这部分  */
+  manifest: function () {
+    for (var i in SiteLists) {
+      try {
+        if (SiteLists[i].hasReferer) this.getValue(SiteLists[i]['referer']);
+        this.getValue(SiteLists[i]);
+      } catch (e) {
+        if (SiteLists[i].hasReferer) this.setValue(SiteLists[i]['referer']);
+        this.setValue(SiteLists[i]);
+      }
+    }
+
+    if ((this.getValue(SiteLists['youku']) == 'filter' && this.getValue(SiteLists['tudou']) == 'none') || (this.getValue(SiteLists['youku']) == 'none' && this.getValue(SiteLists['tudou']) == 'filter')) {
+      this.setValue(SiteLists['youku'], 'filter');
+      this.setValue(SiteLists['tudou'], 'filter');
+    }
+
+    for (var i in SiteLists) {
+      if (SiteLists[i].hasReferer) {
+        SiteLists[i].getReferer();
+        if (this.getValue(SiteLists[i]['referer'])) SiteLists[i].setReferer('on')
+        else SiteLists[i].setReferer('off');
+      }
+
+      if (SiteLists[i].hasPlayer) {
+        SiteLists[i].getPlayer();
+        if (this.getValue(SiteLists[i]) == 'player') SiteLists[i].setPlayer('on');
+        else SiteLists[i].setPlayer('off');
+      }
+
+      if (SiteLists[i].hasFilter) {
+        SiteLists[i].getFilter();
+        if (this.getValue(SiteLists[i]) == 'filter') SiteLists[i].setFilter('on');
+        else SiteLists[i].setFilter('off');
+      }
+      
+      if (this.getValue(SiteLists[i]) == 'player' || this.getValue(SiteLists[i]) == 'filter' || this.getValue(SiteLists[i]) == 'none') continue;
+      else this.setValue(SiteLists[i]);
+    }
+  },
   setDefault: function () {
     for (var i in PrefValue) {
       if (i == 'directory' || i == 'server' || i == 'firstrun' ) continue; // 这里是那些不受“恢复默认”功能限制的参数
       this.setValue(PrefValue[i]);
+    }
+    for (var i in SiteLists) {
+      if (SiteLists[i].hasReferer) this.setValue(SiteLists[i]['referer']);
+      this.setValue(SiteLists[i]);
     }
   },
   remove: function () {
@@ -606,10 +596,10 @@ var Toolbar = {
 
 /**  If hasReferer is true, you must add menuitem label & tooltiptext separately
      如果新网站hasReferer设置为true，你需要按照下面格式单独添加菜单信息  */
-        SiteLists['youku'].refererlabel = Utilities.GetStringFromName('youkuRefererLabel');
-        SiteLists['youku'].referertooltiptext = Utilities.GetStringFromName('youkuRefererDescription');
-        SiteLists['iqiyi'].refererlabel = Utilities.GetStringFromName('iqiyiRefererLabel');
-        SiteLists['iqiyi'].referertooltiptext = Utilities.GetStringFromName('iqiyiRefererDescription');
+        SiteLists['youku']['referer'].label = Utilities.GetStringFromName('youkuRefererLabel');
+        SiteLists['youku']['referer'].tooltiptext = Utilities.GetStringFromName('youkuRefererDescription');
+        SiteLists['iqiyi']['referer'].label = Utilities.GetStringFromName('iqiyiRefererLabel');
+        SiteLists['iqiyi']['referer'].tooltiptext = Utilities.GetStringFromName('iqiyiRefererDescription');
 /**  The sites listed in SiteLists,and their menu label & tooltiptext.
      请在下面添加SiteLists中的网站的菜单信息。  */
         SiteLists['youku'].label = Utilities.GetStringFromName('youkuSiteLabel');
@@ -677,8 +667,8 @@ var Toolbar = {
           if (SiteLists[x].hasReferer) {
             var rItem = aDocument.createElement('menuitem');
             rItem.setAttribute('id', 'sowatchmk2-referer-' + x);
-            rItem.setAttribute('label', SiteLists[x].refererlabel);
-            rItem.setAttribute('tooltiptext', SiteLists[x].referertooltiptext);
+            rItem.setAttribute('label', SiteLists[x]['referer'].label);
+            rItem.setAttribute('tooltiptext', SiteLists[x]['referer'].tooltiptext);
             rItem.setAttribute('class', 'menuitem-iconic');
             rItem.setAttribute('type', 'checkbox');
             aPopup.appendChild(rItem);
@@ -730,18 +720,20 @@ var Toolbar = {
         for (var x in SiteLists) {
           if (SiteLists[x].hasReferer) {
             if (aEvent.target.id == 'sowatchmk2-referer-' + x) {
-              if (Preferences.getValue(PrefValue['referer-' + x])) Preferences.setValue(PrefValue['referer-' + x], false);
-              else Preferences.setValue(PrefValue['referer-' + x], true);
+              if (Preferences.getValue(SiteLists[x]['referer'])) Preferences.setValue(SiteLists[x]['referer'], false);
+              else Preferences.setValue(SiteLists[x]['referer'], true);
             }
           }
 
           if (aEvent.target.id == 'sowatchmk2-' + x + '-player') {
             if (!SiteLists[x].hasPlayer) continue;
-            Preferences.setValue(PrefValue[x], 'player');
-          } else if (aEvent.target.id == 'sowatchmk2-' + x + '-filter') {
+            Preferences.setValue(SiteLists[x], 'player');
+          }
+          if (aEvent.target.id == 'sowatchmk2-' + x + '-filter') {
             if (!SiteLists[x].hasFilter) continue;
-            Preferences.setValue(PrefValue[x], 'filter');
-          } else if (aEvent.target.id == 'sowatchmk2-' + x + '-none') Preferences.setValue(PrefValue[x], 'none');
+            Preferences.setValue(SiteLists[x], 'filter');
+          }
+          if (aEvent.target.id == 'sowatchmk2-' + x + '-none') Preferences.setValue(SiteLists[x], 'none');
         }
       },
       onPopup: function (aEvent) {
@@ -764,15 +756,15 @@ var Toolbar = {
             }
 
             if (SiteLists[x].hasReferer) {
-              if (Preferences.getValue(PrefValue['referer-' + x])) aEvent.target.querySelector('#sowatchmk2-referer-' + x).setAttribute('checked', 'true');
+              if (Preferences.getValue(SiteLists[x]['referer'])) aEvent.target.querySelector('#sowatchmk2-referer-' + x).setAttribute('checked', 'true');
               else aEvent.target.querySelector('#sowatchmk2-referer-' + x).setAttribute('checked', 'false');
             }
           }
 
           if (aEvent.target.id == 'sowatchmk2-popup-' + x) {
-            if (Preferences.getValue(PrefValue[x]) == 'player') aEvent.target.querySelector('#sowatchmk2-' + x + '-player').setAttribute('checked', 'true');
-            else if (Preferences.getValue(PrefValue[x]) == 'filter') aEvent.target.querySelector('#sowatchmk2-' + x + '-filter').setAttribute('checked', 'true');
-            else if (Preferences.getValue(PrefValue[x]) == 'none') aEvent.target.querySelector('#sowatchmk2-' + x + '-none').setAttribute('checked', 'true');
+            if (Preferences.getValue(SiteLists[x]) == 'player') aEvent.target.querySelector('#sowatchmk2-' + x + '-player').setAttribute('checked', 'true');
+            else if (Preferences.getValue(SiteLists[x]) == 'filter') aEvent.target.querySelector('#sowatchmk2-' + x + '-filter').setAttribute('checked', 'true');
+            else if (Preferences.getValue(SiteLists[x]) == 'none') aEvent.target.querySelector('#sowatchmk2-' + x + '-none').setAttribute('checked', 'true');
           }
         }
       },
@@ -917,6 +909,7 @@ var Observers = {
   observe: function (aSubject, aTopic, aData) {
     if (aTopic == 'nsPref:changed') {
       Preferences.pending();
+      Preferences.manifest();
     }
     if (aTopic == 'http-on-modify-request') {
       RuleExecution.referer(aSubject);
