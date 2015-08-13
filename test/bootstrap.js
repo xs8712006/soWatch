@@ -29,7 +29,7 @@ var SiteLists = {
 /**  Template sample to add new site
      请参考下面模板添加新的网站  */
   'youku': {
-  /**  Multilingual label & tooltiptext must be addded in function better in CustomizableUI.addwidget()
+  /**  Multilingual label & tooltiptext must be addded in function, better in CustomizableUI.addwidget()
        多国语言的菜单信息必须添加在function里，最好添加在下面的CustomizableUI.addwidget()中。  */
 //  label: 'Youku.com',
 //  tooltiptext: 'http://www.youku.com',
@@ -45,7 +45,7 @@ var SiteLists = {
 //    label: 'Youku Referer',
 //    tooltiptext: 'Spoofing HTTP Referer of Youku.com',
       name: 'referer.youku.enabled',
-	  type: 'bool',
+      type: 'bool',
       value: true,
     },
     getPlayer: function () {
@@ -134,7 +134,7 @@ var SiteLists = {
     hasReferer: true,
     referer: {
       name: 'referer.iqiyi.enabled',
-	  type: 'bool',
+      type: 'bool',
       value: true,
     },
     getPlayer: function () {
@@ -430,46 +430,52 @@ var Preferences = {
       this.setValue(PrefValue['firstrun'], true);
     }
   },
-/**  Minor tweak on pref > rule. If nothing special is required, There's need to modify.
-     微调参数与规则间的关系。如果新加网站不需要特殊规则可以不管这部分  */
+/**  Minor tweak on pref > rule. If nothing special is required, There's need to tweak those codes.
+     微调参数与规则间的关系。如果新加网站不需要特殊规则可以不管这部分代码  */
   manifest: function () {
     for (var i in SiteLists) {
+      if (SiteLists[i].hasReferer) {
+        try {
+          this.getValue(SiteLists[i]['referer']);
+        } catch (e) {
+          this.setValue(SiteLists[i]['referer']);
+        } finally {
+          SiteLists[i].getReferer();
+          if (this.getValue(SiteLists[i]['referer'])) SiteLists[i].setReferer('on')
+          else SiteLists[i].setReferer('off');
+        }
+      }
+
       try {
-        if (SiteLists[i].hasReferer) this.getValue(SiteLists[i]['referer']);
         this.getValue(SiteLists[i]);
       } catch (e) {
-        if (SiteLists[i].hasReferer) this.setValue(SiteLists[i]['referer']);
         this.setValue(SiteLists[i]);
+      } finally {
+        if (SiteLists[i].hasPlayer) {
+          SiteLists[i].getPlayer();
+          if (this.getValue(SiteLists[i]) == 'player') SiteLists[i].setPlayer('on');
+          else SiteLists[i].setPlayer('off');
+        }
+
+        if (SiteLists[i].hasFilter) {
+          SiteLists[i].getFilter();
+          if (this.getValue(SiteLists[i]) == 'filter') SiteLists[i].setFilter('on');
+          else SiteLists[i].setFilter('off');
+        }
       }
+
+      if (this.getValue(SiteLists[i]) == 'player' || this.getValue(SiteLists[i]) == 'filter' || this.getValue(SiteLists[i]) == 'none') continue;
+      else this.setValue(SiteLists[i]);
     }
 
+  /** Since 'youku' and 'tudou' share the same filter rule, so there couldn't be filter/none in pref
+      由于优酷与土豆的filter共用，所以必须限制不出现其中一个是filter而另一个是none的参数 */
     if ((this.getValue(SiteLists['youku']) == 'filter' && this.getValue(SiteLists['tudou']) == 'none') || (this.getValue(SiteLists['youku']) == 'none' && this.getValue(SiteLists['tudou']) == 'filter')) {
       this.setValue(SiteLists['youku'], 'filter');
       this.setValue(SiteLists['tudou'], 'filter');
     }
-
-    for (var i in SiteLists) {
-      if (SiteLists[i].hasReferer) {
-        SiteLists[i].getReferer();
-        if (this.getValue(SiteLists[i]['referer'])) SiteLists[i].setReferer('on')
-        else SiteLists[i].setReferer('off');
-      }
-
-      if (SiteLists[i].hasPlayer) {
-        SiteLists[i].getPlayer();
-        if (this.getValue(SiteLists[i]) == 'player') SiteLists[i].setPlayer('on');
-        else SiteLists[i].setPlayer('off');
-      }
-
-      if (SiteLists[i].hasFilter) {
-        SiteLists[i].getFilter();
-        if (this.getValue(SiteLists[i]) == 'filter') SiteLists[i].setFilter('on');
-        else SiteLists[i].setFilter('off');
-      }
-      
-      if (this.getValue(SiteLists[i]) == 'player' || this.getValue(SiteLists[i]) == 'filter' || this.getValue(SiteLists[i]) == 'none') continue;
-      else this.setValue(SiteLists[i]);
-    }
+  /** Special code end
+      特殊代码完毕 */
   },
   setDefault: function () {
     for (var i in PrefValue) {
@@ -600,7 +606,7 @@ var Toolbar = {
         SiteLists['youku']['referer'].tooltiptext = Utilities.GetStringFromName('youkuRefererDescription');
         SiteLists['iqiyi']['referer'].label = Utilities.GetStringFromName('iqiyiRefererLabel');
         SiteLists['iqiyi']['referer'].tooltiptext = Utilities.GetStringFromName('iqiyiRefererDescription');
-/**  The sites listed in SiteLists,and their menu label & tooltiptext.
+/**  The sites listed in SiteLists, and menu label & tooltiptext.
      请在下面添加SiteLists中的网站的菜单信息。  */
         SiteLists['youku'].label = Utilities.GetStringFromName('youkuSiteLabel');
         SiteLists['youku'].tooltiptext = 'http://www.youku.com/';
