@@ -429,6 +429,8 @@ var Preferences = {
       QueryFiles.start('no');
       this.setValue(PrefValue['firstrun'], true);
     }
+
+    this.manifest();
   },
 /**  Minor tweak on pref > rule. If nothing special is required, There's need to tweak those codes.
      微调参数与规则间的关系。如果新加网站不需要特殊规则可以不管这部分代码  */
@@ -915,7 +917,6 @@ var Observers = {
   observe: function (aSubject, aTopic, aData) {
     if (aTopic == 'nsPref:changed') {
       Preferences.pending();
-      Preferences.manifest();
     }
     if (aTopic == 'http-on-modify-request') {
       RuleExecution.referer(aSubject);
