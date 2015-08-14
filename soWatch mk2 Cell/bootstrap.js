@@ -29,7 +29,7 @@ var Adapter = {
 /** Some sites have shared player/filter just like 'youku' and 'tudou', use the template to match them;
     一些网站像优酷与土豆一样共用player或filter，请参考下面的模板进行匹配 */
   groupA: {
-    site: ['youku', 'tudou'],
+    site: ['youku', 'tudou'], // 列举在第一个的享有优先权，改动它的参数会根据绑定的不同影响其他站点的参数。
     pref: 'filter',
   }
 };
@@ -477,12 +477,12 @@ var Preferences = {
       for (var x in aSite) {
         for (var n in aSite) {
           if (x != n && aPref == 'player') {
-            if (this.getValue(SiteLists[aSite[x]]) == 'player') this.setValue(SiteLists[aSite[n]], 'player');
-            if (this.getValue(SiteLists[aSite[x]]) == 'filter') this.setValue(SiteLists[aSite[n]], 'filter');
-            if (this.getValue(SiteLists[aSite[x]]) == 'none') this.setValue(SiteLists[aSite[n]], 'none');
+            if (this.getValue(SiteLists[aSite[x]]) == 'player' && this.getValue(SiteLists[aSite[n]]) != 'player') this.setValue(SiteLists[aSite[n]], 'player');
+            if (this.getValue(SiteLists[aSite[x]]) != 'player' && this.getValue(SiteLists[aSite[n]]) == 'player') this.setValue(SiteLists[aSite[n]], this.getValue(SiteLists[aSite[x]]));
           }
           if (x != n && aPref == 'filter') {
             if (this.getValue(SiteLists[aSite[x]]) == 'filter' && this.getValue(SiteLists[aSite[n]]) == 'none') this.setValue(SiteLists[aSite[n]], 'filter');
+            if (this.getValue(SiteLists[aSite[x]]) == 'none' && this.getValue(SiteLists[aSite[n]]) == 'filter') this.setValue(SiteLists[aSite[n]], 'none');
           }
         }
       }
