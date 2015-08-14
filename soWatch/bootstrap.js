@@ -1,9 +1,9 @@
 'use strict';
 
-Components.utils.import('resource:///modules/CustomizableUI.jsm'); //Require Gecko 29 and later
-Components.utils.import('resource://gre/modules/osfile.jsm'); //Require Gecko 27 and later
-Components.utils.import('resource://gre/modules/Downloads.jsm'); //Require Gecko 26 and later
-Components.utils.import('resource://gre/modules/NetUtil.jsm'); //Promise chain that require Gecko 25 and later
+Components.utils.import('resource:///modules/CustomizableUI.jsm'); // Require Gecko 29 and later
+Components.utils.import('resource://gre/modules/osfile.jsm'); // Require Gecko 27 and later
+Components.utils.import('resource://gre/modules/Downloads.jsm'); // Require Gecko 26 and later
+Components.utils.import('resource://gre/modules/NetUtil.jsm'); // Promise chain that require Gecko 25 and later
 
 var Utilities = {}, PlayerRules = {}, FilterRules = {}, RefererRules = {};
 
@@ -29,6 +29,10 @@ var SiteLists = {
 /**  Template sample to add new site
      请参考下面模板添加新的网站  */
   'youku': {
+  /**  Multilingual label & tooltiptext must be addded in function, better in CustomizableUI.addwidget()
+       多国语言的菜单信息必须添加在function里，最好添加在下面的CustomizableUI.addwidget()中。  */
+//  label: 'Youku.com',
+//  tooltiptext: 'http://www.youku.com',
     hasPlayer: true,
     hasFilter: true,
     hasReferer: true,
@@ -202,88 +206,96 @@ var SiteLists = {
 var PrefBranch = Services.prefs.getBranch('extensions.sowatch.');
 var PrefValue = {
   'autoupdate': {
-    pref: 'autoupdate.enabled',
-    bool: false,
+    name: 'autoupdate.enabled',
+    type: 'bool',
+    value: false,
   },
   'lastdate': {
-    pref: 'autoupdate.lastdate',
-    integer: parseInt(Date.now() / 1000),
+    name: 'autoupdate.lastdate',
+    type: 'integer',
+    value: parseInt(Date.now() / 1000),
   },
   'period': {
-    pref: 'autoupdate.period',
-    integer: 7,
+    name: 'autoupdate.period',
+    type: 'integer',
+    value: 7,
   },
   'remote': {
-    pref: 'remote.access.enabled',
-    bool: false,
+    name: 'remote.access.enabled',
+    type: 'bool',
+    value: false,
   },
   'override': {
-    pref: 'remote.override.enabled',
-    bool: false,
+    name: 'remote.override.enabled',
+    type: 'bool',
+    value: false,
   },
   'directory': {
-    pref: 'file.directory',
-    string: OS.Path.join(OS.Constants.Path.profileDir, 'soWatch'),
+    name: 'file.directory',
+    type: 'string',
+    value: OS.Path.join(OS.Constants.Path.profileDir, 'soWatch'),
   },
   'server': {
-    pref: 'remote.server.defined',
-    string: '',
+    name: 'remote.server.defined',
+    type: 'string',
+    value: '',
   },
   'bitbucket': {
-    pref: 'remote.server.bitbucket',
-    string: 'https://bitbucket.org/kafan15536900/haoutil/raw/master/player/testmod/',
+    name: 'remote.server.bitbucket',
+    type: 'string',
+    value: 'https://bitbucket.org/kafan15536900/haoutil/raw/master/player/testmod/',
   },
   'player': {
-    pref: 'general.player.enabled',
-    bool: true,
+    name: 'general.player.enabled',
+    type: 'bool',
+    value: true,
   },
   'filter': {
-    pref: 'general.filter.enabled',
-    bool: true,
+    name: 'general.filter.enabled',
+    type: 'bool',
+    value: true,
   },
   'referer': {
-    pref: 'general.referer.enabled',
-    bool: true,
+    name: 'general.referer.enabled',
+    type: 'bool',
+    value: true,
   },
   'toolbar': {
-    pref: 'general.interface.enabled',
-    bool: true,
+    name: 'general.interface.enabled',
+    type: 'bool',
+    value: true,
   },
   'firstrun': {
-    pref: 'general.firstrun.done',
-    bool: false,
+    name: 'general.firstrun.done',
+    type: 'bool',
+    value: false,
   },
 };
 var Preferences = {
-  getBool: function (aPref) {
-    return PrefBranch.getBoolPref(aPref);
+  getValue: function (aPref) {
+    if (aPref.type == 'bool') {
+      return PrefBranch.getBoolPref(aPref.name);
+    }
+    if (aPref.type == 'integer') {
+      return PrefBranch.getIntPref(aPref.name);
+    }
+    if (aPref.type == 'string') {
+      return PrefBranch.getComplexValue(aPref.name, Components.interfaces.nsISupportsString).data;
+    }
   },
-  setBool: function (aPref, aBool) {
-    PrefBranch.setBoolPref(aPref, aBool);
-  },
-  getInteger: function (aPref) {
-    return PrefBranch.getIntPref(aPref);
-  },
-  setInteger: function (aPref, aInteger) {
-    PrefBranch.setIntPref(aPref, aInteger);
-  },
-  getChar: function (aPref) {
-    return PrefBranch.getComplexValue(aPref, Components.interfaces.nsISupportsString).data;
-  },
-  setChar: function (aPref, aString) {
-    var aChar = Components.classes["@mozilla.org/supports-string;1"].createInstance(Components.interfaces.nsISupportsString);
-    aChar.data = aString;
-    PrefBranch.setComplexValue(aPref, Components.interfaces.nsISupportsString, aChar);
-  },
-  getValue: function (aValue) {
-    if ('bool' in aValue) this.getBool(aValue.pref);
-    if ('integer' in aValue) this.getInteger(aValue.pref);
-    if ('string' in aValue) this.getChar(aValue.pref);
-  },
-  setValue: function (aValue) {
-    if ('bool' in aValue) this.setBool(aValue.pref, aValue.bool);
-    if ('integer' in aValue) this.setInteger(aValue.pref, aValue.integer);
-    if ('string' in aValue) this.setChar(aValue.pref, aValue.string);
+  setValue: function (aPref, aValue) {
+    if (aValue == undefined) aValue = aPref.value;
+    if (aPref.type == 'bool') {
+      PrefBranch.setBoolPref(aPref.name, aValue);
+    }
+    if (aPref.type == 'integer') {
+      PrefBranch.setIntPref(aPref.name, aValue);
+    }
+    if (aPref.type == 'string') {
+      var aChar = Components.classes["@mozilla.org/supports-string;1"].createInstance(Components.interfaces.nsISupportsString);
+      aChar.data = aValue;
+      PrefBranch.setComplexValue(aPref.name, Components.interfaces.nsISupportsString, aChar);
+    }
   },
   pending: function () {
     for (var i in PrefValue) {
@@ -294,25 +306,31 @@ var Preferences = {
       }
     }
 
-    this.setChar(PrefValue['bitbucket'].pref, PrefValue['bitbucket'].string);  // 禁止修改bitbucket否则会影响扩展工作
+    this.setValue(PrefValue['bitbucket']);  // 禁止修改bitbucket否则会影响扩展工作
 
-    if (this.getChar(PrefValue['directory'].pref)) FileIO.extDir = this.getChar(PrefValue['directory'].pref);
-    FileIO.path = OS.Path.toFileURI(this.getChar(PrefValue['directory'].pref)) + '/';
+    if (this.getValue(PrefValue['directory'])) FileIO.extDir = this.getValue(PrefValue['directory']);
+    FileIO.path = OS.Path.toFileURI(this.getValue(PrefValue['directory'])) + '/';
 
-    if (this.getChar(PrefValue['server'].pref)) {
-      FileIO.server = this.getChar(PrefValue['server'].pref);
+    if (this.getValue(PrefValue['server'])) {
+      FileIO.server = this.getValue(PrefValue['server']);
     } else {
-      this.setBool(PrefValue['override'].pref, false);
+      this.setValue(PrefValue['override'], false);
       FileIO.server = 'https://raw.githubusercontent.com/jc3213/soWatch/master/player/';
     }
 
-    if (this.getBool(PrefValue['remote'].pref)) this.setBool(PrefValue['autoupdate'].pref, false);
+    if (this.getValue(PrefValue['override'])) FileIO.link = this.getValue(PrefValue['server']);
+    else FileIO.link = this.getValue(PrefValue['bitbucket']);
 
-    if (this.getBool(PrefValue['override'].pref)) FileIO.link = this.getChar(PrefValue['server'].pref);
-    else FileIO.link = this.getChar(PrefValue['bitbucket'].pref);
+    if (this.getValue(PrefValue['autoupdate'])) {
+      if (this.getValue(PrefValue['lastdate']) + this.getValue(PrefValue['period']) * 86400 < Date.now() / 1000) QueryFiles.start('no');
+    }
 
-    if (this.getBool(PrefValue['autoupdate'].pref)) {
-      if (this.getInteger(PrefValue['lastdate'].pref) + this.getInteger(PrefValue['period'].pref) * 86400 < Date.now() / 1000) QueryFiles.start('no');
+    if (this.getValue(PrefValue['toolbar'])) Toolbar.addIcon();
+    else Toolbar.removeIcon();
+
+    if (!this.getValue(PrefValue['firstrun'])) {
+      QueryFiles.start('no');
+      this.setValue(PrefValue['firstrun'], true);
     }
 
     this.manifest();
@@ -322,14 +340,6 @@ var Preferences = {
       if (SiteLists[i].hasPlayer) SiteLists[i].getPlayer();
       if (SiteLists[i].hasFilter) SiteLists[i].getFilter();
       if (SiteLists[i].hasReferer) SiteLists[i].getReferer();
-    }
-
-    if (this.getBool(PrefValue['toolbar'].pref)) Toolbar.addIcon();
-    else Toolbar.removeIcon();
-
-    if (!this.getBool(PrefValue['firstrun'].pref)) {
-      QueryFiles.start('no');
-      this.setBool(PrefValue['firstrun'].pref, true);
     }
   },
   setDefault: function () {
@@ -344,8 +354,8 @@ var Preferences = {
 };
 
 var QueryFiles = {
-  hash: function (aMode, aLink, aFile, aName, aProbe) {
-    if (!aProbe) var aProbe = 0;
+  hash: function (aMode, aLink, aFile, aPref, aProbe) {
+    if (!aProbe) aProbe = 0;
     if (aProbe <= 3) {
       aProbe = aProbe + 1;
       var aClient = Components.classes['@mozilla.org/xmlextras/xmlhttprequest;1'].createInstance(Components.interfaces.nsIXMLHttpRequest);
@@ -355,47 +365,47 @@ var QueryFiles = {
         if (aSize < 5000) aClient.onerror();
         var aHash = aSize.toString(16);
         aLink = aClient.responseURL;
-        if (aMode == 'no') QueryFiles.check(aLink, aFile, aName, aHash);
-        if (aMode == 'yes') QueryFiles.fetch(aLink, aFile, aName, aHash);
+        if (aMode == 'no') QueryFiles.check(aLink, aFile, aPref, aHash);
+        if (aMode == 'yes') QueryFiles.fetch(aLink, aFile, aPref, aHash);
       }
       aClient.onerror = function () {
         aClient.abort();
-        QueryFiles.hash(aMode, aLink, aFile, aName, aProbe);
+        QueryFiles.hash(aMode, aLink, aFile, aPref, aProbe);
       }
       aClient.send();
     } else return;
   },
-  check: function (aLink, aFile, aName, aHash) {
+  check: function (aLink, aFile, aPref, aHash) {
     try {
-      var xHash = PrefBranch.getCharPref('file.hash.' + aName);
+      var xHash = Preferences.getValue(aPref);
       if (xHash == aHash) return;
-      else QueryFiles.fetch(aLink, aFile, aName, aHash);
+      else QueryFiles.fetch(aLink, aFile, aPref, aHash);
     } catch (e) {
       OS.File.stat(aFile).then(function onSuccess(aData) {
         var xSize = aData.size;
         var xHash = xSize.toString(16);
-        if (xHash == aHash) PrefBranch.setCharPref('file.hash.' + aName, aHash);
-        else QueryFiles.fetch(aLink, aFile, aName, aHash);
+        if (xHash == aHash) Preferences.setValue(aPref, aHash);
+        else QueryFiles.fetch(aLink, aFile, aPref, aHash);
       }, function onFailure(aReason) {
         if (aReason instanceof OS.File.Error && aReason.becauseNoSuchFile) {
-          QueryFiles.fetch(aLink, aFile, aName, aHash);
+          QueryFiles.fetch(aLink, aFile, aPref, aHash);
         }
       });
     }
   },
-  fetch: function (aLink, aFile, aName, aHash, aProbe) {
-    if (!aProbe) var aProbe = 0;
+  fetch: function (aLink, aFile, aPref, aHash, aProbe) {
+    if (!aProbe) aProbe = 0;
     if (aProbe <= 3) {
       aProbe = aProbe + 1;
-      var aTemp = aFile + '_sw';  // 因为Downloads.jsm并不能直接覆盖原文件所以需要使用临时文件
+      var aTemp = aFile + '_sw'; // 因为Downloads.jsm并不能直接覆盖原文件所以需要使用临时文件
       Downloads.fetch(aLink, aTemp, {
         isPrivate: true
       }).then(function onSuccess() {
         OS.File.move(aTemp, aFile);
-        PrefBranch.setCharPref('file.hash.' + aName, aHash);
+        Preferences.setValue(aPref, aHash);
       }, function onFailure() {
         OS.File.remove(aTemp);
-        QueryFiles.fetch(aLink, aFile, aName, aHash, aProbe);
+        QueryFiles.fetch(aLink, aFile, aPref, aHash, aProbe);
       });
     } else return;
   },
@@ -405,11 +415,14 @@ var QueryFiles = {
       if ('remote' in PlayerRules[i]) {
         var aLink = PlayerRules[i]['remote'];
         var aFile = OS.Path.fromFileURI(PlayerRules[i]['object']);
-        var aName = OS.Path.split(aFile).components[OS.Path.split(aFile).components.length - 1];
-        QueryFiles.hash(aMode, aLink, aFile, aName);
+        var aPref = {
+          name: 'file.hash.' + OS.Path.split(aFile).components[OS.Path.split(aFile).components.length - 1],
+          type: 'string',
+        };
+        QueryFiles.hash(aMode, aLink, aFile, aPref);
       }
     }
-    Preferences.setInteger(PrefValue['lastdate'].pref, PrefValue['lastdate'].integer);  // 下载完成后记录时间以供下次更新时检测
+    Preferences.setValue(PrefValue['lastdate']); // 下载完成后记录时间以供下次更新时检测
   },
 };
 
@@ -480,40 +493,25 @@ var Toolbar = {
         if (aEvent.target.id == 'sowatch-default') Preferences.setDefault();
 
         if (aEvent.target.id == 'sowatch-remote') {
-          if (Preferences.getBool(PrefValue['remote'].pref)) Preferences.setBool(PrefValue['remote'].pref, false);
-          else Preferences.setBool(PrefValue['remote'].pref, true);
+          if (Preferences.getValue(PrefValue['remote'])) Preferences.setValue(PrefValue['remote'], false);
+          else Preferences.setValue(PrefValue['remote'], true);
         }
 
         if (aEvent.target.id == 'sowatch-autoupdate') {
-          if (Preferences.getBool(PrefValue['autoupdate'].pref)) Preferences.setBool(PrefValue['autoupdate'].pref, false);
-          else Preferences.setBool(PrefValue['autoupdate'].pref, true);
+          if (Preferences.getValue(PrefValue['autoupdate'])) Preferences.setValue(PrefValue['autoupdate'], false);
+          else Preferences.setValue(PrefValue['autoupdate'], true);
         }
 
-        if (aEvent.target.id == 'sowatch-checkupdate') {
-          if (Preferences.getBool(PrefValue['remote'].pref)) return;
-          QueryFiles.start('no');
-        }
+        if (aEvent.target.id == 'sowatch-checkupdate') QueryFiles.start('no');
 
-        if (aEvent.target.id == 'sowatch-forceupdate') {
-          if (Preferences.getBool(PrefValue['remote'].pref)) return;
-          QueryFiles.start('yes');
-        }
+        if (aEvent.target.id == 'sowatch-forceupdate') QueryFiles.start('yes');
       },
       onPopup: function (aEvent) {
         if (aEvent.target.id == 'sowatch-popup') {
-          if (Preferences.getBool(PrefValue['remote'].pref)) {
-            aEvent.target.querySelector('#sowatch-remote').setAttribute('checked', 'true');
-            aEvent.target.querySelector('#sowatch-autoupdate').setAttribute('disabled', 'true');
-            aEvent.target.querySelector('#sowatch-checkupdate').setAttribute('disabled', 'true');
-            aEvent.target.querySelector('#sowatch-forceupdate').setAttribute('disabled', 'true');
-          } else {
-            aEvent.target.querySelector('#sowatch-remote').setAttribute('checked', 'false');
-            aEvent.target.querySelector('#sowatch-autoupdate').setAttribute('disabled', 'false');
-            aEvent.target.querySelector('#sowatch-checkupdate').setAttribute('disabled', 'false');
-            aEvent.target.querySelector('#sowatch-forceupdate').setAttribute('disabled', 'false');
-          }
+          if (Preferences.getValue(PrefValue['remote'])) aEvent.target.querySelector('#sowatch-remote').setAttribute('checked', 'true');
+          else aEvent.target.querySelector('#sowatch-remote').setAttribute('checked', 'false');
 
-          if (Preferences.getBool(PrefValue['autoupdate'].pref)) aEvent.target.querySelector('#sowatch-autoupdate').setAttribute('checked', 'true');
+          if (Preferences.getValue(PrefValue['autoupdate'])) aEvent.target.querySelector('#sowatch-autoupdate').setAttribute('checked', 'true');
           else aEvent.target.querySelector('#sowatch-autoupdate').setAttribute('checked', 'false');
         }
       },
@@ -531,8 +529,8 @@ var Toolbar = {
 
 var RuleExecution = {
   getPlayer: function (remote, rule, callback) {
-    if (remote == 'on') var aObject = rule['remote'];
-    if (remote == 'off') var aObject = rule['object'];
+    if (remote) var aObject = rule['remote'];
+    else var aObject = rule['object'];
     NetUtil.asyncFetch(aObject, function (inputStream, status) {
       var binaryOutputStream = Components.classes['@mozilla.org/binaryoutputstream;1'].createInstance(Components.interfaces.nsIBinaryOutputStream);
       var storageStream = Components.classes['@mozilla.org/storagestream;1'].createInstance(Components.interfaces.nsIStorageStream);
@@ -554,7 +552,7 @@ var RuleExecution = {
     return Components.results.NS_ERROR_NO_INTERFACE;
   },
   referer: function (aSubject) {
-    if (!Preferences.getBool(PrefValue['referer'].pref)) return;
+    if (!Preferences.getValue(PrefValue['referer'])) return;
 
     var httpChannel = aSubject.QueryInterface(Components.interfaces.nsIHttpChannel);
 
@@ -565,7 +563,7 @@ var RuleExecution = {
     }
   },
   player: function (aSubject) {
-    if (!Preferences.getBool(PrefValue['player'].pref)) return;
+    if (!Preferences.getValue(PrefValue['player'])) return;
 
     var httpChannel = aSubject.QueryInterface(Components.interfaces.nsIHttpChannel);
 
@@ -580,17 +578,11 @@ var RuleExecution = {
         if (typeof rule['preHandle'] === 'function') rule['preHandle'].apply(fn, args);
         if (!rule['storageStream'] || !rule['count']) {
           httpChannel.suspend();
-          if (Preferences.getBool(PrefValue['remote'].pref)) {
-            this.getPlayer('on', rule, function () {
-              httpChannel.resume();
-              if (typeof rule['callback'] === 'function') rule['callback'].apply(fn, args);
-            });
-          } else {
-            this.getPlayer('off', rule, function () {
-              httpChannel.resume();
-              if (typeof rule['callback'] === 'function') rule['callback'].apply(fn, args);
-            });
-          }
+          var remote = Preferences.getValue(PrefValue['remote']);
+          this.getPlayer(remote, rule, function () {
+            httpChannel.resume();
+            if (typeof rule['callback'] === 'function') rule['callback'].apply(fn, args);
+          });
         }
         var newListener = new TrackingListener();
         aSubject.QueryInterface(Components.interfaces.nsITraceableChannel);
@@ -638,7 +630,7 @@ var Observers = {
   applyFilter: function (aService, aURI, aProxy) {
     for (var i in FilterRules) {
       if (FilterRules[i]['target'] && FilterRules[i]['target'].test(aURI.spec)) {
-        if (Preferences.getBool(PrefValue['filter'].pref)) return RuleExecution.getFilter;
+        if (Preferences.getValue(PrefValue['filter'])) return RuleExecution.getFilter;
       }
     }
     return aProxy;
