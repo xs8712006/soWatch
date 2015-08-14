@@ -485,12 +485,14 @@ var Preferences = {
       for (var x in aSite) {
         for (var n in aSite) {
           if (x != n && aPref == 'player') {
-            if (this.getValue(SiteLists[aSite[x]]) == 'player') this.setValue(SiteLists[aSite[n]], 'player');
-            if (this.getValue(SiteLists[aSite[x]]) == 'filter') this.setValue(SiteLists[aSite[n]], 'filter');
-            if (this.getValue(SiteLists[aSite[x]]) == 'none') this.setValue(SiteLists[aSite[n]], 'none');
+            if (this.getValue(SiteLists[aSite[x]]) == 'player' && this.getValue(SiteLists[aSite[n]]) == 'filter') this.setValue(SiteLists[aSite[n]], 'player');
+            if (this.getValue(SiteLists[aSite[x]]) == 'player' && this.getValue(SiteLists[aSite[n]]) == 'none') this.setValue(SiteLists[aSite[n]], 'player');
+            if (this.getValue(SiteLists[aSite[x]]) == 'filter' && this.getValue(SiteLists[aSite[n]]) == 'player') this.setValue(SiteLists[aSite[n]], 'filter');
+            if (this.getValue(SiteLists[aSite[x]]) == 'none' && this.getValue(SiteLists[aSite[n]]) == 'player') this.setValue(SiteLists[aSite[n]], 'none');
           }
           if (x != n && aPref == 'filter') {
             if (this.getValue(SiteLists[aSite[x]]) == 'filter' && this.getValue(SiteLists[aSite[n]]) == 'none') this.setValue(SiteLists[aSite[n]], 'filter');
+            if (this.getValue(SiteLists[aSite[x]]) == 'none' && this.getValue(SiteLists[aSite[n]]) == 'filter') this.setValue(SiteLists[aSite[n]], 'none');
           }
         }
       }
@@ -498,7 +500,7 @@ var Preferences = {
   },
   setDefault: function () {
     for (var i in PrefValue) {
-      if (i == 'directory' || i == 'server' || i == 'firstrun' ) continue; // 这里是那些不受“恢复默认”功能限制的参数
+      if (i == 'directory' || i == 'server' || i == 'firstrun') continue; // 这里是那些不受“恢复默认”功能限制的参数
       this.setValue(PrefValue[i]);
     }
     for (var i in SiteLists) {
