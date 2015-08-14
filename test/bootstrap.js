@@ -25,6 +25,15 @@ var FileIO = {
   },
 };
 
+var Adapter = {
+/** Some sites have shared player/filter just like 'youku' and 'tudou', use the template to match them;
+    一些网站像优酷与土豆一样共用player或filter，请参考下面的模板进行匹配 */
+  groupA: {
+    site: ['youku', 'tudou'],
+    pref: 'filter',
+  }
+};
+
 var SiteLists = {
 /**  Template sample to add new site
      请参考下面模板添加新的网站  */
@@ -469,14 +478,22 @@ var Preferences = {
       else this.setValue(SiteLists[i]);
     }
 
-  /** Since 'youku' and 'tudou' share the same filter rule, so there couldn't be filter/none in pref
-      由于优酷与土豆的filter共用，所以必须限制不出现其中一个是filter而另一个是none的参数 */
-    if ((this.getValue(SiteLists['youku']) == 'filter' && this.getValue(SiteLists['tudou']) == 'none') || (this.getValue(SiteLists['youku']) == 'none' && this.getValue(SiteLists['tudou']) == 'filter')) {
-      this.setValue(SiteLists['youku'], 'filter');
-      this.setValue(SiteLists['tudou'], 'filter');
+    for (var i in Adapter) {
+      var aSite = Adapter[i]['site'];
+      var aPref = Adapter[i]['pref'];
+      if (aPref == 'player') {
+        for (var x in aSite) {
+          if (this.getValue(SiteLists[aSite[x]] == 'player')) this.setValue(SiteLists[aSite[x]], 'player');
+        }
+      }
+      if (aPref == 'filter') {
+        for (var x in aSite) {
+          for (var n in aSite) {
+            if (x != n && this.getValue(SiteLists[aSite[x]]) == 'filter' && this.getValue(SiteLists[aSite[n]]) == 'none') this.setValue(SiteLists[aSite[n]], 'filter');
+          }
+        }
+      }
     }
-  /** Special code end
-      特殊代码完毕 */	
   },
   setDefault: function () {
     for (var i in PrefValue) {
@@ -793,8 +810,8 @@ var Toolbar = {
     if (!aVisitor.isFlash()) return;
 
     for (var i in SiteLists) {
-      if (SiteLists[i]['target'] && SiteLists[i]['target'].test(httpChannel.URI.spec)) SiteLists[i].popup = true;
-      else SiteLists[i].popup = false;
+      if (SiteLists[i]['target'] && SiteLists[i]['target'].test(httpChannel.URI.spec)) SiteLists[i]['popup'] = true;
+      else SiteLists[i]['popup'] = false;
     }
   },
 };
