@@ -481,15 +481,16 @@ var Preferences = {
     for (var i in Adapter) {
       var aSite = Adapter[i]['site'];
       var aPref = Adapter[i]['pref'];
-      if (aPref == 'player') {
-        for (var x in aSite) {
+
+      for (var x in aSite) {
+        if (aPref == 'player') {
           if (this.getValue(SiteLists[aSite[x]] == 'player')) this.setValue(SiteLists[aSite[x]], 'player');
         }
-      }
-      if (aPref == 'filter') {
-        for (var x in aSite) {
-          for (var n in aSite) {
-            if (x != n && this.getValue(SiteLists[aSite[x]]) == 'filter' && this.getValue(SiteLists[aSite[n]]) == 'none') this.setValue(SiteLists[aSite[n]], 'filter');
+        if (aPref == 'filter') {
+          if (aSite[x] != aSite[0]) {
+            var aValue = this.getValue(SiteLists[aSite[0]]);
+            if (aValue == 'filter' && this.getValue(SiteLists[aSite[x]]) == 'none') this.setValue(SiteLists[aSite[x]], 'filter');
+            if (aValue == 'none' && this.getValue(SiteLists[aSite[x]]) == 'filter') this.setValue(SiteLists[aSite[0]], 'filter');
           }
         }
       }
@@ -822,8 +823,8 @@ var RuleExecution = {
     if (aState == 'off') aRule['target'] = null;
   },
   getPlayer: function (remote, rule, callback) {
-    if (remote == 'on') var aObject = rule['remote'];
-    if (remote == 'off') var aObject = rule['object'];
+    if (remote) var aObject = rule['remote'];
+    else var aObject = rule['object'];
     NetUtil.asyncFetch(aObject, function (inputStream, status) {
       var binaryOutputStream = Components.classes['@mozilla.org/binaryoutputstream;1'].createInstance(Components.interfaces.nsIBinaryOutputStream);
       var storageStream = Components.classes['@mozilla.org/storagestream;1'].createInstance(Components.interfaces.nsIStorageStream);
@@ -867,17 +868,11 @@ var RuleExecution = {
         if (typeof rule['preHandle'] === 'function') rule['preHandle'].apply(fn, args);
         if (!rule['storageStream'] || !rule['count']) {
           httpChannel.suspend();
-          if (Preferences.getValue(PrefValue['remote'])) {
-            this.getPlayer('on', rule, function () {
-              httpChannel.resume();
-              if (typeof rule['callback'] === 'function') rule['callback'].apply(fn, args);
-            });
-          } else {
-            this.getPlayer('off', rule, function () {
-              httpChannel.resume();
-              if (typeof rule['callback'] === 'function') rule['callback'].apply(fn, args);
-            });
-          }
+          var remote = Preferences.getValue(PrefValue['remote']);
+          this.getPlayer(remote, rule, function () {
+            httpChannel.resume();
+            if (typeof rule['callback'] === 'function') rule['callback'].apply(fn, args);
+          });
         }
         var newListener = new TrackingListener();
         aSubject.QueryInterface(Components.interfaces.nsITraceableChannel);
