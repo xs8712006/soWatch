@@ -350,10 +350,15 @@ var PrefValue = {
     type: 'bool',
     value: false,
   },
+  'option': {
+    name: 'file.directory.option',
+    type: 'integer',
+    value: 1,
+  },
   'directory': {
-    name: 'file.directory',
+    name: 'file.directory.defined',
     type: 'string',
-    value: OS.Path.join(OS.Constants.Path.profileDir, 'soWatch'),
+    value: '',
   },
   'server': {
     name: 'remote.server.defined',
@@ -408,7 +413,18 @@ var Preferences = {
 
     this.setValue(PrefValue['bitbucket']);  // 禁止修改bitbucket否则会影响扩展工作
 
-    if (this.getValue(PrefValue['directory'])) FileIO.extDir = this.getValue(PrefValue['directory']);
+    if (this.getValue(PrefValue['option']) == 0) {
+      if (this.getValue(PrefValue['directory'])) FileIO.extDir = this.getValue(PrefValue['directory']);
+      else this.setValue(PrefValue['option']);
+    } else if (this.getValue(PrefValue['option']) == 1) {
+      FileIO.extDir = OS.Path.join(OS.Constants.Path.profileDir, 'soWatch');
+    } else if (this.getValue(PrefValue['option']) == 2) {
+      FileIO.extDir = OS.Path.join(OS.Constants.Path.libDir, 'browser', 'soWatch');
+    } else if (this.getValue(PrefValue['option']) == 3) {
+	  FileIO.extDir = OS.Path.join(OS.Constants.Path.homeDir, 'soWatch');
+    } else {
+      this.setValue(PrefValue['option']);
+    }
 
     if (this.getValue(PrefValue['server'])) {
       FileIO.server = this.getValue(PrefValue['server']);
