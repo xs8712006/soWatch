@@ -482,14 +482,14 @@ var Preferences = {
       var aSite = Adapter[i]['site'];
       var aPref = Adapter[i]['pref'];
 
-      for (var i = 0; i < aSite.length; i++) {
+      for (var n = 0; n < aSite.length; n++) {
         if (aPref == 'player') {
-          if (this.getValue(SiteLists[aSite[i]]) == 'player' || this.getValue(SiteLists[aSite[i + 1]]) == 'player')
-            this.setValue(SiteLists[aSite[i + 1]], this.getValue(SiteLists[aSite[i]]));
+          if (this.getValue(SiteLists[aSite[n]]) == 'player' || this.getValue(SiteLists[aSite[n + 1]]) == 'player')
+            this.setValue(SiteLists[aSite[n + 1]], this.getValue(SiteLists[aSite[n]]));
         }
         if (aPref == 'filter') {
-          if (this.getValue(SiteLists[aSite[i]]) != 'player' && this.getValue(SiteLists[aSite[i + 1]]) != 'player')
-            this.setValue(SiteLists[aSite[i + 1]], this.getValue(SiteLists[aSite[i]]));
+          if (this.getValue(SiteLists[aSite[n]]) != 'player' && this.getValue(SiteLists[aSite[n + 1]]) != 'player')
+            this.setValue(SiteLists[aSite[n + 1]], this.getValue(SiteLists[aSite[n]]));
         }
       }
     }
