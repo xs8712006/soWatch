@@ -482,14 +482,14 @@ var Preferences = {
       var aSite = Adapter[i]['site'];
       var aPref = Adapter[i]['pref'];
 
-      for (var n = 0; n < aSite.length - 1; n++) {
+      for (var x = 0; x < aSite.length - 1; x++) {
         if (aPref == 'player') {
-          if (this.getValue(SiteLists[aSite[n]]) == 'player' || this.getValue(SiteLists[aSite[n + 1]]) == 'player')
-            this.setValue(SiteLists[aSite[n + 1]], this.getValue(SiteLists[aSite[n]]));
+          if ((this.getValue(SiteLists[aSite[x]]) == 'player' && this.getValue(SiteLists[aSite[x + 1]]) != 'player') || (this.getValue(SiteLists[aSite[x]]) != 'player' && this.getValue(SiteLists[aSite[x + 1]]) == 'player'))
+            this.setValue(SiteLists[aSite[x + 1]], this.getValue(SiteLists[aSite[x]]));
         }
         if (aPref == 'filter') {
-          if (this.getValue(SiteLists[aSite[n]]) != 'player' && this.getValue(SiteLists[aSite[n + 1]]) != 'player')
-            this.setValue(SiteLists[aSite[n + 1]], this.getValue(SiteLists[aSite[n]]));
+          if ((this.getValue(SiteLists[aSite[x]]) == 'filter' && this.getValue(SiteLists[aSite[x + 1]]) == 'none') || (this.getValue(SiteLists[aSite[x]]) == 'none' && this.getValue(SiteLists[aSite[x + 1]]) == 'filter'))
+            this.setValue(SiteLists[aSite[x + 1]], this.getValue(SiteLists[aSite[x]]));
         }
       }
     }
