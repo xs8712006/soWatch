@@ -2,7 +2,13 @@
 <!ENTITY sowatch-auto-desc "使用本地文件夹储存并同步播放器">
 <!ENTITY sowatch-period "更新间隔">
 <!ENTITY sowatch-period-desc "天">
-<!ENTITY sowatch-directory "本地文件夹">
+
+<!ENTITY sowatch-option "文件夹选项">
+<!ENTITY sowatch-profile "Firefox档案文件夹">
+<!ENTITY sowatch-install "Firefox程序文件夹">
+<!ENTITY sowatch-home "Windows用户文件夹">
+<!ENTITY sowatch-defined "用户指定文件夹">
+<!ENTITY sowatch-directory "自定义文件夹">
 
 <!ENTITY sowatch-remote "加载远程播放器">
 <!ENTITY sowatch-remote-desc "将关闭自动更新">
@@ -14,5 +20,5 @@
 
 <!ENTITY sowatch-interface "工具栏控制界面">
 
-<!ENTITY sowatch-enable "启用">
-<!ENTITY sowatch-disable "禁止">
+<!ENTITY sowatch-enabled "启用">
+<!ENTITY sowatch-disabled "禁止">
