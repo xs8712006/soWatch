@@ -198,7 +198,7 @@ var SiteLists = {
     },
     getFilter: function () {
       FilterRules['letv'] = {
-        string: /http:\/\/(ark|fz)\.letv\.com\//i,
+        string: /http:\/\/(ark|fz)\.letv\.com\/s\?ark/i,
       };
     },
     setFilter: function (aState) {
@@ -482,14 +482,16 @@ var Preferences = {
       var aSite = Adapter[i]['site'];
       var aPref = Adapter[i]['pref'];
 
-      for (var x = 0; x < aSite.length - 1; x++) {
-        if (aPref == 'player') {
-          if ((this.getValue(SiteLists[aSite[x]]) == 'player' && this.getValue(SiteLists[aSite[x + 1]]) != 'player') || (this.getValue(SiteLists[aSite[x]]) != 'player' && this.getValue(SiteLists[aSite[x + 1]]) == 'player'))
-            this.setValue(SiteLists[aSite[x + 1]], this.getValue(SiteLists[aSite[x]]));
-        }
-        if (aPref == 'filter') {
-          if ((this.getValue(SiteLists[aSite[x]]) == 'filter' && this.getValue(SiteLists[aSite[x + 1]]) != 'none') || (this.getValue(SiteLists[aSite[x]]) == 'none' && this.getValue(SiteLists[aSite[x + 1]]) == 'filter'))
-            this.setValue(SiteLists[aSite[x + 1]], this.getValue(SiteLists[aSite[x]]));
+      for (var x in aSite) {
+        for (var n in aSite) {
+          if (x != n && aPref == 'player') {
+            if ((this.getValue(SiteLists[aSite[x]]) == 'player' && this.getValue(SiteLists[aSite[n]]) != 'player') || (this.getValue(SiteLists[aSite[x]]) != 'player' && this.getValue(SiteLists[aSite[n]]) == 'player'))
+              this.setValue(SiteLists[aSite[n]], this.getValue(SiteLists[aSite[x]]));
+          }
+          if (x != n && aPref == 'filter') {
+            if ((this.getValue(SiteLists[aSite[x]]) == 'filter' && this.getValue(SiteLists[aSite[n]]) == 'none') || (this.getValue(SiteLists[aSite[x]]) == 'none' && this.getValue(SiteLists[aSite[n]]) == 'filter'))
+              this.setValue(SiteLists[aSite[n]], this.getValue(SiteLists[aSite[x]]));
+          }
         }
       }
     }
