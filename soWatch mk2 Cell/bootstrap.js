@@ -323,7 +323,6 @@ var SiteLists = {
   },
 };
 
-var PrefBranch = Services.prefs.getBranch('extensions.sowatchmk2.');
 var PrefValue = {
   'autoupdate': {
     name: 'autoupdate.enabled',
@@ -377,29 +376,30 @@ var PrefValue = {
   },
 };
 var Preferences = {
+  branch: Services.prefs.getBranch('extensions.sowatchmk2.'),
   getValue: function (aPref) {
     if (aPref.type == 'bool') {
-      return PrefBranch.getBoolPref(aPref.name);
+      return this.branch.getBoolPref(aPref.name);
     }
     if (aPref.type == 'integer') {
-      return PrefBranch.getIntPref(aPref.name);
+      return this.branch.getIntPref(aPref.name);
     }
     if (aPref.type == 'string') {
-      return PrefBranch.getComplexValue(aPref.name, Components.interfaces.nsISupportsString).data;
+      return this.branch.getComplexValue(aPref.name, Components.interfaces.nsISupportsString).data;
     }
   },
   setValue: function (aPref, aValue) {
     if (aValue == undefined) aValue = aPref.value;
     if (aPref.type == 'bool') {
-      PrefBranch.setBoolPref(aPref.name, aValue);
+      this.branch.setBoolPref(aPref.name, aValue);
     }
     if (aPref.type == 'integer') {
-      PrefBranch.setIntPref(aPref.name, aValue);
+      this.branch.setIntPref(aPref.name, aValue);
     }
     if (aPref.type == 'string') {
       var aChar = Components.classes["@mozilla.org/supports-string;1"].createInstance(Components.interfaces.nsISupportsString);
       aChar.data = aValue;
-      PrefBranch.setComplexValue(aPref.name, Components.interfaces.nsISupportsString, aChar);
+      this.branch.setComplexValue(aPref.name, Components.interfaces.nsISupportsString, aChar);
     }
   },
   pending: function () {
@@ -954,13 +954,13 @@ var Observers = {
     }
   },
   startUp: function () {
-    PrefBranch.addObserver('', this, false);
+    Preferences.branch.addObserver('', this, false);
     Services.pps.registerFilter(this, 3);
     Services.obs.addObserver(this, 'http-on-examine-response', false);
     Services.obs.addObserver(this, 'http-on-modify-request', false);
   },
   shutDown: function () {
-    PrefBranch.removeObserver('', this);
+    Preferences.branch.removeObserver('', this);
     Services.pps.unregisterFilter(this);
     Services.obs.removeObserver(this, 'http-on-examine-response', false);
     Services.obs.removeObserver(this, 'http-on-modify-request', false);
