@@ -482,7 +482,7 @@ var Preferences = {
       var aSite = Adapter[i]['site'];
       var aPref = Adapter[i]['pref'];
 
-      for (var n = 0; n < aSite.length; n++) {
+      for (var n = 0; n < aSite.length - 1; n++) {
         if (aPref == 'player') {
           if (this.getValue(SiteLists[aSite[n]]) == 'player' || this.getValue(SiteLists[aSite[n + 1]]) == 'player')
             this.setValue(SiteLists[aSite[n + 1]], this.getValue(SiteLists[aSite[n]]));
