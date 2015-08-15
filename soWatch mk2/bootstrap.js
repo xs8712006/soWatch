@@ -198,7 +198,7 @@ var SiteLists = {
     },
     getFilter: function () {
       FilterRules['letv'] = {
-        string: /http:\/\/(ark|fz)\.letv\.com\/s\?ark/i,
+        string: /http:\/\/(ark|fz)\.letv\.com\//i,
       };
     },
     setFilter: function (aState) {
