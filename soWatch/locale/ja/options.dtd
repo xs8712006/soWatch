@@ -2,7 +2,13 @@
 <!ENTITY sowatch-auto-desc "ローカルフォルダーを利用しプレイヤーの同期を執行する">
 <!ENTITY sowatch-period "自動更新の期間">
 <!ENTITY sowatch-period-desc "日">
-<!ENTITY sowatch-directory "ローカルディレクトリ">
+
+<!ENTITY sowatch-option "ディレクトリの設定">
+<!ENTITY sowatch-profile "Firefoxプロファイルディレクトリ">
+<!ENTITY sowatch-install "Firefoxインストールディレクトリ">
+<!ENTITY sowatch-home "Windowsユーザーホームディレクトリ">
+<!ENTITY sowatch-defined "ユーザー既定のディレクトリ">
+<!ENTITY sowatch-directory "既定のローカルディレクトリ">
 
 <!ENTITY sowatch-remote "リモートサーバーへとアクセス">
 <!ENTITY sowatch-remote-desc "このオプションは自動更新を停止する">
@@ -14,5 +20,5 @@
 
 <!ENTITY sowatch-interface "コントロールUIを追加する">
 
-<!ENTITY sowatch-enable "有効">
-<!ENTITY sowatch-disable "無効">
+<!ENTITY sowatch-enabled "有効">
+<!ENTITY sowatch-disabled "無効">
