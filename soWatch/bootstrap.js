@@ -128,7 +128,7 @@ var SiteLists = {
     },
     getFilter: function () {
       FilterRules['letv'] = {
-        target: /http:\/\/(ark|fz)\.letv\.com\/s\?ark/i,
+        target: /http:\/\/(ark|fz)\.letv\.com\//i,
       };
     },
   },
@@ -344,7 +344,7 @@ var Preferences = {
   },
   setDefault: function () {
     for (var i in PrefValue) {
-      if (i == 'directory' || i == 'server' || i == 'firstrun' ) continue; // 这里是那些不受“恢复默认”功能限制的参数
+      if (i == 'directory' || i == 'server' || i == 'firstrun') continue; // 这里是那些不受“恢复默认”功能限制的参数
       this.setValue(PrefValue[i]);
     }
   },
