@@ -3,18 +3,28 @@
 <vbox xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 <setting pref="extensions.sowatchmk2.general.interface.enabled" type="radio" title="&sowatchmk2-interface;">
   <radiogroup>
-    <radio value="true" label="&sowatchmk2-enable;"/>
-    <radio value="false" label="&sowatchmk2-disable;"/>
+    <radio value="true" label="&sowatchmk2-enabled;"/>
+    <radio value="false" label="&sowatchmk2-disabled;"/>
   </radiogroup>
 </setting>
 <setting pref="extensions.sowatchmk2.autoupdate.enabled" type="radio" title="&sowatchmk2-auto;" desc="&sowatchmk2-auto-desc;">
   <radiogroup>
-    <radio value="true" label="&sowatchmk2-enable;"/>
-    <radio value="false" label="&sowatchmk2-disable;"/>
+    <radio value="true" label="&sowatchmk2-enabled;"/>
+    <radio value="false" label="&sowatchmk2-disabled;"/>
   </radiogroup>
 </setting>
 <setting pref="extensions.sowatchmk2.autoupdate.period" type="integer" min="1" max="365" size="3" title="&sowatchmk2-period;" desc="&sowatchmk2-period-desc;"/>
-<setting pref="extensions.sowatchmk2.file.directory" type="directory" title="&sowatchmk2-directory;" onpreferencechanged='
+<setting pref="extensions.sowatchmk2.file.directory.option" type="menulist" title="&sowatchmk2-option;">
+  <menulist>
+    <menupopup id="sowatchmk2-option">
+      <menuitem value="1" label="&sowatchmk2-profile;"/>
+      <menuitem value="2" label="&sowatchmk2-install;"/>
+      <menuitem value="3" label="&sowatchmk2-home;"/>
+      <menuitem value="0" label="&sowatchmk2-defined;"/>
+    </menupopup>
+  </menulist>
+</setting>
+<setting pref="extensions.sowatchmk2.file.directory.defined" type="directory" title="&sowatchmk2-directory;" onpreferencechanged='
   this.valueToPreference = function () {
     var aString = Components.classes["@mozilla.org/supports-string;1"].createInstance(Components.interfaces.nsISupportsString);
     aString.data = this.value;
@@ -27,8 +37,8 @@
 '/>
 <setting pref="extensions.sowatchmk2.remote.access.enabled" type="radio" title="&sowatchmk2-remote;" desc="&sowatchmk2-remote-desc;">
   <radiogroup>
-    <radio value="true" label="&sowatchmk2-enable;"/>
-    <radio value="false" label="&sowatchmk2-disable;"/>
+    <radio value="true" label="&sowatchmk2-enabled;"/>
+    <radio value="false" label="&sowatchmk2-disabled;"/>
   </radiogroup>
 </setting>
 <setting pref="extensions.sowatchmk2.remote.server.defined" type="string" title="&sowatchmk2-server;" onpreferencechanged='
@@ -45,8 +55,8 @@
 <setting pref="extensions.sowatchmk2.remote.server.bitbucket" type="string" title="Bitbucket.org" desc="&sowatchmk2-bitbucket-desc;" disabled="true"/>
 <setting pref="extensions.sowatchmk2.remote.override.enabled" type="radio" title="&sowatchmk2-override;" desc="&sowatchmk2-override-desc;">
   <radiogroup>
-    <radio value="true" label="&sowatchmk2-enable;"/>
-    <radio value="false" label="&sowatchmk2-disable;"/>
+    <radio value="true" label="&sowatchmk2-enabled;"/>
+    <radio value="false" label="&sowatchmk2-disabled;"/>
   </radiogroup>
 </setting>
 
@@ -133,14 +143,14 @@
 </setting>
 <setting pref="extensions.sowatchmk2.referer.youku.enabled" type="radio" title="&sowatchmk2-referer-youku;">
   <radiogroup>
-    <radio value="true" label="&sowatchmk2-enable;"/>
-    <radio value="false" label="&sowatchmk2-disable;"/>
+    <radio value="true" label="&sowatchmk2-enabled;"/>
+    <radio value="false" label="&sowatchmk2-disabled;"/>
   </radiogroup>
 </setting>
 <setting pref="extensions.sowatchmk2.referer.iqiyi.enabled" type="radio" title="&sowatchmk2-referer-iqiyi;">
   <radiogroup>
-    <radio value="true" label="&sowatchmk2-enable;"/>
-    <radio value="false" label="&sowatchmk2-disable;"/>
+    <radio value="true" label="&sowatchmk2-enabled;"/>
+    <radio value="false" label="&sowatchmk2-disabled;"/>
   </radiogroup>
 </setting>
 </vbox>
