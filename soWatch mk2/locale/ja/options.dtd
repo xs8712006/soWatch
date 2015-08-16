@@ -8,9 +8,9 @@
 <!ENTITY sowatchmk2-163 "163.comの設定">
 <!ENTITY sowatchmk2-sina "Sina.com.cnの設定">
 
-<!ENTITY sowatchmk2-player "プレイヤーをオーバーライドする">
+<!ENTITY sowatchmk2-player "プレイヤーをすり替える">
 <!ENTITY sowatchmk2-filter "XMLリクエストをフィルタする">
-<!ENTITY sowatchmk2-none "機能を停止する">
+<!ENTITY sowatchmk2-none "デフォルト仕様に戻す">
 
 <!ENTITY sowatchmk2-referer-youku "Youkuのリファラを偽造する">
 <!ENTITY sowatchmk2-referer-iqiyi "iQiyiのリファラを偽造する">
