@@ -1,16 +1,16 @@
-<!ENTITY sowatchmk2-youku "优酷">
-<!ENTITY sowatchmk2-tudou "土豆">
-<!ENTITY sowatchmk2-iqiyi "爱奇艺">
-<!ENTITY sowatchmk2-letv "乐视网">
-<!ENTITY sowatchmk2-sohu "搜狐视频">
-<!ENTITY sowatchmk2-pptv "PPTV聚力">
-<!ENTITY sowatchmk2-qq "腾讯视频">
-<!ENTITY sowatchmk2-163 "网易视频">
-<!ENTITY sowatchmk2-sina "新浪视频">
+<!ENTITY sowatchmk2-youku "设置：优酷">
+<!ENTITY sowatchmk2-tudou "设置：土豆">
+<!ENTITY sowatchmk2-iqiyi "设置：爱奇艺">
+<!ENTITY sowatchmk2-letv "设置：乐视网">
+<!ENTITY sowatchmk2-sohu "设置：搜狐视频">
+<!ENTITY sowatchmk2-pptv "设置：PPTV聚力">
+<!ENTITY sowatchmk2-qq "设置：腾讯视频">
+<!ENTITY sowatchmk2-163 "设置：网易视频">
+<!ENTITY sowatchmk2-sina "设置：新浪视频">
 
 <!ENTITY sowatchmk2-player "替换视频播放器">
 <!ENTITY sowatchmk2-filter "拦截XML请求">
-<!ENTITY sowatchmk2-none "停用">
+<!ENTITY sowatchmk2-none "恢复网站默认">
 
 <!ENTITY sowatchmk2-referer-youku "伪造优酷引用头">
 <!ENTITY sowatchmk2-referer-iqiyi "伪造爱奇艺引用头">
