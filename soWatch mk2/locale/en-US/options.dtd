@@ -10,7 +10,7 @@
 
 <!ENTITY sowatchmk2-player "Override Flash Player">
 <!ENTITY sowatchmk2-filter "Filter XML Request">
-<!ENTITY sowatchmk2-none "Disabled">
+<!ENTITY sowatchmk2-none "Restore Original Behavior">
 
 <!ENTITY sowatchmk2-referer-youku "Spoofing HTTP Referer of Youku">
 <!ENTITY sowatchmk2-referer-iqiyi "Spoofing HTTP Referer of iQiyi">
