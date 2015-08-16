@@ -45,8 +45,8 @@ var SiteLists = {
     target: /http:\/\/static\.youku\.com\/.+player.*\.swf/i, // 匹配到网站播放器时显示菜单选项
     url: /http:\/\/[^\/]+youku\.com\//i, // 匹配到网站地址时显示菜单选项
     name: 'rule.youku.defined',
-    type: 'string',
-    value: 'filter',
+    type: 'integer',
+    value: 2,
     hasPlayer: true,
     hasFilter: true,
     hasReferer: true, // true:请按照下面格式添加referer参数
@@ -97,8 +97,8 @@ var SiteLists = {
     target: /http:\/\/js\.tudouui\.com\/.+player.+\.swf/i,
     url: /http:\/\/[^\/]+tudou\.com\//i,
     name: 'rule.tudou.defined',
-    type: 'string',
-    value: 'filter',
+    type: 'integer',
+    value: 2,
     hasPlayer: true,
     hasFilter: true,
     hasReferer: false,
@@ -136,8 +136,8 @@ var SiteLists = {
     target: /http:\/\/www\.iqiyi\.com\/.+\/(Main|Share|Enjoy)Player.+\.swf/i,
     url: /http:\/\/[^\/]+(iqiyi\.com)\//i,
     name: 'rule.iqiyi.defined',
-    type: 'string',
-    value: 'player',
+    type: 'integer',
+    value: 1,
     hasPlayer: true,
     hasFilter: false,
     hasReferer: true,
@@ -176,8 +176,8 @@ var SiteLists = {
     target: /http:\/\/player\.letvcdn\.com\/.+player\.swf/i,
     url: /http:\/\/[^\/]+letv\.com\//i,
     name: 'rule.letv.defined',
-    type: 'string',
-    value: 'filter',
+    type: 'integer',
+    value: 2,
     hasPlayer: true,
     hasFilter: true,
     hasReferer: false,
@@ -209,8 +209,8 @@ var SiteLists = {
     target: /http:\/\/tv\.sohu\.com\/.+main\.swf/i,
     url: /http:\/\/(tv\.sohu|[^\/]+56)\.com\//i,
     name: 'rule.sohu.defined',
-    type: 'string',
-    value: 'filter',
+    type: 'integer',
+    value: 2,
     hasPlayer: true,
     hasFilter: true,
     hasReferer: false,
@@ -237,8 +237,8 @@ var SiteLists = {
     target: /http:\/\/player\.pplive\.cn\/.+(player|live).+\.swf/i,
     url: /http:\/\/[^\/]+pptv\.com\//i,
     name: 'rule.pptv.defined',
-    type: 'string',
-    value: 'player',
+    type: 'integer',
+    value: 1,
     hasPlayer: true,
     hasFilter: true,
     hasReferer: false,
@@ -271,8 +271,8 @@ var SiteLists = {
     target: /http:\/\/imgcache\.qq\.com\/.+mediaplugin\.swf/i,
     url: /http:\/\/v\.qq\.com\//i,
     name: 'rule.qq.defined',
-    type: 'string',
-    value: 'filter',
+    type: 'integer',
+    value: 2,
     hasPlayer: false,
     hasFilter: true,
     hasReferer: false,
@@ -289,8 +289,8 @@ var SiteLists = {
     target: /http:\/\/v\.163\.com\/.+player.+\.swf/i,
     url: /http:\/\/v\.163\.com\//i,
     name: 'rule.163.defined',
-    type: 'string',
-    value: 'filter',
+    type: 'integer',
+    value: 2,
     hasPlayer: false,
     hasFilter: true,
     hasReferer: false,
@@ -307,8 +307,8 @@ var SiteLists = {
     target: /http:\/\/[^/]+\.sina\.com\.cn\/.+player.+\.swf/i,
     url: /http:\/\/video\.+sina\.com\.cn\//i,
     name: 'rule.sina.defined',
-    type: 'string',
-    value: 'filter',
+    type: 'integer',
+    value: 2,
     hasPlayer: false,
     hasFilter: true,
     hasReferer: false,
@@ -482,19 +482,18 @@ var Preferences = {
       } finally {
         if (SiteLists[i].hasPlayer) {
           SiteLists[i].getPlayer();
-          if (this.getValue(SiteLists[i]) == 'player') SiteLists[i].setPlayer('on');
+          if (this.getValue(SiteLists[i]) == 1) SiteLists[i].setPlayer('on');
           else SiteLists[i].setPlayer('off');
         }
 
         if (SiteLists[i].hasFilter) {
           SiteLists[i].getFilter();
-          if (this.getValue(SiteLists[i]) == 'filter') SiteLists[i].setFilter('on');
+          if (this.getValue(SiteLists[i]) == 2) SiteLists[i].setFilter('on');
           else SiteLists[i].setFilter('off');
         }
       }
 
-      if (this.getValue(SiteLists[i]) == 'player' || this.getValue(SiteLists[i]) == 'filter' || this.getValue(SiteLists[i]) == 'none') continue;
-      else this.setValue(SiteLists[i]);
+      if (this.getValue(SiteLists[i]) > 2) this.setValue(SiteLists[i]);
     }
 
     for (var i in Adapter) {
@@ -504,11 +503,11 @@ var Preferences = {
       for (var x in aSite) {
         for (var n in aSite) {
           if (x != n && aPref == 'player') {
-            if ((this.getValue(SiteLists[aSite[x]]) == 'player' && this.getValue(SiteLists[aSite[n]]) != 'player') || (this.getValue(SiteLists[aSite[x]]) != 'player' && this.getValue(SiteLists[aSite[n]]) == 'player'))
+            if ((this.getValue(SiteLists[aSite[x]]) == 1 && this.getValue(SiteLists[aSite[n]]) != 1) || (this.getValue(SiteLists[aSite[x]]) != 1 && this.getValue(SiteLists[aSite[n]]) == 1))
               this.setValue(SiteLists[aSite[n]], this.getValue(SiteLists[aSite[x]]));
           }
           if (x != n && aPref == 'filter') {
-            if ((this.getValue(SiteLists[aSite[x]]) == 'filter' && this.getValue(SiteLists[aSite[n]]) == 'none') || (this.getValue(SiteLists[aSite[x]]) == 'none' && this.getValue(SiteLists[aSite[n]]) == 'filter'))
+            if ((this.getValue(SiteLists[aSite[x]]) == 2 && this.getValue(SiteLists[aSite[n]]) == 0) || (this.getValue(SiteLists[aSite[x]]) == 0 && this.getValue(SiteLists[aSite[n]]) == 2))
               this.setValue(SiteLists[aSite[n]], this.getValue(SiteLists[aSite[x]]));
           }
         }
@@ -771,13 +770,13 @@ var Toolbar = {
 
           if (aEvent.target.id == 'sowatchmk2-' + x + '-player') {
             if (!SiteLists[x].hasPlayer) continue;
-            Preferences.setValue(SiteLists[x], 'player');
+            Preferences.setValue(SiteLists[x], 1);
           }
           if (aEvent.target.id == 'sowatchmk2-' + x + '-filter') {
             if (!SiteLists[x].hasFilter) continue;
-            Preferences.setValue(SiteLists[x], 'filter');
+            Preferences.setValue(SiteLists[x], 2);
           }
-          if (aEvent.target.id == 'sowatchmk2-' + x + '-none') Preferences.setValue(SiteLists[x], 'none');
+          if (aEvent.target.id == 'sowatchmk2-' + x + '-none') Preferences.setValue(SiteLists[x], 0);
         }
       },
       onPopup: function (aEvent) {
@@ -806,9 +805,9 @@ var Toolbar = {
           }
 
           if (aEvent.target.id == 'sowatchmk2-popup-' + x) {
-            if (Preferences.getValue(SiteLists[x]) == 'player') aEvent.target.querySelector('#sowatchmk2-' + x + '-player').setAttribute('checked', 'true');
-            else if (Preferences.getValue(SiteLists[x]) == 'filter') aEvent.target.querySelector('#sowatchmk2-' + x + '-filter').setAttribute('checked', 'true');
-            else if (Preferences.getValue(SiteLists[x]) == 'none') aEvent.target.querySelector('#sowatchmk2-' + x + '-none').setAttribute('checked', 'true');
+            if (Preferences.getValue(SiteLists[x]) == 1) aEvent.target.querySelector('#sowatchmk2-' + x + '-player').setAttribute('checked', 'true');
+            else if (Preferences.getValue(SiteLists[x]) == 2) aEvent.target.querySelector('#sowatchmk2-' + x + '-filter').setAttribute('checked', 'true');
+            else if (Preferences.getValue(SiteLists[x]) == 0) aEvent.target.querySelector('#sowatchmk2-' + x + '-none').setAttribute('checked', 'true');
           }
         }
       },
