@@ -582,14 +582,14 @@ var RuleExecution = {
       }
     }
   },
-  referer: function (aSubject) {
+  filter: function (aSubject) {
     if (!Preferences.getValue(PrefValue['filter'])) return;
 
     var httpChannel = aSubject.QueryInterface(Components.interfaces.nsIHttpChannel);
 
-    for (var i in RefererRules) {
-      if (RefererRules[i]['target'] && RefererRules[i]['target'].test(httpChannel.originalURI.spec)) {
-        httpChannel.setRequestHeader('Referer', RefererRules[i]['host'], false);
+    for (var i in FilterRules) {
+      if (FilterRules[i]['target'] && FilterRules[i]['target'].test(httpChannel.URI.spec)) {
+        httpChannel.suspend();
       }
     }
   },
