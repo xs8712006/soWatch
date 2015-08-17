@@ -212,7 +212,7 @@ var SiteLists = {
     type: 'integer',
     value: 2,
     hasPlayer: true,
-    hasFilter: true,
+    hasFilter: false,
     hasReferer: false,
     getPlayer: function () {
       PlayerRules['sohu'] = {
@@ -223,14 +223,6 @@ var SiteLists = {
     },
     setPlayer: function (aState) {
       RuleExecution.toggle(aState, PlayerRules['sohu']);
-    },
-    getFilter: function () {
-      FilterRules['sohu'] = {
-        string: /http:\/\/v\.aty\.sohu\.com\/v\?/i,
-      };
-    },
-    setFilter: function (aState) {
-      RuleExecution.toggle(aState, FilterRules['sohu']);
     },
   },
   'pptv': {
@@ -417,6 +409,8 @@ var Preferences = {
     }
 
     this.setValue(PrefValue['bitbucket']);  // 禁止修改bitbucket否则会影响扩展工作
+
+    if (this.getValue(PrefValue['period']) < 1 || this.getValue(PrefValue['period']) > 365) this.setValue(PrefValue['period']);
 
     if (this.getValue(PrefValue['option']) == 0) {
       if (this.getValue(PrefValue['directory'])) FileIO.extDir = this.getValue(PrefValue['directory']);
