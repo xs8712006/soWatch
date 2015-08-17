@@ -25,15 +25,6 @@ var FileIO = {
   },
 };
 
-var Adapter = {
-/** Some sites have shared player/filter just like 'youku' and 'tudou', use the template to match them;
-    一些网站像优酷与土豆一样共用player或filter，请参考下面的模板进行匹配 */
-  groupA: {
-    site: ['youku', 'tudou'], // 列举在第一个的享有优先权，改动它的参数会根据绑定的不同影响其他站点的参数。
-    pref: 'filter',
-  }
-};
-
 var SiteLists = {
 /**  Template sample to add new site
      请参考下面模板添加新的网站  */
@@ -42,63 +33,36 @@ var SiteLists = {
        多国语言的菜单信息必须添加在function里，最好添加在下面的CustomizableUI.addwidget()中。  */
 //  label: 'Youku.com',
 //  tooltiptext: 'http://www.youku.com',
-    target: /http:\/\/static\.youku\.com\/.+player.*\.swf/i, // 匹配到网站播放器时显示菜单选项
-    url: /http:\/\/[^\/]+youku\.com\//i, // 匹配到网站地址时显示菜单选项
-    name: 'rule.youku.defined',
-    type: 'integer',
-    value: 2,
     hasPlayer: true,
     hasFilter: true,
-    hasReferer: true, // true:请按照下面格式添加referer参数
-    referer: {
-//    label: 'Youku Referer',
-//    tooltiptext: 'Spoofing HTTP Referer of Youku.com',
-      name: 'referer.youku.enabled',
-      type: 'bool',
-      value: true,
-    },
+    hasReferer: true,
     getPlayer: function () {
       PlayerRules['youku_loader'] = {
         object: FileIO.path + 'loader.swf',
         remote: FileIO.link + 'loader.swf',
-        string: /http:\/\/static\.youku\.com\/.*\/v\/swf\/loaders?\.swf/i,
+        target: /http:\/\/static\.youku\.com\/.*\/v\/swf\/loaders?\.swf/i,
       };
       PlayerRules['youku_player'] = {
         object: FileIO.path + 'player.swf',
         remote: FileIO.link + 'player.swf',
-        string: /http:\/\/static\.youku\.com\/.*\/v\/swf\/q?player.*\.swf/i,
+        target: /http:\/\/static\.youku\.com\/.*\/v\/swf\/q?player.*\.swf/i,
       };
-    },
-    setPlayer: function (aState) {
-      RuleExecution.toggle(aState, PlayerRules['youku_loader']);
-      RuleExecution.toggle(aState, PlayerRules['youku_player']);
     },
     getFilter: function () {
       FilterRules['youku_tudou'] = {
-        string: /http:\/\/val[fcopb]\.atm\.youku\.com\//i,
+        target: /http:\/\/val[fcopb]\.atm\.youku\.com\//i,
       };
-    },
-    setFilter: function (aState) {
-      RuleExecution.toggle(aState, FilterRules['youku_tudou']);
     },
     getReferer: function () {
       RefererRules['referer-youku'] = {
         object: 'http://www.youku.com/',
-        string: /http:\/\/.*\.youku\.com/i,
+        target: /http:\/\/.*\.youku\.com/i,
       };
-    },
-    setReferer: function (aState) {
-      RuleExecution.toggle(aState, RefererRules['referer-youku']);
     },
   },
 /**  Template End
      模板结束  */
   'tudou': {
-    target: /http:\/\/js\.tudouui\.com\/.+player.+\.swf/i,
-    url: /http:\/\/[^\/]+tudou\.com\//i,
-    name: 'rule.tudou.defined',
-    type: 'integer',
-    value: 2,
     hasPlayer: true,
     hasFilter: true,
     hasReferer: false,
@@ -106,78 +70,48 @@ var SiteLists = {
       PlayerRules['tudou_portal'] = {
         object: FileIO.path + 'tudou.swf',
         remote: FileIO.link + 'tudou.swf',
-        string: /http:\/\/js\.tudouui\.com\/bin\/lingtong\/PortalPlayer.*\.swf/i,
+        target: /http:\/\/js\.tudouui\.com\/bin\/lingtong\/PortalPlayer.*\.swf/i,
       };
       PlayerRules['tudou_olc'] = {
         object: 'http://js.tudouui.com/bin/player2/olc.swf',
-        string: /http:\/\/js\.tudouui\.com\/bin\/player2\/olc.+\.swf/i,
+        target: /http:\/\/js\.tudouui\.com\/bin\/player2\/olc.+\.swf/i,
       };
       PlayerRules['tudou_social'] = {
         object: FileIO.path + 'sp.swf',
         remote: FileIO.link + 'sp.swf',
-        string: /http:\/\/js\.tudouui\.com\/bin\/lingtong\/SocialPlayer.*\.swf/i,
+        target: /http:\/\/js\.tudouui\.com\/bin\/lingtong\/SocialPlayer.*\.swf/i,
       };
-    },
-    setPlayer: function (aState) {
-      RuleExecution.toggle(aState, PlayerRules['tudou_portal']);
-      RuleExecution.toggle(aState, PlayerRules['tudou_olc']);
-      RuleExecution.toggle(aState, PlayerRules['tudou_social']);
     },
     getFilter: function () {
       FilterRules['youku_tudou'] = {
-        string: /http:\/\/val[fcopb]\.atm\.youku\.com\//i,
+        target: /http:\/\/val[fcopb]\.atm\.youku\.com\//i,
       };
-    },
-    setFilter: function (aState) {
-      RuleExecution.toggle(aState, FilterRules['youku_tudou']);
     },
   },
   'iqiyi': {
-    target: /http:\/\/www\.iqiyi\.com\/.+\/(Main|Share|Enjoy)Player.+\.swf/i,
-    url: /http:\/\/[^\/]+(iqiyi\.com)\//i,
-    name: 'rule.iqiyi.defined',
-    type: 'integer',
-    value: 1,
     hasPlayer: true,
     hasFilter: false,
     hasReferer: true,
-    referer: {
-      name: 'referer.iqiyi.enabled',
-      type: 'bool',
-      value: true,
-    },
     getPlayer: function () {
       PlayerRules['iqiyi5'] = {
         object: FileIO.path + 'iqiyi5.swf',
         remote: FileIO.link + 'iqiyi5.swf',
-        string: /http:\/\/www\.iqiyi\.com\/common\/flashplayer\/\d+\/MainPlayer.*\.swf/i,
+        target: /http:\/\/www\.iqiyi\.com\/common\/flashplayer\/\d+\/MainPlayer.*\.swf/i,
       };
       PlayerRules['iqiyi_out'] = {
         object: FileIO.path + 'iqiyi_out.swf',
         remote: FileIO.link + 'iqiyi_out.swf',
-        string: /https?:\/\/www\.iqiyi\.com\/(common\/flash)?player\/\d+\/(Share|Enjoy)?Player.*\.swf/i,
+        target: /https?:\/\/www\.iqiyi\.com\/(common\/flash)?player\/\d+\/(Share|Enjoy)?Player.*\.swf/i,
       };
-    },
-    setPlayer: function (aState) {
-      RuleExecution.toggle(aState, PlayerRules['iqiyi5']);
-      RuleExecution.toggle(aState, PlayerRules['iqiyi_out']);
     },
     getReferer: function () {
       RefererRules['referer-iqiyi'] = {
         object: 'http://www.iqiyi.com/',
-        string: /http:\/\/.*\.qiyi\.com/i,
+        target: /http:\/\/.*\.qiyi\.com/i,
       };
-    },
-    setReferer: function (aState) {
-      RuleExecution.toggle(aState, RefererRules['referer-iqiyi']);
     },
   },
   'letv': {
-    target: /http:\/\/player\.letvcdn\.com\/.+player\.swf/i,
-    url: /http:\/\/[^\/]+letv\.com\//i,
-    name: 'rule.letv.defined',
-    type: 'integer',
-    value: 2,
     hasPlayer: true,
     hasFilter: true,
     hasReferer: false,
@@ -185,32 +119,20 @@ var SiteLists = {
       PlayerRules['letv'] = {
         object: FileIO.path + 'letv.swf',
         remote: FileIO.link + 'letv.swf',
-        string: /http:\/\/.*\.letv(cdn)?\.com\/.*(new)?player\/((SDK)?Letv|swf)Player\.swf/i,
+        target: /http:\/\/.*\.letv(cdn)?\.com\/.*(new)?player\/((SDK)?Letv|swf)Player\.swf/i,
       };
       PlayerRules['letv_skin'] = {
         object: 'http://player.letvcdn.com/p/201407/24/15/newplayer/1/SSLetvPlayer.swf',
-        string: /http:\/\/player\.letvcdn\.com\/p\/((?!15)\d+\/){3}newplayer\/1\/S?SLetvPlayer\.swf/i,
+        target: /http:\/\/player\.letvcdn\.com\/p\/((?!15)\d+\/){3}newplayer\/1\/S?SLetvPlayer\.swf/i,
       };
-    },
-    setPlayer: function (aState) {
-      RuleExecution.toggle(aState, PlayerRules['letv']);
-      RuleExecution.toggle(aState, PlayerRules['letv_skin']);
     },
     getFilter: function () {
       FilterRules['letv'] = {
-        string: /http:\/\/(ark|fz)\.letv\.com\//i,
+        target: /http:\/\/(ark|fz)\.letv\.com\//i,
       };
-    },
-    setFilter: function (aState) {
-      RuleExecution.toggle(aState, FilterRules['letv']);
     },
   },
   'sohu': {
-    target: /http:\/\/tv\.sohu\.com\/.+main\.swf/i,
-    url: /http:\/\/(tv\.sohu|[^\/]+56)\.com\//i,
-    name: 'rule.sohu.defined',
-    type: 'integer',
-    value: 2,
     hasPlayer: true,
     hasFilter: true,
     hasReferer: false,
@@ -218,27 +140,16 @@ var SiteLists = {
       PlayerRules['sohu'] = {
         object: FileIO.path + 'sohu_live.swf',
         remote: FileIO.link + 'sohu_live.swf',
-        string: /http:\/\/(tv\.sohu\.com\/upload\/swf\/(p2p\/|56\/)?\d+|(\d+\.){3}\d+\/webplayer)\/Main\.swf/i,
+        target: /http:\/\/(tv\.sohu\.com\/upload\/swf\/(p2p\/|56\/)?\d+|(\d+\.){3}\d+\/webplayer)\/Main\.swf/i,
       };
-    },
-    setPlayer: function (aState) {
-      RuleExecution.toggle(aState, PlayerRules['sohu']);
     },
     getFilter: function () {
       FilterRules['sohu'] = {
-        string: /http:\/\/v\.aty\.sohu\.com\/v\?/i,
+        target: /http:\/\/v\.aty\.sohu\.com\/v\?/i,
       };
-    },
-    setFilter: function (aState) {
-      RuleExecution.toggle(aState, FilterRules['sohu']);
     },
   },
   'pptv': {
-    target: /http:\/\/player\.pplive\.cn\/.+(player|live).+\.swf/i,
-    url: /http:\/\/[^\/]+pptv\.com\//i,
-    name: 'rule.pptv.defined',
-    type: 'integer',
-    value: 1,
     hasPlayer: true,
     hasFilter: true,
     hasReferer: false,
@@ -246,79 +157,48 @@ var SiteLists = {
       PlayerRules['pptv'] = {
         object: FileIO.path + 'player4player2.swf',
         remote: FileIO.link + 'player4player2.swf',
-        string: /http:\/\/player.pplive.cn\/ikan\/.*\/player4player2\.swf/i,
+        target: /http:\/\/player.pplive.cn\/ikan\/.*\/player4player2\.swf/i,
       };
       PlayerRules['pptv_live'] = {
         object: FileIO.path + 'pptv.in.Live.swf',
         remote: FileIO.server + 'pptv.in.Live.swf',
-        string: /http:\/\/player.pplive.cn\/live\/.*\/player4live2\.swf/i,
+        target: /http:\/\/player.pplive.cn\/live\/.*\/player4live2\.swf/i,
       };
-    },
-    setPlayer: function (aState) {
-      RuleExecution.toggle(aState, PlayerRules['pptv']);
-      RuleExecution.toggle(aState, PlayerRules['pptv_live']);
     },
     getFilter: function () {
       FilterRules['pptv'] = {
-        string: /http:\/\/de\.as\.pptv\.com\/ikandelivery\/vast\/.+draft/i,
+        target: /http:\/\/de\.as\.pptv\.com\/ikandelivery\/vast\/.+draft/i,
       };
-    },
-    setFilter: function (aState) {
-      RuleExecution.toggle(aState, FilterRules['pptv']);
     },
   },
   'qq': {
-    target: /http:\/\/imgcache\.qq\.com\/.+mediaplugin\.swf/i,
-    url: /http:\/\/v\.qq\.com\//i,
-    name: 'rule.qq.defined',
-    type: 'integer',
-    value: 2,
     hasPlayer: false,
     hasFilter: true,
     hasReferer: false,
     getFilter: function () {
       FilterRules['qq'] = {
-        string: /http:\/\/livew\.l\.qq\.com\//i,
+        target: /http:\/\/livew\.l\.qq\.com\//i,
       };
-    },
-    setFilter: function (aState) {
-      RuleExecution.toggle(aState, FilterRules['qq']);
     },
   },
   '163': {
-    target: /http:\/\/v\.163\.com\/.+player.+\.swf/i,
-    url: /http:\/\/v\.163\.com\//i,
-    name: 'rule.163.defined',
-    type: 'integer',
-    value: 2,
     hasPlayer: false,
     hasFilter: true,
     hasReferer: false,
     getFilter: function () {
       FilterRules['163'] = {
-        string: /http:\/\/v\.163\.com\/special\/.*\.xml/i,
+        target: /http:\/\/v\.163\.com\/special\/.*\.xml/i,
       };
-    },
-    setFilter: function (aState) {
-      RuleExecution.toggle(aState, FilterRules['163']);
     },
   },
   'sina': {
-    target: /http:\/\/[^/]+\.sina\.com\.cn\/.+player.+\.swf/i,
-    url: /http:\/\/video\.+sina\.com\.cn\//i,
-    name: 'rule.sina.defined',
-    type: 'integer',
-    value: 2,
     hasPlayer: false,
     hasFilter: true,
     hasReferer: false,
     getFilter: function () {
       FilterRules['sina'] = {
-        string: /http:\/\/sax\.sina\.com\.cn\//i,
+        target: /http:\/\/sax\.sina\.com\.cn\//i,
       };
-    },
-    setFilter: function (aState) {
-      RuleExecution.toggle(aState, FilterRules['sina']);
     },
   },
 };
@@ -369,6 +249,21 @@ var PrefValue = {
     type: 'string',
     value: 'https://bitbucket.org/kafan15536900/haoutil/raw/master/player/testmod/',
   },
+  'player': {
+    name: 'general.player.enabled',
+    type: 'bool',
+    value: true,
+  },
+  'filter': {
+    name: 'general.filter.enabled',
+    type: 'bool',
+    value: true,
+  },
+  'referer': {
+    name: 'general.referer.enabled',
+    type: 'bool',
+    value: true,
+  },
   'toolbar': {
     name: 'general.interface.enabled',
     type: 'bool',
@@ -381,7 +276,7 @@ var PrefValue = {
   },
 };
 var Preferences = {
-  branch: Services.prefs.getBranch('extensions.sowatchmk2.'),
+  branch: Services.prefs.getBranch('extensions.sowatch.'),
   getValue: function (aPref) {
     if (aPref.type == 'bool') {
       return this.branch.getBoolPref(aPref.name);
@@ -461,59 +356,11 @@ var Preferences = {
       this.setValue(PrefValue['firstrun'], true);
     }
   },
-/**  Minor tweak on pref > rule. If nothing special is required, There's need to tweak those codes.
-     微调参数与规则间的关系。如果新加网站不需要特殊规则可以不管这部分代码  */
   manifest: function () {
     for (var i in SiteLists) {
-      if (SiteLists[i].hasReferer) {
-        try {
-          this.getValue(SiteLists[i]['referer']);
-        } catch (e) {
-          this.setValue(SiteLists[i]['referer']);
-        } finally {
-          SiteLists[i].getReferer();
-          if (this.getValue(SiteLists[i]['referer'])) SiteLists[i].setReferer('on')
-          else SiteLists[i].setReferer('off');
-        }
-      }
-
-      try {
-        this.getValue(SiteLists[i]);
-      } catch (e) {
-        this.setValue(SiteLists[i]);
-      } finally {
-        if (SiteLists[i].hasPlayer) {
-          SiteLists[i].getPlayer();
-          if (this.getValue(SiteLists[i]) == 1) SiteLists[i].setPlayer('on');
-          else SiteLists[i].setPlayer('off');
-        }
-
-        if (SiteLists[i].hasFilter) {
-          SiteLists[i].getFilter();
-          if (this.getValue(SiteLists[i]) == 2) SiteLists[i].setFilter('on');
-          else SiteLists[i].setFilter('off');
-        }
-      }
-
-      if (this.getValue(SiteLists[i]) > 2) this.setValue(SiteLists[i]);
-    }
-
-    for (var i in Adapter) {
-      var aSite = Adapter[i]['site'];
-      var aPref = Adapter[i]['pref'];
-
-      for (var x in aSite) {
-        for (var n in aSite) {
-          if (x != n && aPref == 'player') {
-            if ((this.getValue(SiteLists[aSite[x]]) == 1 && this.getValue(SiteLists[aSite[n]]) != 1) || (this.getValue(SiteLists[aSite[x]]) != 1 && this.getValue(SiteLists[aSite[n]]) == 1))
-              this.setValue(SiteLists[aSite[n]], this.getValue(SiteLists[aSite[x]]));
-          }
-          if (x != n && aPref == 'filter') {
-            if ((this.getValue(SiteLists[aSite[x]]) == 2 && this.getValue(SiteLists[aSite[n]]) == 0) || (this.getValue(SiteLists[aSite[x]]) == 0 && this.getValue(SiteLists[aSite[n]]) == 2))
-              this.setValue(SiteLists[aSite[n]], this.getValue(SiteLists[aSite[x]]));
-          }
-        }
-      }
+      if (SiteLists[i].hasPlayer) SiteLists[i].getPlayer();
+      if (SiteLists[i].hasFilter) SiteLists[i].getFilter();
+      if (SiteLists[i].hasReferer) SiteLists[i].getReferer();
     }
   },
   setDefault: function () {
@@ -521,13 +368,9 @@ var Preferences = {
       if (i == 'directory' || i == 'server' || i == 'firstrun') continue; // 这里是那些不受“恢复默认”功能限制的参数
       this.setValue(PrefValue[i]);
     }
-    for (var i in SiteLists) {
-      if (SiteLists[i].hasReferer) this.setValue(SiteLists[i]['referer']);
-      this.setValue(SiteLists[i]);
-    }
   },
   remove: function () {
-    Services.prefs.deleteBranch('extensions.sowatchmk2.');
+    Services.prefs.deleteBranch('extensions.sowatch.');
   },
 };
 
@@ -605,11 +448,11 @@ var QueryFiles = {
 };
 
 var Toolbar = {
-  css: Services.io.newURI('chrome://sowatchmk2/skin/toolbar.css', null, null),
+  css: Services.io.newURI('chrome://sowatch/skin/toolbar.css', null, null),
   addIcon: function () {
     if (this.buttonOn) return;
     CustomizableUI.createWidget({
-      id: 'sowatchmk2-button',
+      id: 'sowatch-button',
       type: 'custom',
       defaultArea: CustomizableUI.AREA_NAVBAR,
       onBuild: function (aDocument) {
@@ -636,59 +479,16 @@ var Toolbar = {
             label: Utilities.GetStringFromName('forceUpdateLabel'),
             tooltiptext: Utilities.GetStringFromName('forceUpdateDescription'),
           },
-          S3: null, // Menu separator
-        };
-
-/**  If hasReferer is true, you must add menuitem label & tooltiptext separately
-     如果新网站hasReferer设置为true，你需要按照下面格式单独添加菜单信息  */
-        SiteLists['youku']['referer'].label = Utilities.GetStringFromName('youkuRefererLabel');
-        SiteLists['youku']['referer'].tooltiptext = Utilities.GetStringFromName('youkuRefererDescription');
-        SiteLists['iqiyi']['referer'].label = Utilities.GetStringFromName('iqiyiRefererLabel');
-        SiteLists['iqiyi']['referer'].tooltiptext = Utilities.GetStringFromName('iqiyiRefererDescription');
-/**  The sites listed in SiteLists, and menu label & tooltiptext.
-     请在下面添加SiteLists中的网站的菜单信息。  */
-        SiteLists['youku'].label = Utilities.GetStringFromName('youkuSiteLabel');
-        SiteLists['youku'].tooltiptext = 'http://www.youku.com/';
-        SiteLists['tudou'].label = Utilities.GetStringFromName('tudouSiteLabel');
-        SiteLists['tudou'].tooltiptext = 'http://www.tudou.com/';
-        SiteLists['iqiyi'].label = Utilities.GetStringFromName('iqiyiSiteLabel');
-        SiteLists['iqiyi'].tooltiptext = 'http://www.iqiyi.com/';
-        SiteLists['letv'].label = Utilities.GetStringFromName('letvSiteLabel');
-        SiteLists['letv'].tooltiptext = 'http://www.letv.com/';
-        SiteLists['sohu'].label = Utilities.GetStringFromName('sohuSiteLabel');
-        SiteLists['sohu'].tooltiptext = 'http://tv.sohu.com/';
-        SiteLists['pptv'].label = Utilities.GetStringFromName('pptvSiteLabel');
-        SiteLists['pptv'].tooltiptext = 'http://www.pptv.com/';
-        SiteLists['qq'].label = Utilities.GetStringFromName('qqSiteLabel');
-        SiteLists['qq'].tooltiptext = 'http://v.qq.com/';
-        SiteLists['163'].label = Utilities.GetStringFromName('163SiteLabel');
-        SiteLists['163'].tooltiptext = 'http://v.163.com/';
-        SiteLists['sina'].label = Utilities.GetStringFromName('sinaSiteLabel');
-        SiteLists['sina'].tooltiptext = 'http://video.sina.com.cn/';
-
-        var nLists = {
-          'player': {
-            label: Utilities.GetStringFromName('rulePlayerLabel'),
-            tooltiptext: Utilities.GetStringFromName('rulePlayerDescription'),
-          },
-          'filter': {
-            label: Utilities.GetStringFromName('ruleFilterLabel'),
-            tooltiptext: Utilities.GetStringFromName('ruleFilterDescription'),
-          },
-          'none': {
-            label: Utilities.GetStringFromName('ruleNoneLabel'),
-            tooltiptext: Utilities.GetStringFromName('ruleNoneDescription'),
-          },
         };
 
         var aMenu = aDocument.createElement('toolbarbutton');
-        aMenu.setAttribute('id', 'sowatchmk2-button');
+        aMenu.setAttribute('id', 'sowatch-button');
         aMenu.setAttribute('class', 'toolbarbutton-1');
         aMenu.setAttribute('type', 'menu');
-        aMenu.setAttribute('label', 'soWatch! mk2');
+        aMenu.setAttribute('label', 'soWatch!');
 
         var aPopup = aDocument.createElement('menupopup');
-        aPopup.setAttribute('id', 'sowatchmk2-popup');
+        aPopup.setAttribute('id', 'sowatch-popup');
         aPopup.addEventListener('click', this.onClick, false);
         aPopup.addEventListener('popupshowing', this.onPopup, false);
         aMenu.appendChild(aPopup);
@@ -699,118 +499,41 @@ var Toolbar = {
             aPopup.appendChild(aSeparator);
           } else {
             var aItem = aDocument.createElement('menuitem');
-            aItem.setAttribute('id', 'sowatchmk2-' + i);
+            aItem.setAttribute('id', 'sowatch-' + i);
             aItem.setAttribute('label', aLists[i].label);
             aItem.setAttribute('tooltiptext', aLists[i].tooltiptext);
             aItem.setAttribute('class', 'menuitem-iconic');
-            if (i == 'remote') aItem.setAttribute('type', 'checkbox');
+            if (i == 'autoupdate' || i == 'remote') aItem.setAttribute('type', 'checkbox');
             aPopup.appendChild(aItem);
-          }
-        }
-
-        for (var x in SiteLists) {
-          if (SiteLists[x].hasReferer) {
-            var rItem = aDocument.createElement('menuitem');
-            rItem.setAttribute('id', 'sowatchmk2-referer-' + x);
-            rItem.setAttribute('label', SiteLists[x]['referer'].label);
-            rItem.setAttribute('tooltiptext', SiteLists[x]['referer'].tooltiptext);
-            rItem.setAttribute('class', 'menuitem-iconic');
-            rItem.setAttribute('type', 'checkbox');
-            aPopup.appendChild(rItem);
-          }
-
-          var xItem = aDocument.createElement('menu');
-          xItem.setAttribute('id', 'sowatchmk2-' + x);
-          xItem.setAttribute('label', SiteLists[x].label);
-          xItem.setAttribute('tooltiptext', SiteLists[x].tooltiptext);
-          xItem.setAttribute('class', 'menu-iconic');
-          aPopup.appendChild(xItem);
-
-          var xPopup = aDocument.createElement('menupopup');
-          xPopup.setAttribute('id', 'sowatchmk2-popup-' + x);
-          xItem.appendChild(xPopup);
-
-          for (var n in nLists) {
-            var nItem = aDocument.createElement('menuitem');
-            nItem.setAttribute('id', 'sowatchmk2-' + x + '-' + n);
-            nItem.setAttribute('label', nLists[n].label);
-            nItem.setAttribute('tooltiptext', nLists[n].tooltiptext);
-            nItem.setAttribute('type', 'radio');
-            nItem.setAttribute('name', x);
-            if (!SiteLists[x].hasPlayer && n == 'player') nItem.setAttribute('disabled', 'true');
-            if (!SiteLists[x].hasFilter && n == 'filter') nItem.setAttribute('disabled', 'true');
-            xPopup.appendChild(nItem);
           }
         }
 
         return aMenu;
       },
       onClick: function (aEvent) {
-        if (aEvent.target.id == 'sowatchmk2-default') Preferences.setDefault();
+        if (aEvent.target.id == 'sowatch-default') Preferences.setDefault();
 
-        if (aEvent.target.id == 'sowatchmk2-remote') {
+        if (aEvent.target.id == 'sowatch-remote') {
           if (Preferences.getValue(PrefValue['remote'])) Preferences.setValue(PrefValue['remote'], false);
           else Preferences.setValue(PrefValue['remote'], true);
         }
 
-        if (aEvent.target.id == 'sowatchmk2-autoupdate') {
+        if (aEvent.target.id == 'sowatch-autoupdate') {
           if (Preferences.getValue(PrefValue['autoupdate'])) Preferences.setValue(PrefValue['autoupdate'], false);
           else Preferences.setValue(PrefValue['autoupdate'], true);
         }
 
-        if (aEvent.target.id == 'sowatchmk2-checkupdate') QueryFiles.start('no');
+        if (aEvent.target.id == 'sowatch-checkupdate') QueryFiles.start('no');
 
-        if (aEvent.target.id == 'sowatchmk2-forceupdate') QueryFiles.start('yes');
-
-        for (var x in SiteLists) {
-          if (SiteLists[x].hasReferer) {
-            if (aEvent.target.id == 'sowatchmk2-referer-' + x) {
-              if (Preferences.getValue(SiteLists[x]['referer'])) Preferences.setValue(SiteLists[x]['referer'], false);
-              else Preferences.setValue(SiteLists[x]['referer'], true);
-            }
-          }
-
-          if (aEvent.target.id == 'sowatchmk2-' + x + '-player') {
-            if (!SiteLists[x].hasPlayer) continue;
-            Preferences.setValue(SiteLists[x], 1);
-          }
-          if (aEvent.target.id == 'sowatchmk2-' + x + '-filter') {
-            if (!SiteLists[x].hasFilter) continue;
-            Preferences.setValue(SiteLists[x], 2);
-          }
-          if (aEvent.target.id == 'sowatchmk2-' + x + '-none') Preferences.setValue(SiteLists[x], 0);
-        }
+        if (aEvent.target.id == 'sowatch-forceupdate') QueryFiles.start('yes');
       },
       onPopup: function (aEvent) {
-        if (aEvent.target.id == 'sowatchmk2-popup') {
-          if (Preferences.getValue(PrefValue['remote'])) aEvent.target.querySelector('#sowatchmk2-remote').setAttribute('checked', 'true');
-          else aEvent.target.querySelector('#sowatchmk2-remote').setAttribute('checked', 'false');
+        if (aEvent.target.id == 'sowatch-popup') {
+          if (Preferences.getValue(PrefValue['remote'])) aEvent.target.querySelector('#sowatch-remote').setAttribute('checked', 'true');
+          else aEvent.target.querySelector('#sowatch-remote').setAttribute('checked', 'false');
 
-          if (Preferences.getValue(PrefValue['autoupdate'])) aEvent.target.querySelector('#sowatchmk2-autoupdate').setAttribute('checked', 'true');
-          else aEvent.target.querySelector('#sowatchmk2-autoupdate').setAttribute('checked', 'false');
-        }
-
-        for (var x in SiteLists) {
-          if (aEvent.target.id == 'sowatchmk2-popup') {
-            if (!SiteLists[x].url.test(aEvent.target.ownerDocument.defaultView.content.location.href) && !SiteLists[x].popup) {
-              aEvent.target.querySelector('#sowatchmk2-' + x).setAttribute('hidden', 'true');
-              if (SiteLists[x].hasReferer) aEvent.target.querySelector('#sowatchmk2-referer-' + x).setAttribute('hidden', 'true');
-            } else {
-              aEvent.target.querySelector('#sowatchmk2-' + x).setAttribute('hidden', 'false');
-              if (SiteLists[x].hasReferer) aEvent.target.querySelector('#sowatchmk2-referer-' + x).setAttribute('hidden', 'false');
-            }
-
-            if (SiteLists[x].hasReferer) {
-              if (Preferences.getValue(SiteLists[x]['referer'])) aEvent.target.querySelector('#sowatchmk2-referer-' + x).setAttribute('checked', 'true');
-              else aEvent.target.querySelector('#sowatchmk2-referer-' + x).setAttribute('checked', 'false');
-            }
-          }
-
-          if (aEvent.target.id == 'sowatchmk2-popup-' + x) {
-            if (Preferences.getValue(SiteLists[x]) == 1) aEvent.target.querySelector('#sowatchmk2-' + x + '-player').setAttribute('checked', 'true');
-            else if (Preferences.getValue(SiteLists[x]) == 2) aEvent.target.querySelector('#sowatchmk2-' + x + '-filter').setAttribute('checked', 'true');
-            else if (Preferences.getValue(SiteLists[x]) == 0) aEvent.target.querySelector('#sowatchmk2-' + x + '-none').setAttribute('checked', 'true');
-          }
+          if (Preferences.getValue(PrefValue['autoupdate'])) aEvent.target.querySelector('#sowatch-autoupdate').setAttribute('checked', 'true');
+          else aEvent.target.querySelector('#sowatch-autoupdate').setAttribute('checked', 'false');
         }
       },
     });
@@ -820,28 +543,12 @@ var Toolbar = {
   removeIcon: function () {
     if (!this.buttonOn) return;
     Services.sss.unregisterSheet(this.css, Services.sss.AUTHOR_SHEET);
-    CustomizableUI.destroyWidget('sowatchmk2-button');
+    CustomizableUI.destroyWidget('sowatch-button');
     this.buttonOn = false;
-  },
-  UserInterface: function (aSubject) {
-    var httpChannel = aSubject.QueryInterface(Components.interfaces.nsIHttpChannel);
-
-    var aVisitor = new HttpHeaderVisitor();
-    httpChannel.visitResponseHeaders(aVisitor);
-    if (!aVisitor.isFlash()) return;
-
-    for (var i in SiteLists) {
-      if (SiteLists[i]['target'] && SiteLists[i]['target'].test(httpChannel.URI.spec)) SiteLists[i]['popup'] = true;
-      else SiteLists[i]['popup'] = false;
-    }
   },
 };
 
 var RuleExecution = {
-  toggle: function (aState, aRule) {
-    if (aState == 'on') aRule['target'] = aRule['string'];
-    if (aState == 'off') aRule['target'] = null;
-  },
   getPlayer: function (remote, rule, callback) {
     if (remote) var aObject = rule['remote'];
     else var aObject = rule['object'];
@@ -865,6 +572,8 @@ var RuleExecution = {
     return Components.results.NS_ERROR_NO_INTERFACE;
   },
   referer: function (aSubject) {
+    if (!Preferences.getValue(PrefValue['referer'])) return;
+
     var httpChannel = aSubject.QueryInterface(Components.interfaces.nsIHttpChannel);
 
     for (var i in RefererRules) {
@@ -873,17 +582,20 @@ var RuleExecution = {
       }
     }
   },
-  filter: function (aSubject) {
+  referer: function (aSubject) {
+    if (!Preferences.getValue(PrefValue['filter'])) return;
+
     var httpChannel = aSubject.QueryInterface(Components.interfaces.nsIHttpChannel);
 
-    for (var i in FilterRules) {
-      var rule = FilterRules[i];
-      if (rule['target'] && rule['target'].test(httpChannel.URI.spec)) {
-        httpChannel.suspend();
+    for (var i in RefererRules) {
+      if (RefererRules[i]['target'] && RefererRules[i]['target'].test(httpChannel.originalURI.spec)) {
+        httpChannel.setRequestHeader('Referer', RefererRules[i]['host'], false);
       }
     }
   },
   player: function (aSubject) {
+    if (!Preferences.getValue(PrefValue['player'])) return;
+
     var httpChannel = aSubject.QueryInterface(Components.interfaces.nsIHttpChannel);
 
     var aVisitor = new HttpHeaderVisitor();
@@ -954,8 +666,6 @@ var Observers = {
       RuleExecution.referer(aSubject);
     }
     if (aTopic == 'http-on-examine-response') {
-      Toolbar.UserInterface(aSubject);
-      RuleExecution.filter(aSubject);
       RuleExecution.player(aSubject);
     }
   },
@@ -972,7 +682,7 @@ var Observers = {
 };
 
 function startup(aData, aReason) {
-  Utilities = Services.strings.createBundle('chrome://sowatchmk2/locale/global.properties?' + Math.random());
+  Utilities = Services.strings.createBundle('chrome://sowatch/locale/global.properties?' + Math.random());
   Preferences.pending();
   Observers.startUp();
 }
