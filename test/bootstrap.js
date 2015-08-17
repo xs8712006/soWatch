@@ -5,7 +5,7 @@ Components.utils.import('resource://gre/modules/osfile.jsm'); // Require Gecko 2
 Components.utils.import('resource://gre/modules/Downloads.jsm'); // Require Gecko 26 and later
 Components.utils.import('resource://gre/modules/NetUtil.jsm'); // Promise chain that require Gecko 25 and later
 
-var Utilities = {}, PlayerRules = {}, FilterRules = {}, HijackRules = {}, RefererRules = {};
+var Utilities = {}, PlayerRules = {}, FilterRules = {}, RefererRules = {};
 
 var Services = {
   io: Components.classes['@mozilla.org/network/io-service;1'].getService(Components.interfaces.nsIIOService),
@@ -225,12 +225,12 @@ var SiteLists = {
       RuleExecution.toggle(aState, PlayerRules['sohu']);
     },
     getFilter: function () {
-      HijackRules['sohu'] = {
+      FilterRules['sohu'] = {
         string: /http:\/\/v\.aty\.sohu\.com\/v\?/i,
       };
     },
     setFilter: function (aState) {
-      RuleExecution.toggle(aState, HijackRules['sohu']);
+      RuleExecution.toggle(aState, FilterRules['sohu']);
     },
   },
   'pptv': {
@@ -860,7 +860,6 @@ var RuleExecution = {
       }
     });
   },
-  getFilter: Services.pps.newProxyInfo('http', '127.0.0.1', '50086', 1, 0, null),
   QueryInterface: function (aIID) {
     if (aIID.equals(Components.interfaces.nsISupports) || aIID.equals(Components.interfaces.nsIObserver)) return this;
     return Components.results.NS_ERROR_NO_INTERFACE;
@@ -877,8 +876,8 @@ var RuleExecution = {
   filter: function (aSubject) {
     var httpChannel = aSubject.QueryInterface(Components.interfaces.nsIHttpChannel);
 
-    for (var i in HijackRules) {
-      var rule = HijackRules[i];
+    for (var i in FilterRules) {
+      var rule = FilterRules[i];
       if (rule['target'] && rule['target'].test(httpChannel.URI.spec)) {
         httpChannel.suspend();
       }
@@ -947,14 +946,6 @@ HttpHeaderVisitor.prototype = {
 }
 
 var Observers = {
-  applyFilter: function (aService, aURI, aProxy) {
-    for (var i in FilterRules) {
-      if (FilterRules[i]['target'] && FilterRules[i]['target'].test(aURI.spec)) {
-        return RuleExecution.getFilter;
-      }
-    }
-    return aProxy;
-  },
   observe: function (aSubject, aTopic, aData) {
     if (aTopic == 'nsPref:changed') {
       Preferences.pending();
@@ -970,13 +961,11 @@ var Observers = {
   },
   startUp: function () {
     Preferences.branch.addObserver('', this, false);
-    Services.pps.registerFilter(this, 3);
     Services.obs.addObserver(this, 'http-on-examine-response', false);
     Services.obs.addObserver(this, 'http-on-modify-request', false);
   },
   shutDown: function () {
     Preferences.branch.removeObserver('', this);
-    Services.pps.unregisterFilter(this);
     Services.obs.removeObserver(this, 'http-on-examine-response', false);
     Services.obs.removeObserver(this, 'http-on-modify-request', false);
   },
