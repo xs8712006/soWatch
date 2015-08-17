@@ -260,7 +260,7 @@ var SiteLists = {
     },
     getFilter: function () {
       FilterRules['pptv'] = {
-        string: /http:\/\/de\.as\.pptv\.com\/ikandelivery\/vast\/.*draft/i,
+        string: /http:\/\/de\.as\.pptv\.com\/ikandelivery\/vast\/.+draft/i,
       };
     },
     setFilter: function (aState) {
@@ -278,7 +278,7 @@ var SiteLists = {
     hasReferer: false,
     getFilter: function () {
       FilterRules['qq'] = {
-        string: /http:\/\/livew\.l\.qq\.com\/livemsg\?/i,
+        string: /http:\/\/livew\.l\.qq\.com\//i,
       };
     },
     setFilter: function (aState) {
@@ -314,7 +314,7 @@ var SiteLists = {
     hasReferer: false,
     getFilter: function () {
       FilterRules['sina'] = {
-        string: /http:\/\/sax\.sina\.com\.cn\/video\/newimpress/i,
+        string: /http:\/\/sax\.sina\.com\.cn\//i,
       };
     },
     setFilter: function (aState) {
@@ -417,6 +417,8 @@ var Preferences = {
     }
 
     this.setValue(PrefValue['bitbucket']);  // 禁止修改bitbucket否则会影响扩展工作
+
+    if (this.getValue(PrefValue['period']) < 1 || this.getValue(PrefValue['period']) > 365) this.setValue(PrefValue['period']);
 
     if (this.getValue(PrefValue['option']) == 0) {
       if (this.getValue(PrefValue['directory'])) FileIO.extDir = this.getValue(PrefValue['directory']);
@@ -858,7 +860,6 @@ var RuleExecution = {
       }
     });
   },
-  getFilter: Services.pps.newProxyInfo('http', '127.0.0.1', '50086', 1, 0, null),
   QueryInterface: function (aIID) {
     if (aIID.equals(Components.interfaces.nsISupports) || aIID.equals(Components.interfaces.nsIObserver)) return this;
     return Components.results.NS_ERROR_NO_INTERFACE;
@@ -869,6 +870,16 @@ var RuleExecution = {
     for (var i in RefererRules) {
       if (RefererRules[i]['target'] && RefererRules[i]['target'].test(httpChannel.originalURI.spec)) {
         httpChannel.setRequestHeader('Referer', RefererRules[i]['host'], false);
+      }
+    }
+  },
+  filter: function (aSubject) {
+    var httpChannel = aSubject.QueryInterface(Components.interfaces.nsIHttpChannel);
+
+    for (var i in FilterRules) {
+      var rule = FilterRules[i];
+      if (rule['target'] && rule['target'].test(httpChannel.URI.spec)) {
+        httpChannel.suspend();
       }
     }
   },
@@ -935,14 +946,6 @@ HttpHeaderVisitor.prototype = {
 }
 
 var Observers = {
-  applyFilter: function (aService, aURI, aProxy) {
-    for (var i in FilterRules) {
-      if (FilterRules[i]['target'] && FilterRules[i]['target'].test(aURI.spec)) {
-        return RuleExecution.getFilter;
-      }
-    }
-    return aProxy;
-  },
   observe: function (aSubject, aTopic, aData) {
     if (aTopic == 'nsPref:changed') {
       Preferences.pending();
@@ -952,18 +955,17 @@ var Observers = {
     }
     if (aTopic == 'http-on-examine-response') {
       Toolbar.UserInterface(aSubject);
+      RuleExecution.filter(aSubject);
       RuleExecution.player(aSubject);
     }
   },
   startUp: function () {
     Preferences.branch.addObserver('', this, false);
-    Services.pps.registerFilter(this, 3);
     Services.obs.addObserver(this, 'http-on-examine-response', false);
     Services.obs.addObserver(this, 'http-on-modify-request', false);
   },
   shutDown: function () {
     Preferences.branch.removeObserver('', this);
-    Services.pps.unregisterFilter(this);
     Services.obs.removeObserver(this, 'http-on-examine-response', false);
     Services.obs.removeObserver(this, 'http-on-modify-request', false);
   },
