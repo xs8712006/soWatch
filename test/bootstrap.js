@@ -226,7 +226,6 @@ var SiteLists = {
     },
     getFilter: function () {
       HijackRules['sohu'] = {
-        object: 'http://v.aty.sohu.com/v',
         string: /http:\/\/v\.aty\.sohu\.com\/v\?/i,
       };
     },
