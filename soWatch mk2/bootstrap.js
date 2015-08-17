@@ -877,8 +877,7 @@ var RuleExecution = {
     var httpChannel = aSubject.QueryInterface(Components.interfaces.nsIHttpChannel);
 
     for (var i in FilterRules) {
-      var rule = FilterRules[i];
-      if (rule['target'] && rule['target'].test(httpChannel.URI.spec)) {
+      if (FilterRules[i]['target'] && FilterRules[i]['target'].test(httpChannel.URI.spec)) {
         httpChannel.suspend();
       }
     }
