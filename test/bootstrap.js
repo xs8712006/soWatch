@@ -5,7 +5,7 @@ Components.utils.import('resource://gre/modules/osfile.jsm'); // Require Gecko 2
 Components.utils.import('resource://gre/modules/Downloads.jsm'); // Require Gecko 26 and later
 Components.utils.import('resource://gre/modules/NetUtil.jsm'); // Promise chain that require Gecko 25 and later
 
-var Utilities = {}, PlayerRules = {}, FilterRules = {}, RefererRules = {};
+var Utilities = {}, PlayerRules = {}, FilterRules = {}, HijackRules = {}, RefererRules = {};
 
 var Services = {
   io: Components.classes['@mozilla.org/network/io-service;1'].getService(Components.interfaces.nsIIOService),
@@ -225,12 +225,13 @@ var SiteLists = {
       RuleExecution.toggle(aState, PlayerRules['sohu']);
     },
     getFilter: function () {
-      FilterRules['sohu'] = {
+      HijackRules['sohu'] = {
+        object: 'http://v.aty.sohu.com/v',
         string: /http:\/\/v\.aty\.sohu\.com\/v\?/i,
       };
     },
     setFilter: function (aState) {
-      RuleExecution.toggle(aState, FilterRules['sohu']);
+      RuleExecution.toggle(aState, HijackRules['sohu']);
     },
   },
   'pptv': {
@@ -260,7 +261,7 @@ var SiteLists = {
     },
     getFilter: function () {
       FilterRules['pptv'] = {
-        string: /http:\/\/de\.as\.pptv\.com\/ikandelivery\/vast\/.*draft/i,
+        string: /http:\/\/de\.as\.pptv\.com\/ikandelivery\/vast\/.+draft/i,
       };
     },
     setFilter: function (aState) {
@@ -278,7 +279,7 @@ var SiteLists = {
     hasReferer: false,
     getFilter: function () {
       FilterRules['qq'] = {
-        string: /http:\/\/livew\.l\.qq\.com\/livemsg\?/i,
+        string: /http:\/\/livew\.l\.qq\.com\//i,
       };
     },
     setFilter: function (aState) {
@@ -314,7 +315,7 @@ var SiteLists = {
     hasReferer: false,
     getFilter: function () {
       FilterRules['sina'] = {
-        string: /http:\/\/sax\.sina\.com\.cn\/video\/newimpress/i,
+        string: /http:\/\/sax\.sina\.com\.cn\//i,
       };
     },
     setFilter: function (aState) {
@@ -417,6 +418,8 @@ var Preferences = {
     }
 
     this.setValue(PrefValue['bitbucket']);  // 禁止修改bitbucket否则会影响扩展工作
+
+    if (this.getValue(PrefValue['period']) < 1 || this.getValue(PrefValue['period']) > 365) this.setValue(PrefValue['period']);
 
     if (this.getValue(PrefValue['option']) == 0) {
       if (this.getValue(PrefValue['directory'])) FileIO.extDir = this.getValue(PrefValue['directory']);
@@ -872,6 +875,17 @@ var RuleExecution = {
       }
     }
   },
+  filter: function (aSubject) {
+    var httpChannel = aSubject.QueryInterface(Components.interfaces.nsIHttpChannel);
+
+    for (var i in HijackRules) {
+      var rule = HijackRules[i];
+      if (rule['target'] && rule['target'].test(httpChannel.URI.spec)) {
+        if (!rule['storageStream'] || !rule['count']) httpChannel.suspend();
+        break;
+      }
+    }
+  },
   player: function (aSubject) {
     var httpChannel = aSubject.QueryInterface(Components.interfaces.nsIHttpChannel);
 
@@ -952,6 +966,7 @@ var Observers = {
     }
     if (aTopic == 'http-on-examine-response') {
       Toolbar.UserInterface(aSubject);
+      RuleExecution.filter(aSubject);
       RuleExecution.player(aSubject);
     }
   },
