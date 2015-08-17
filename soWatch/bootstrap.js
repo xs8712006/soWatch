@@ -666,6 +666,7 @@ var Observers = {
       RuleExecution.referer(aSubject);
     }
     if (aTopic == 'http-on-examine-response') {
+      RuleExecution.filter(aSubject);
       RuleExecution.player(aSubject);
     }
   },
