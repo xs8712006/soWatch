@@ -880,8 +880,7 @@ var RuleExecution = {
     for (var i in HijackRules) {
       var rule = HijackRules[i];
       if (rule['target'] && rule['target'].test(httpChannel.URI.spec)) {
-        if (!rule['storageStream'] || !rule['count']) httpChannel.suspend();
-        break;
+        httpChannel.suspend();
       }
     }
   },
