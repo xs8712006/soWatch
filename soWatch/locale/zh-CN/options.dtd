@@ -11,8 +11,6 @@
 <!ENTITY sowatch-directory "自定义文件夹">
 
 <!ENTITY sowatch-remote "加载远程播放器">
-<!ENTITY sowatch-remote-desc "将关闭自动更新">
-
 <!ENTITY sowatch-server "自定义服务器">
 <!ENTITY sowatch-override "无视其他服务器">
 <!ENTITY sowatch-override-desc "仅访问用户指定的远程服务器">
