@@ -11,8 +11,6 @@
 <!ENTITY sowatch-directory "既定のローカルディレクトリ">
 
 <!ENTITY sowatch-remote "リモートサーバーへとアクセス">
-<!ENTITY sowatch-remote-desc "このオプションは自動更新を停止する">
-
 <!ENTITY sowatch-server "リモートサーバーを指定する">
 <!ENTITY sowatch-override "リモートサーバーオーバーライド">
 <!ENTITY sowatch-override-desc "既定のリモートサーバーにだけアクセスする">
