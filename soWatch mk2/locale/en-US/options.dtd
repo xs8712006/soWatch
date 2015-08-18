@@ -28,8 +28,6 @@
 <!ENTITY sowatchmk2-directory "Defined Local Directory">
 
 <!ENTITY sowatchmk2-remote "Access Remote Server">
-<!ENTITY sowatchmk2-remote-desc "Will disable autoupdate">
-
 <!ENTITY sowatchmk2-server "Defined Remote Server">
 <!ENTITY sowatchmk2-override "Remote Server Override">
 <!ENTITY sowatchmk2-override-desc "Only access defined remote server">
