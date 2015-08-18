@@ -28,8 +28,6 @@
 <!ENTITY sowatchmk2-directory "自定义文件夹">
 
 <!ENTITY sowatchmk2-remote "加载远程播放器">
-<!ENTITY sowatchmk2-remote-desc "将关闭自动更新">
-
 <!ENTITY sowatchmk2-server "自定义服务器">
 <!ENTITY sowatchmk2-override "无视其他服务器">
 <!ENTITY sowatchmk2-override-desc "仅访问用户指定的远程服务器">
