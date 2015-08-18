@@ -11,8 +11,6 @@
 <!ENTITY sowatch-directory "Defined Local Directory">
 
 <!ENTITY sowatch-remote "Access Remote Server">
-<!ENTITY sowatch-remote-desc "Will disable autoupdate">
-
 <!ENTITY sowatch-server "Defined Remote Server">
 <!ENTITY sowatch-override "Remote Server Override">
 <!ENTITY sowatch-override-desc "Only access defined remote server">
