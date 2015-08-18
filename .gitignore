@@ -1,7 +1,4 @@
 *.png
-*.reg
-*.swf
-*.xpi
 soWatch/install.rdf
 soWatch/LICENSE
 soWatch mk2/install.rdf
