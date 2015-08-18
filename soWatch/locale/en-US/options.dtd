@@ -1,22 +1,22 @@
-<!ENTITY sowatch-auto "Automatic Update Players">
-<!ENTITY sowatch-auto-desc "Use local directory to synchronize players">
-<!ENTITY sowatch-period "Update Period">
-<!ENTITY sowatch-period-desc "Day">
+<!ENTITY sowatch-auto "プレイヤーの自動更新">
+<!ENTITY sowatch-auto-desc "ローカルフォルダーを利用しプレイヤーの同期を執行する">
+<!ENTITY sowatch-period "自動更新の期間">
+<!ENTITY sowatch-period-desc "日">
 
-<!ENTITY sowatch-option "Directory Option">
-<!ENTITY sowatch-profile "Firefox Profile Directory">
-<!ENTITY sowatch-install "Firefox Install Directory">
-<!ENTITY sowatch-home "Windows Home Directory">
-<!ENTITY sowatch-defined "User Defined Directory">
-<!ENTITY sowatch-directory "Defined Local Directory">
+<!ENTITY sowatch-option "ディレクトリの設定">
+<!ENTITY sowatch-profile "Firefoxプロファイルディレクトリ">
+<!ENTITY sowatch-install "Firefoxインストールディレクトリ">
+<!ENTITY sowatch-home "Windowsユーザーホームディレクトリ">
+<!ENTITY sowatch-defined "ユーザー既定のディレクトリ">
+<!ENTITY sowatch-directory "既定のローカルディレクトリ">
 
-<!ENTITY sowatch-remote "Access Remote Server">
-<!ENTITY sowatch-server "Defined Remote Server">
-<!ENTITY sowatch-override "Remote Server Override">
-<!ENTITY sowatch-override-desc "Only access defined remote server">
-<!ENTITY sowatch-bitbucket-desc "Players modified by 15536900">
+<!ENTITY sowatch-remote "リモートサーバーへとアクセス">
+<!ENTITY sowatch-server "リモートサーバーを指定する">
+<!ENTITY sowatch-override "リモートサーバーオーバーライド">
+<!ENTITY sowatch-override-desc "既定のリモートサーバーにだけアクセスする">
+<!ENTITY sowatch-bitbucket-desc "15536900が改造したプレイヤーを保管している">
 
-<!ENTITY sowatch-interface "Enhanced Toolbar Control UI">
+<!ENTITY sowatch-interface "コントロールUIを追加する">
 
-<!ENTITY sowatch-enabled "Enabled">
-<!ENTITY sowatch-disabled "Disabled">
+<!ENTITY sowatch-enabled "有効">
+<!ENTITY sowatch-disabled "無効">
