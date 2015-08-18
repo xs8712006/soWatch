@@ -1,16 +1,12 @@
 [Adblock Plus 2.0]
 ! Title: Anti-ads Player Accessibility
-! Version: 201504180002
+! Version: 201508180003
 ! Expires: 14 days
 
 ! Ad-filtering Rules
 
-! soWatch! mk2&mk3 compatibility rules
-@@||livew.l.qq.com
-
-! soWatch! mk3 only compatibility rules
-@@||ark.letv.com^
+! soWatch! compatibility rules
 @@||val*.atm.youku.com^
-
-! Misc
+@@||livew.l.qq.com
+@@||ark.letv.com^
 @@||fz.letv.com^
