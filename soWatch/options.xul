@@ -35,7 +35,7 @@
   };
   this.valueFromPreference();
 '/>
-<setting pref="extensions.sowatch.remote.access.enabled" type="radio" title="&sowatch-remote;" desc="&sowatch-remote-desc;">
+<setting pref="extensions.sowatch.remote.access.enabled" type="radio" title="&sowatch-remote;">
   <radiogroup>
     <radio value="true" label="&sowatch-enabled;"/>
     <radio value="false" label="&sowatch-disabled;"/>
@@ -52,11 +52,11 @@
   };
   this.valueFromPreference();
 '/>
-<setting pref="extensions.sowatch.remote.server.bitbucket" type="string" title="Bitbucket.org" desc="&sowatch-bitbucket-desc;" disabled="true"/>
 <setting pref="extensions.sowatch.remote.override.enabled" type="radio" title="&sowatch-override;" desc="&sowatch-override-desc;">
   <radiogroup>
     <radio value="true" label="&sowatch-enabled;"/>
     <radio value="false" label="&sowatch-disabled;"/>
   </radiogroup>
 </setting>
+<setting pref="extensions.sowatch.remote.server.bitbucket" type="string" title="Bitbucket.org" desc="&sowatch-bitbucket-desc;" disabled="true"/>
 </vbox>

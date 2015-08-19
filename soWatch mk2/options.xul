@@ -35,7 +35,7 @@
   };
   this.valueFromPreference();
 '/>
-<setting pref="extensions.sowatchmk2.remote.access.enabled" type="radio" title="&sowatchmk2-remote;" desc="&sowatchmk2-remote-desc;">
+<setting pref="extensions.sowatchmk2.remote.access.enabled" type="radio" title="&sowatchmk2-remote;">
   <radiogroup>
     <radio value="true" label="&sowatchmk2-enabled;"/>
     <radio value="false" label="&sowatchmk2-disabled;"/>
@@ -52,14 +52,13 @@
   };
   this.valueFromPreference();
 '/>
-<setting pref="extensions.sowatchmk2.remote.server.bitbucket" type="string" title="Bitbucket.org" desc="&sowatchmk2-bitbucket-desc;" disabled="true"/>
 <setting pref="extensions.sowatchmk2.remote.override.enabled" type="radio" title="&sowatchmk2-override;" desc="&sowatchmk2-override-desc;">
   <radiogroup>
     <radio value="true" label="&sowatchmk2-enabled;"/>
     <radio value="false" label="&sowatchmk2-disabled;"/>
   </radiogroup>
 </setting>
-
+<setting pref="extensions.sowatchmk2.remote.server.bitbucket" type="string" title="Bitbucket.org" desc="&sowatchmk2-bitbucket-desc;" disabled="true"/>
 <setting pref="extensions.sowatchmk2.rule.youku.defined" type="menulist" title="&sowatchmk2-youku;">
   <menulist>
     <menupopup id="sowatchmk2-youku">

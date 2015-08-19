@@ -28,8 +28,6 @@
 <!ENTITY sowatchmk2-directory "既定のローカルディレクトリ">
 
 <!ENTITY sowatchmk2-remote "リモートサーバーへとアクセス">
-<!ENTITY sowatchmk2-remote-desc "このオプションは自動更新を停止する">
-
 <!ENTITY sowatchmk2-server "既定のリモートサーバー">
 <!ENTITY sowatchmk2-override "リモートサーバーオーバーライド">
 <!ENTITY sowatchmk2-override-desc "既定のリモートサーバーにだけアクセスする">
