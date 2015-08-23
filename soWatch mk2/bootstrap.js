@@ -76,6 +76,9 @@ var SiteLists = {
     getFilter: function () {
       FilterRules['youku_tudou'] = {
         string: /http:\/\/val[fcopb]\.atm\.youku\.com\//i,
+  /**  mode 0: faster but less compatible, mode 1: more compatible but slower.
+       模式0： 更快但是兼容性更差，模式1：兼容性更好但是相对慢些  */
+        mode: 0,
       };
     },
     setFilter: function (aState) {
@@ -126,6 +129,7 @@ var SiteLists = {
     getFilter: function () {
       FilterRules['youku_tudou'] = {
         string: /http:\/\/val[fcopb]\.atm\.youku\.com\//i,
+        mode: 0,
       };
     },
     setFilter: function (aState) {
@@ -133,13 +137,13 @@ var SiteLists = {
     },
   },
   'iqiyi': {
-    target: /http:\/\/www\.iqiyi\.com\/.+\/(Main|Share|Enjoy)Player.+\.swf/i,
+    target: /http:\/\/www\.iqiyi\.com\/.+Player.+\.swf/i,
     url: /http:\/\/[^\/]+(iqiyi\.com)\//i,
     name: 'rule.iqiyi.defined',
     type: 'integer',
     value: 1,
     hasPlayer: true,
-    hasFilter: false,
+    hasFilter: true,
     hasReferer: true,
     referer: {
       name: 'referer.iqiyi.enabled',
@@ -161,6 +165,20 @@ var SiteLists = {
     setPlayer: function (aState) {
       RuleExecution.toggle(aState, PlayerRules['iqiyi5']);
       RuleExecution.toggle(aState, PlayerRules['iqiyi_out']);
+    },
+    getFilter: function () {
+      FilterRules['iqiyi'] = {
+        string: /http:\/\/(\w+\.){3}\w+\/videos\/other\/\d+\/(\w{2}\/){2}\w{32}\.(f4v|hml)/i,
+        mode: 0,
+      };
+      FilterRules['iqiyi_pause'] = {
+        string: /http:\/\/www\.iqiyi\.com\/common\/flashplayer\/\d+\/(\w{32}|cornersign.+)\.swf/i,
+        mode: 0,
+      };
+    },
+    setFilter: function (aState) {
+      RuleExecution.toggle(aState, FilterRules['iqiyi']);
+      RuleExecution.toggle(aState, FilterRules['iqiyi_pause']);
     },
     getReferer: function () {
       RefererRules['referer-iqiyi'] = {
@@ -199,6 +217,7 @@ var SiteLists = {
     getFilter: function () {
       FilterRules['letv'] = {
         string: /http:\/\/(ark|fz)\.letv\.com\//i,
+        mode: 0,
       };
     },
     setFilter: function (aState) {
@@ -227,6 +246,7 @@ var SiteLists = {
     getFilter: function () {
       FilterRules['sohu'] = {
         string: /http:\/\/v\.aty\.sohu\.com\/v\?/i,
+        mode: 1,
       };
     },
     setFilter: function (aState) {
@@ -238,7 +258,7 @@ var SiteLists = {
     url: /http:\/\/[^\/]+pptv\.com\//i,
     name: 'rule.pptv.defined',
     type: 'integer',
-    value: 1,
+    value: 2,
     hasPlayer: true,
     hasFilter: true,
     hasReferer: false,
@@ -248,19 +268,14 @@ var SiteLists = {
         remote: FileIO.link + 'player4player2.swf',
         string: /http:\/\/player.pplive.cn\/ikan\/.*\/player4player2\.swf/i,
       };
-      PlayerRules['pptv_live'] = {
-        object: FileIO.path + 'pptv.in.Live.swf',
-        remote: FileIO.server + 'pptv.in.Live.swf',
-        string: /http:\/\/player.pplive.cn\/live\/.*\/player4live2\.swf/i,
-      };
     },
     setPlayer: function (aState) {
       RuleExecution.toggle(aState, PlayerRules['pptv']);
-      RuleExecution.toggle(aState, PlayerRules['pptv_live']);
     },
     getFilter: function () {
       FilterRules['pptv'] = {
         string: /http:\/\/de\.as\.pptv\.com\/ikandelivery\/vast\/.+draft/i,
+        mode: 0,
       };
     },
     setFilter: function (aState) {
@@ -279,6 +294,7 @@ var SiteLists = {
     getFilter: function () {
       FilterRules['qq'] = {
         string: /http:\/\/livew\.l\.qq\.com\//i,
+        mode: 0,
       };
     },
     setFilter: function (aState) {
@@ -297,6 +313,7 @@ var SiteLists = {
     getFilter: function () {
       FilterRules['163'] = {
         string: /http:\/\/v\.163\.com\/special\/.*\.xml/i,
+        mode: 0,
       };
     },
     setFilter: function (aState) {
@@ -315,6 +332,7 @@ var SiteLists = {
     getFilter: function () {
       FilterRules['sina'] = {
         string: /http:\/\/sax\.sina\.com\.cn\//i,
+        mode: 0,
       };
     },
     setFilter: function (aState) {
@@ -435,14 +453,10 @@ var Preferences = {
 
     FileIO.path = OS.Path.toFileURI(FileIO.extDir) + '/';
 
-    if (this.getValue(PrefValue['server'])) {
-      FileIO.server = this.getValue(PrefValue['server']);
-    } else {
-      this.setValue(PrefValue['override'], false);
-      FileIO.server = 'https://raw.githubusercontent.com/jc3213/soWatch/master/player/';
-    }
+    if (this.getValue(PrefValue['server'])) FileIO.server = this.getValue(PrefValue['server']);
+    else this.setValue(PrefValue['override'], false);
 
-    if (this.getValue(PrefValue['override'])) FileIO.link = this.getValue(PrefValue['server']);
+    if (this.getValue(PrefValue['override'])) FileIO.link = FileIO.server;
     else FileIO.link = this.getValue(PrefValue['bitbucket']);
 
     if (this.getValue(PrefValue['autoupdate'])) {
@@ -486,12 +500,16 @@ var Preferences = {
           SiteLists[i].getPlayer();
           if (this.getValue(SiteLists[i]) == 1) SiteLists[i].setPlayer('on');
           else SiteLists[i].setPlayer('off');
+        } else {
+          if (this.getValue(SiteLists[i]) == 1) this.setValue(SiteLists[i]);
         }
 
         if (SiteLists[i].hasFilter) {
           SiteLists[i].getFilter();
           if (this.getValue(SiteLists[i]) == 2) SiteLists[i].setFilter('on');
           else SiteLists[i].setFilter('off');
+        } else {
+          if (this.getValue(SiteLists[i]) == 2) this.setValue(SiteLists[i]);
         }
       }
 
@@ -576,9 +594,7 @@ var QueryFiles = {
     if (aProbe <= 3) {
       aProbe = aProbe + 1;
       var aTemp = aFile + '_sw'; // 因为Downloads.jsm并不能直接覆盖原文件所以需要使用临时文件
-      Downloads.fetch(aLink, aTemp, {
-        isPrivate: true
-      }).then(function onSuccess() {
+      Downloads.fetch(aLink, aTemp, {isPrivate: true}).then(function onSuccess() {
         OS.File.move(aTemp, aFile);
         Preferences.setValue(aPref, aHash);
       }, function onFailure() {
@@ -877,8 +893,24 @@ var RuleExecution = {
     var httpChannel = aSubject.QueryInterface(Components.interfaces.nsIHttpChannel);
 
     for (var i in FilterRules) {
+/** Implement https://github.com/jc3213/soWatch/issues/7 to solve filter for iqiyi
+    装载 https://github.com/jc3213/soWatch/issues/7 以解决iqiyi的过滤规则问题 */
+      if (SiteLists['iqiyi']['target'].test(httpChannel.URI.spec)) {
+        this.iqiyi = 0;
+      }
+
       if (FilterRules[i]['target'] && FilterRules[i]['target'].test(httpChannel.URI.spec)) {
-        httpChannel.suspend();
+  /** Minor tweak for https://github.com/jc3213/soWatch/issues/7
+      针对 https://github.com/jc3213/soWatch/issues/7 进行小幅修改 */
+        if (i == 'iqiyi') {
+          if (this.iqiyi != 1) {
+            httpChannel.cancel(Components.results.NS_BINDING_ABORTED);
+          }
+          this.iqiyi = this.iqiyi + 1;
+        } else {
+          if (FilterRules[i]['mode'] == 0) httpChannel.cancel(Components.results.NS_BINDING_ABORTED);
+          if (FilterRules[i]['mode'] == 1) httpChannel.suspend();
+        }
       }
     }
   },

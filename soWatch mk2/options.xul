@@ -81,7 +81,7 @@
   <menulist>
     <menupopup id="sowatchmk2-iqiyi">
       <menuitem value="1" label="&sowatchmk2-player;"/>
-      <menuitem value="2" label="&sowatchmk2-filter;" disabled="true"/>
+      <menuitem value="2" label="&sowatchmk2-filter;"/>
       <menuitem value="0" label="&sowatchmk2-none;"/>
     </menupopup>
   </menulist>
