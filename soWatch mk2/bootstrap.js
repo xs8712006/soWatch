@@ -137,7 +137,7 @@ var SiteLists = {
     },
   },
   'iqiyi': {
-    target: /http:\/\/www\.iqiyi\.com\/.+\/(Main|Share|Enjoy)Player.+\.swf/i,
+    target: /http:\/\/www\.iqiyi\.com\/.+Player.+\.swf/i,
     url: /http:\/\/[^\/]+(iqiyi\.com)\//i,
     name: 'rule.iqiyi.defined',
     type: 'integer',
