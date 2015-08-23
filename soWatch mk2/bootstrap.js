@@ -883,8 +883,15 @@ var RuleExecution = {
     var httpChannel = aSubject.QueryInterface(Components.interfaces.nsIHttpChannel);
 
     for (var i in FilterRules) {
+      if (SiteLists['iqiyi']['target'].test(httpChannel.URI.spec)) {
+        this.iqiyi = 0;
+      }
+
       if (FilterRules[i]['target'] && FilterRules[i]['target'].test(httpChannel.URI.spec)) {
-        httpChannel.suspend();
+        if (i == 'iqiyi') {
+          if (this.iqiyi == 0) this.iqiyi = this.iqiyi + 1;
+          else httpChannel.cancel(Components.results.NS_BINDING_ABORTED);
+        } else httpChannel.suspend();
       }
     }
   },
