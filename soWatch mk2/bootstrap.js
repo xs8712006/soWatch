@@ -245,7 +245,7 @@ var SiteLists = {
     },
     getFilter: function () {
       FilterRules['sohu'] = {
-        string: /http:\/\/v\.aty\.sohu\.com\//i,
+        string: /http:\/\/v\.aty\.sohu\.com\/v\?/i,
         mode: 1,
       };
     },
