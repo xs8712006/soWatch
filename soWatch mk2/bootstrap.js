@@ -48,7 +48,7 @@ var SiteLists = {
     type: 'integer',
     value: 2,
     hasPlayer: true,
-    hasFilter: true,
+    hasFilter: true,	
     hasReferer: true, // true:请按照下面格式添加referer参数
     referer: {
 //    label: 'Youku Referer',
@@ -76,6 +76,9 @@ var SiteLists = {
     getFilter: function () {
       FilterRules['youku_tudou'] = {
         string: /http:\/\/val[fcopb]\.atm\.youku\.com\//i,
+  /**  mode 0: faster but less compatible, mode 1: more compatible but slower.
+       模式0： 更快但是兼容性更差，模式1：兼容性更好但是相对慢些  */
+        mode: 0,
       };
     },
     setFilter: function (aState) {
@@ -126,6 +129,7 @@ var SiteLists = {
     getFilter: function () {
       FilterRules['youku_tudou'] = {
         string: /http:\/\/val[fcopb]\.atm\.youku\.com\//i,
+        mode: 0,
       };
     },
     setFilter: function (aState) {
@@ -167,9 +171,11 @@ var SiteLists = {
     getFilter: function () {
       FilterRules['iqiyi'] = {
         string: /http:\/\/(\w+\.){3}\w+\/videos\/other\/\d+\/(\w{2}\/){2}\w{32}\.(f4v|hml)/i,
+        mode: 0,
       };
       FilterRules['iqiyi_pause'] = {
         string: /http:\/\/www\.iqiyi\.com\/common\/flashplayer\/\d+\/(\w{32}|cornersign.+)\.swf/i,
+        mode: 0,
       };
     },
     setFilter: function (aState) {
@@ -213,6 +219,7 @@ var SiteLists = {
     getFilter: function () {
       FilterRules['letv'] = {
         string: /http:\/\/(ark|fz)\.letv\.com\//i,
+        mode: 0,
       };
     },
     setFilter: function (aState) {
@@ -240,7 +247,8 @@ var SiteLists = {
     },
     getFilter: function () {
       FilterRules['sohu'] = {
-        string: /http:\/\/v\.aty\.sohu\.com\/v\?/i,
+        string: /http:\/\/v\.aty\.sohu\.com\//i,
+        mode: 1,
       };
     },
     setFilter: function (aState) {
@@ -269,6 +277,7 @@ var SiteLists = {
     getFilter: function () {
       FilterRules['pptv'] = {
         string: /http:\/\/de\.as\.pptv\.com\/ikandelivery\/vast\/.+draft/i,
+        mode: 0,
       };
     },
     setFilter: function (aState) {
@@ -287,6 +296,7 @@ var SiteLists = {
     getFilter: function () {
       FilterRules['qq'] = {
         string: /http:\/\/livew\.l\.qq\.com\//i,
+        mode: 0,
       };
     },
     setFilter: function (aState) {
@@ -305,6 +315,7 @@ var SiteLists = {
     getFilter: function () {
       FilterRules['163'] = {
         string: /http:\/\/v\.163\.com\/special\/.*\.xml/i,
+        mode: 0,
       };
     },
     setFilter: function (aState) {
@@ -323,6 +334,7 @@ var SiteLists = {
     getFilter: function () {
       FilterRules['sina'] = {
         string: /http:\/\/sax\.sina\.com\.cn\//i,
+        mode: 0,
       };
     },
     setFilter: function (aState) {
@@ -883,15 +895,19 @@ var RuleExecution = {
     var httpChannel = aSubject.QueryInterface(Components.interfaces.nsIHttpChannel);
 
     for (var i in FilterRules) {
+   // https://github.com/jc3213/soWatch/issues/7
       if (SiteLists['iqiyi']['target'].test(httpChannel.URI.spec)) {
         this.iqiyi = 0;
       }
 
       if (FilterRules[i]['target'] && FilterRules[i]['target'].test(httpChannel.URI.spec)) {
-        if (i == 'iqiyi') {
-          if (this.iqiyi == 0) this.iqiyi = this.iqiyi + 1;
+        if (FilterRules[i]['mode'] == 0) {
+       // https://github.com/jc3213/soWatch/issues/7
+          if (i == 'iqiyi' && this.iqiyi == 0) this.iqiyi = this.iqiyi + 1;
           else httpChannel.cancel(Components.results.NS_BINDING_ABORTED);
-        } else httpChannel.suspend();
+       // httpChannel.cancel(Components.results.NS_BINDING_ABORTED);
+        }
+        if (FilterRules[i]['mode'] == 1) httpChannel.suspend();
       }
     }
   },
