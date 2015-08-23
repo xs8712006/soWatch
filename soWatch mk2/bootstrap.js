@@ -139,7 +139,7 @@ var SiteLists = {
     type: 'integer',
     value: 1,
     hasPlayer: true,
-    hasFilter: false,
+    hasFilter: true,
     hasReferer: true,
     referer: {
       name: 'referer.iqiyi.enabled',
@@ -161,6 +161,20 @@ var SiteLists = {
     setPlayer: function (aState) {
       RuleExecution.toggle(aState, PlayerRules['iqiyi5']);
       RuleExecution.toggle(aState, PlayerRules['iqiyi_out']);
+    },
+/** Caution: Follow the instruction in https://github.com/jc3213/soWatch/issues/7
+    注意： 你必须遵守 https://github.com/jc3213/soWatch/issues/7 的说明来实现功能*/
+    getFilter: function () {
+      FilterRules['iqiyi'] = {
+        string: /http:\/\/(\w+\.){3}\w+\/videos\/other\/\d+\/(\w{2}\/){2}\w{32}\.(f4v|hml)/i,
+      };
+      FilterRules['iqiyi_pause'] = {
+        string: /http:\/\/www\.iqiyi\.com\/common\/flashplayer\/\d+\/(\w{32}|cornersign.+)\.swf/i,
+      };
+    },
+    setFilter: function (aState) {
+      RuleExecution.toggle(aState, FilterRules['iqiyi']);
+      RuleExecution.toggle(aState, FilterRules['iqiyi_pause']);
     },
     getReferer: function () {
       RefererRules['referer-iqiyi'] = {
@@ -238,7 +252,7 @@ var SiteLists = {
     url: /http:\/\/[^\/]+pptv\.com\//i,
     name: 'rule.pptv.defined',
     type: 'integer',
-    value: 1,
+    value: 2,
     hasPlayer: true,
     hasFilter: true,
     hasReferer: false,
@@ -248,15 +262,9 @@ var SiteLists = {
         remote: FileIO.link + 'player4player2.swf',
         string: /http:\/\/player.pplive.cn\/ikan\/.*\/player4player2\.swf/i,
       };
-      PlayerRules['pptv_live'] = {
-        object: FileIO.path + 'pptv.in.Live.swf',
-        remote: FileIO.server + 'pptv.in.Live.swf',
-        string: /http:\/\/player.pplive.cn\/live\/.*\/player4live2\.swf/i,
-      };
     },
     setPlayer: function (aState) {
       RuleExecution.toggle(aState, PlayerRules['pptv']);
-      RuleExecution.toggle(aState, PlayerRules['pptv_live']);
     },
     getFilter: function () {
       FilterRules['pptv'] = {
@@ -435,14 +443,10 @@ var Preferences = {
 
     FileIO.path = OS.Path.toFileURI(FileIO.extDir) + '/';
 
-    if (this.getValue(PrefValue['server'])) {
-      FileIO.server = this.getValue(PrefValue['server']);
-    } else {
-      this.setValue(PrefValue['override'], false);
-      FileIO.server = 'https://raw.githubusercontent.com/jc3213/soWatch/master/player/';
-    }
+    if (this.getValue(PrefValue['server'])) FileIO.server = this.getValue(PrefValue['server']);
+    else this.setValue(PrefValue['override'], false);
 
-    if (this.getValue(PrefValue['override'])) FileIO.link = this.getValue(PrefValue['server']);
+    if (this.getValue(PrefValue['override'])) FileIO.link = FileIO.server;
     else FileIO.link = this.getValue(PrefValue['bitbucket']);
 
     if (this.getValue(PrefValue['autoupdate'])) {
@@ -486,12 +490,16 @@ var Preferences = {
           SiteLists[i].getPlayer();
           if (this.getValue(SiteLists[i]) == 1) SiteLists[i].setPlayer('on');
           else SiteLists[i].setPlayer('off');
+        } else {
+          if (this.getValue(SiteLists[i]) == 1) this.setValue(SiteLists[i]);
         }
 
         if (SiteLists[i].hasFilter) {
           SiteLists[i].getFilter();
           if (this.getValue(SiteLists[i]) == 2) SiteLists[i].setFilter('on');
           else SiteLists[i].setFilter('off');
+        } else {
+          if (this.getValue(SiteLists[i]) == 2) this.setValue(SiteLists[i]);
         }
       }
 
@@ -576,9 +584,7 @@ var QueryFiles = {
     if (aProbe <= 3) {
       aProbe = aProbe + 1;
       var aTemp = aFile + '_sw'; // 因为Downloads.jsm并不能直接覆盖原文件所以需要使用临时文件
-      Downloads.fetch(aLink, aTemp, {
-        isPrivate: true
-      }).then(function onSuccess() {
+      Downloads.fetch(aLink, aTemp, {isPrivate: true}).then(function onSuccess() {
         OS.File.move(aTemp, aFile);
         Preferences.setValue(aPref, aHash);
       }, function onFailure() {
