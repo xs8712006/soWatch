@@ -48,7 +48,7 @@ var SiteLists = {
     type: 'integer',
     value: 2,
     hasPlayer: true,
-    hasFilter: true,	
+    hasFilter: true,
     hasReferer: true, // true:请按照下面格式添加referer参数
     referer: {
 //    label: 'Youku Referer',
@@ -166,8 +166,6 @@ var SiteLists = {
       RuleExecution.toggle(aState, PlayerRules['iqiyi5']);
       RuleExecution.toggle(aState, PlayerRules['iqiyi_out']);
     },
-/** Caution: Follow the instruction in https://github.com/jc3213/soWatch/issues/7
-    注意： 你必须遵守 https://github.com/jc3213/soWatch/issues/7 的说明来实现功能*/
     getFilter: function () {
       FilterRules['iqiyi'] = {
         string: /http:\/\/(\w+\.){3}\w+\/videos\/other\/\d+\/(\w{2}\/){2}\w{32}\.(f4v|hml)/i,
@@ -895,19 +893,24 @@ var RuleExecution = {
     var httpChannel = aSubject.QueryInterface(Components.interfaces.nsIHttpChannel);
 
     for (var i in FilterRules) {
-   // https://github.com/jc3213/soWatch/issues/7
+/** Implement https://github.com/jc3213/soWatch/issues/7 to solve filter for iqiyi
+    装载 https://github.com/jc3213/soWatch/issues/7 以解决iqiyi的过滤规则问题 */
       if (SiteLists['iqiyi']['target'].test(httpChannel.URI.spec)) {
         this.iqiyi = 0;
       }
 
       if (FilterRules[i]['target'] && FilterRules[i]['target'].test(httpChannel.URI.spec)) {
-        if (FilterRules[i]['mode'] == 0) {
-       // https://github.com/jc3213/soWatch/issues/7
-          if (i == 'iqiyi' && this.iqiyi == 0) this.iqiyi = this.iqiyi + 1;
-          else httpChannel.cancel(Components.results.NS_BINDING_ABORTED);
-       // httpChannel.cancel(Components.results.NS_BINDING_ABORTED);
+  /** Minor tweak for https://github.com/jc3213/soWatch/issues/7
+      针对 https://github.com/jc3213/soWatch/issues/7 进行小幅修改 */
+        if (i == 'iqiyi') {
+          if (this.iqiyi != 1) {
+            httpChannel.cancel(Components.results.NS_BINDING_ABORTED);
+          }
+          this.iqiyi = this.iqiyi + 1;
+        } else {
+          if (FilterRules[i]['mode'] == 0) httpChannel.cancel(Components.results.NS_BINDING_ABORTED);
+          if (FilterRules[i]['mode'] == 1) httpChannel.suspend();
         }
-        if (FilterRules[i]['mode'] == 1) httpChannel.suspend();
       }
     }
   },
