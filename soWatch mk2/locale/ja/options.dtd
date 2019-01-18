@@ -8,9 +8,9 @@
 <!ENTITY sowatchmk2-163 "163.comの設定">
 <!ENTITY sowatchmk2-sina "Sina.com.cnの設定">
 
-<!ENTITY sowatchmk2-player "プレイヤーをオーバーライドする">
+<!ENTITY sowatchmk2-player "プレイヤーをすり替える">
 <!ENTITY sowatchmk2-filter "XMLリクエストをフィルタする">
-<!ENTITY sowatchmk2-none "機能を停止する">
+<!ENTITY sowatchmk2-none "デフォルト仕様に戻す">
 
 <!ENTITY sowatchmk2-referer-youku "Youkuのリファラを偽造する">
 <!ENTITY sowatchmk2-referer-iqiyi "iQiyiのリファラを偽造する">
@@ -19,17 +19,21 @@
 <!ENTITY sowatchmk2-auto-desc "ローカルフォルダーを利用しプレイヤーの同期を執行する">
 <!ENTITY sowatchmk2-period "自動更新の期間">
 <!ENTITY sowatchmk2-period-desc "日">
-<!ENTITY sowatchmk2-directory "ローカルディレクトリ">
+
+<!ENTITY sowatchmk2-option "ディレクトリの設定">
+<!ENTITY sowatchmk2-profile "Firefoxプロファイルディレクトリ">
+<!ENTITY sowatchmk2-install "Firefoxインストールディレクトリ">
+<!ENTITY sowatchmk2-home "Windowsユーザーホームディレクトリ">
+<!ENTITY sowatchmk2-defined "ユーザー既定のディレクトリ">
+<!ENTITY sowatchmk2-directory "既定のローカルディレクトリ">
 
 <!ENTITY sowatchmk2-remote "リモートサーバーへとアクセス">
-<!ENTITY sowatchmk2-remote-desc "このオプションは自動更新を停止する">
-
-<!ENTITY sowatchmk2-server "リモートサーバーを指定する">
-<!ENTITY sowatchmk2-override "Rリモートサーバーオーバーライド">
+<!ENTITY sowatchmk2-server "既定のリモートサーバー">
+<!ENTITY sowatchmk2-override "リモートサーバーオーバーライド">
 <!ENTITY sowatchmk2-override-desc "既定のリモートサーバーにだけアクセスする">
 <!ENTITY sowatchmk2-bitbucket-desc "15536900が改造したプレイヤーを保管している">
 
 <!ENTITY sowatchmk2-interface "コントロールUIを追加する">
 
-<!ENTITY sowatchmk2-enable "有効">
-<!ENTITY sowatchmk2-disable "無効">
+<!ENTITY sowatchmk2-enabled "有効">
+<!ENTITY sowatchmk2-disabled "無効">

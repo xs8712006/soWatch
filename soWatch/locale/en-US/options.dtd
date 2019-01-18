@@ -2,11 +2,15 @@
 <!ENTITY sowatch-auto-desc "Use local directory to synchronize players">
 <!ENTITY sowatch-period "Update Period">
 <!ENTITY sowatch-period-desc "Day">
-<!ENTITY sowatch-directory "Local Directory">
+
+<!ENTITY sowatch-option "Directory Option">
+<!ENTITY sowatch-profile "Firefox Profile Directory">
+<!ENTITY sowatch-install "Firefox Install Directory">
+<!ENTITY sowatch-home "Windows Home Directory">
+<!ENTITY sowatch-defined "User Defined Directory">
+<!ENTITY sowatch-directory "Defined Local Directory">
 
 <!ENTITY sowatch-remote "Access Remote Server">
-<!ENTITY sowatch-remote-desc "Will disable autoupdate">
-
 <!ENTITY sowatch-server "Defined Remote Server">
 <!ENTITY sowatch-override "Remote Server Override">
 <!ENTITY sowatch-override-desc "Only access defined remote server">
@@ -14,5 +18,5 @@
 
 <!ENTITY sowatch-interface "Enhanced Toolbar Control UI">
 
-<!ENTITY sowatch-enable "Enabled">
-<!ENTITY sowatch-disable "Disabled">
+<!ENTITY sowatch-enabled "Enabled">
+<!ENTITY sowatch-disabled "Disabled">

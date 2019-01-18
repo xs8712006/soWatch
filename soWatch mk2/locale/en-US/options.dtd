@@ -10,7 +10,7 @@
 
 <!ENTITY sowatchmk2-player "Override Flash Player">
 <!ENTITY sowatchmk2-filter "Filter XML Request">
-<!ENTITY sowatchmk2-none "Disabled">
+<!ENTITY sowatchmk2-none "Original Behavior">
 
 <!ENTITY sowatchmk2-referer-youku "Spoofing HTTP Referer of Youku">
 <!ENTITY sowatchmk2-referer-iqiyi "Spoofing HTTP Referer of iQiyi">
@@ -19,11 +19,15 @@
 <!ENTITY sowatchmk2-auto-desc "Use local directory to synchronize players">
 <!ENTITY sowatchmk2-period "Update Period">
 <!ENTITY sowatchmk2-period-desc "Day">
-<!ENTITY sowatchmk2-directory "Local Directory">
+
+<!ENTITY sowatchmk2-option "Directory Option">
+<!ENTITY sowatchmk2-profile "Firefox Profile Directory">
+<!ENTITY sowatchmk2-install "Firefox Install Directory">
+<!ENTITY sowatchmk2-home "Windows Home Directory">
+<!ENTITY sowatchmk2-defined "User Defined Directory">
+<!ENTITY sowatchmk2-directory "Defined Local Directory">
 
 <!ENTITY sowatchmk2-remote "Access Remote Server">
-<!ENTITY sowatchmk2-remote-desc "Will disable autoupdate">
-
 <!ENTITY sowatchmk2-server "Defined Remote Server">
 <!ENTITY sowatchmk2-override "Remote Server Override">
 <!ENTITY sowatchmk2-override-desc "Only access defined remote server">
@@ -31,5 +35,5 @@
 
 <!ENTITY sowatchmk2-interface "Enhanced Toolbar Control UI">
 
-<!ENTITY sowatchmk2-enable "Enabled">
-<!ENTITY sowatchmk2-disable "Disabled">
+<!ENTITY sowatchmk2-enabled "Enabled">
+<!ENTITY sowatchmk2-disabled "Disabled">

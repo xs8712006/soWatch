@@ -3,18 +3,28 @@
 <vbox xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 <setting pref="extensions.sowatch.general.interface.enabled" type="radio" title="&sowatch-interface;">
   <radiogroup>
-    <radio value="true" label="&sowatch-enable;"/>
-    <radio value="false" label="&sowatch-disable;"/>
+    <radio value="true" label="&sowatch-enabled;"/>
+    <radio value="false" label="&sowatch-disabled;"/>
   </radiogroup>
 </setting>
 <setting pref="extensions.sowatch.autoupdate.enabled" type="radio" title="&sowatch-auto;" desc="&sowatch-auto-desc;">
   <radiogroup>
-    <radio value="true" label="&sowatch-enable;"/>
-    <radio value="false" label="&sowatch-disable;"/>
+    <radio value="true" label="&sowatch-enabled;"/>
+    <radio value="false" label="&sowatch-disabled;"/>
   </radiogroup>
 </setting>
-<setting pref="extensions.sowatch.autoupdate.period" type="integer" min="1" max="365" size="1" title="&sowatch-period;" desc="&sowatch-period-desc;"/>
-<setting pref="extensions.sowatch.file.directory" type="directory" title="&sowatch-directory;" onpreferencechanged='
+<setting pref="extensions.sowatch.autoupdate.period" type="integer" min="1" max="365" size="3" title="&sowatch-period;" desc="&sowatch-period-desc;"/>
+<setting pref="extensions.sowatch.file.directory.option" type="menulist" title="&sowatch-option;">
+  <menulist>
+    <menupopup id="sowatch-option">
+      <menuitem value="1" label="&sowatch-profile;"/>
+      <menuitem value="2" label="&sowatch-install;"/>
+      <menuitem value="3" label="&sowatch-home;"/>
+      <menuitem value="0" label="&sowatch-defined;"/>
+    </menupopup>
+  </menulist>
+</setting>
+<setting pref="extensions.sowatch.file.directory.defined" type="directory" title="&sowatch-directory;" onpreferencechanged='
   this.valueToPreference = function () {
     var aString = Components.classes["@mozilla.org/supports-string;1"].createInstance(Components.interfaces.nsISupportsString);
     aString.data = this.value;
@@ -25,10 +35,10 @@
   };
   this.valueFromPreference();
 '/>
-<setting pref="extensions.sowatch.remote.access.enabled" type="radio" title="&sowatch-remote;" desc="&sowatch-remote-desc;">
+<setting pref="extensions.sowatch.remote.access.enabled" type="radio" title="&sowatch-remote;">
   <radiogroup>
-    <radio value="true" label="&sowatch-enable;"/>
-    <radio value="false" label="&sowatch-disable;"/>
+    <radio value="true" label="&sowatch-enabled;"/>
+    <radio value="false" label="&sowatch-disabled;"/>
   </radiogroup>
 </setting>
 <setting pref="extensions.sowatch.remote.server.defined" type="string" title="&sowatch-server;" onpreferencechanged='
@@ -42,11 +52,11 @@
   };
   this.valueFromPreference();
 '/>
-<setting pref="extensions.sowatch.remote.server.bitbucket" type="string" title="Bitbucket.org" desc="&sowatch-bitbucket-desc;" disabled="true"/>
 <setting pref="extensions.sowatch.remote.override.enabled" type="radio" title="&sowatch-override;" desc="&sowatch-override-desc;">
   <radiogroup>
-    <radio value="true" label="&sowatch-enable;"/>
-    <radio value="false" label="&sowatch-disable;"/>
+    <radio value="true" label="&sowatch-enabled;"/>
+    <radio value="false" label="&sowatch-disabled;"/>
   </radiogroup>
 </setting>
+<setting pref="extensions.sowatch.remote.server.bitbucket" type="string" title="Bitbucket.org" desc="&sowatch-bitbucket-desc;" disabled="true"/>
 </vbox>

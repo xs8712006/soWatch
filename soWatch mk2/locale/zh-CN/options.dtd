@@ -1,16 +1,16 @@
-<!ENTITY sowatchmk2-youku "优酷">
-<!ENTITY sowatchmk2-tudou "土豆">
-<!ENTITY sowatchmk2-iqiyi "爱奇艺">
-<!ENTITY sowatchmk2-letv "乐视网">
-<!ENTITY sowatchmk2-sohu "搜狐视频">
-<!ENTITY sowatchmk2-pptv "PPTV聚力">
-<!ENTITY sowatchmk2-qq "腾讯视频">
-<!ENTITY sowatchmk2-163 "网易视频">
-<!ENTITY sowatchmk2-sina "新浪视频">
+<!ENTITY sowatchmk2-youku "设置：优酷">
+<!ENTITY sowatchmk2-tudou "设置：土豆">
+<!ENTITY sowatchmk2-iqiyi "设置：爱奇艺">
+<!ENTITY sowatchmk2-letv "设置：乐视网">
+<!ENTITY sowatchmk2-sohu "设置：搜狐视频">
+<!ENTITY sowatchmk2-pptv "设置：PPTV聚力">
+<!ENTITY sowatchmk2-qq "设置：腾讯视频">
+<!ENTITY sowatchmk2-163 "设置：网易视频">
+<!ENTITY sowatchmk2-sina "设置：新浪视频">
 
-<!ENTITY sowatchmk2-player "替换视频播放器">
+<!ENTITY sowatchmk2-player "替换播放器">
 <!ENTITY sowatchmk2-filter "拦截XML请求">
-<!ENTITY sowatchmk2-none "停用">
+<!ENTITY sowatchmk2-none "恢复网站默认">
 
 <!ENTITY sowatchmk2-referer-youku "伪造优酷引用头">
 <!ENTITY sowatchmk2-referer-iqiyi "伪造爱奇艺引用头">
@@ -19,11 +19,15 @@
 <!ENTITY sowatchmk2-auto-desc "使用本地文件夹储存并同步播放器">
 <!ENTITY sowatchmk2-period "更新间隔">
 <!ENTITY sowatchmk2-period-desc "天">
-<!ENTITY sowatchmk2-directory "本地文件夹">
+
+<!ENTITY sowatchmk2-option "文件夹选项">
+<!ENTITY sowatchmk2-profile "Firefox档案文件夹">
+<!ENTITY sowatchmk2-install "Firefox程序文件夹">
+<!ENTITY sowatchmk2-home "Windows用户文件夹">
+<!ENTITY sowatchmk2-defined "用户指定文件夹">
+<!ENTITY sowatchmk2-directory "自定义文件夹">
 
 <!ENTITY sowatchmk2-remote "加载远程播放器">
-<!ENTITY sowatchmk2-remote-desc "将关闭自动更新">
-
 <!ENTITY sowatchmk2-server "自定义服务器">
 <!ENTITY sowatchmk2-override "无视其他服务器">
 <!ENTITY sowatchmk2-override-desc "仅访问用户指定的远程服务器">
@@ -31,5 +35,5 @@
 
 <!ENTITY sowatchmk2-interface "工具栏控制界面">
 
-<!ENTITY sowatchmk2-enable "启用">
-<!ENTITY sowatchmk2-disable "禁用">
+<!ENTITY sowatchmk2-enabled "启用">
+<!ENTITY sowatchmk2-disabled "禁用">

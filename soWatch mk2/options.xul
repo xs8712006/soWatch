@@ -3,18 +3,28 @@
 <vbox xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 <setting pref="extensions.sowatchmk2.general.interface.enabled" type="radio" title="&sowatchmk2-interface;">
   <radiogroup>
-    <radio value="true" label="&sowatchmk2-enable;"/>
-    <radio value="false" label="&sowatchmk2-disable;"/>
+    <radio value="true" label="&sowatchmk2-enabled;"/>
+    <radio value="false" label="&sowatchmk2-disabled;"/>
   </radiogroup>
 </setting>
 <setting pref="extensions.sowatchmk2.autoupdate.enabled" type="radio" title="&sowatchmk2-auto;" desc="&sowatchmk2-auto-desc;">
   <radiogroup>
-    <radio value="true" label="&sowatchmk2-enable;"/>
-    <radio value="false" label="&sowatchmk2-disable;"/>
+    <radio value="true" label="&sowatchmk2-enabled;"/>
+    <radio value="false" label="&sowatchmk2-disabled;"/>
   </radiogroup>
 </setting>
-<setting pref="extensions.sowatchmk2.autoupdate.period" type="integer" min="1" max="365" size="1" title="&sowatchmk2-period;" desc="&sowatchmk2-period-desc;"/>
-<setting pref="extensions.sowatchmk2.file.directory" type="directory" title="&sowatchmk2-directory;" onpreferencechanged='
+<setting pref="extensions.sowatchmk2.autoupdate.period" type="integer" min="1" max="365" size="3" title="&sowatchmk2-period;" desc="&sowatchmk2-period-desc;"/>
+<setting pref="extensions.sowatchmk2.file.directory.option" type="menulist" title="&sowatchmk2-option;">
+  <menulist>
+    <menupopup id="sowatchmk2-option">
+      <menuitem value="1" label="&sowatchmk2-profile;"/>
+      <menuitem value="2" label="&sowatchmk2-install;"/>
+      <menuitem value="3" label="&sowatchmk2-home;"/>
+      <menuitem value="0" label="&sowatchmk2-defined;"/>
+    </menupopup>
+  </menulist>
+</setting>
+<setting pref="extensions.sowatchmk2.file.directory.defined" type="directory" title="&sowatchmk2-directory;" onpreferencechanged='
   this.valueToPreference = function () {
     var aString = Components.classes["@mozilla.org/supports-string;1"].createInstance(Components.interfaces.nsISupportsString);
     aString.data = this.value;
@@ -25,10 +35,10 @@
   };
   this.valueFromPreference();
 '/>
-<setting pref="extensions.sowatchmk2.remote.access.enabled" type="radio" title="&sowatchmk2-remote;" desc="&sowatchmk2-remote-desc;">
+<setting pref="extensions.sowatchmk2.remote.access.enabled" type="radio" title="&sowatchmk2-remote;">
   <radiogroup>
-    <radio value="true" label="&sowatchmk2-enable;"/>
-    <radio value="false" label="&sowatchmk2-disable;"/>
+    <radio value="true" label="&sowatchmk2-enabled;"/>
+    <radio value="false" label="&sowatchmk2-disabled;"/>
   </radiogroup>
 </setting>
 <setting pref="extensions.sowatchmk2.remote.server.defined" type="string" title="&sowatchmk2-server;" onpreferencechanged='
@@ -42,105 +52,104 @@
   };
   this.valueFromPreference();
 '/>
-<setting pref="extensions.sowatchmk2.remote.server.bitbucket" type="string" title="Bitbucket.org" desc="&sowatchmk2-bitbucket-desc;" disabled="true"/>
 <setting pref="extensions.sowatchmk2.remote.override.enabled" type="radio" title="&sowatchmk2-override;" desc="&sowatchmk2-override-desc;">
   <radiogroup>
-    <radio value="true" label="&sowatchmk2-enable;"/>
-    <radio value="false" label="&sowatchmk2-disable;"/>
+    <radio value="true" label="&sowatchmk2-enabled;"/>
+    <radio value="false" label="&sowatchmk2-disabled;"/>
   </radiogroup>
 </setting>
-
+<setting pref="extensions.sowatchmk2.remote.server.bitbucket" type="string" title="Bitbucket.org" desc="&sowatchmk2-bitbucket-desc;" disabled="true"/>
 <setting pref="extensions.sowatchmk2.rule.youku.defined" type="menulist" title="&sowatchmk2-youku;">
   <menulist>
     <menupopup id="sowatchmk2-youku">
-      <menuitem value="player" label="&sowatchmk2-player;"/>
-      <menuitem value="filter" label="&sowatchmk2-filter;"/>
-      <menuitem value="none" label="&sowatchmk2-none;"/>
+      <menuitem value="1" label="&sowatchmk2-player;"/>
+      <menuitem value="2" label="&sowatchmk2-filter;"/>
+      <menuitem value="0" label="&sowatchmk2-none;"/>
     </menupopup>
   </menulist>
 </setting>
 <setting pref="extensions.sowatchmk2.rule.tudou.defined" type="menulist" title="&sowatchmk2-tudou;">
   <menulist>
     <menupopup id="sowatchmk2-tudou">
-      <menuitem value="player" label="&sowatchmk2-player;"/>
-      <menuitem value="filter" label="&sowatchmk2-filter;"/>
-      <menuitem value="none" label="&sowatchmk2-none;"/>
+      <menuitem value="1" label="&sowatchmk2-player;"/>
+      <menuitem value="2" label="&sowatchmk2-filter;"/>
+      <menuitem value="0" label="&sowatchmk2-none;"/>
     </menupopup>
   </menulist>
 </setting>
 <setting pref="extensions.sowatchmk2.rule.iqiyi.defined" type="menulist" title="&sowatchmk2-iqiyi;">
   <menulist>
     <menupopup id="sowatchmk2-iqiyi">
-      <menuitem value="player" label="&sowatchmk2-player;"/>
-      <menuitem value="filter" label="&sowatchmk2-filter;" disabled="true"/>
-      <menuitem value="none" label="&sowatchmk2-none;"/>
+      <menuitem value="1" label="&sowatchmk2-player;"/>
+      <menuitem value="2" label="&sowatchmk2-filter;"/>
+      <menuitem value="0" label="&sowatchmk2-none;"/>
     </menupopup>
   </menulist>
 </setting>
 <setting pref="extensions.sowatchmk2.rule.letv.defined" type="menulist" title="&sowatchmk2-letv;">
   <menulist>
     <menupopup id="sowatchmk2-letv">
-      <menuitem value="player" label="&sowatchmk2-player;"/>
-      <menuitem value="filter" label="&sowatchmk2-filter;"/>
-      <menuitem value="none" label="&sowatchmk2-none;"/>
+      <menuitem value="1" label="&sowatchmk2-player;"/>
+      <menuitem value="2" label="&sowatchmk2-filter;"/>
+      <menuitem value="0" label="&sowatchmk2-none;"/>
     </menupopup>
   </menulist>
 </setting>
 <setting pref="extensions.sowatchmk2.rule.sohu.defined" type="menulist" title="&sowatchmk2-sohu;">
   <menulist>
     <menupopup id="sowatchmk2-sohu">
-      <menuitem value="player" label="&sowatchmk2-player;"/>
-      <menuitem value="filter" label="&sowatchmk2-filter;"/>
-      <menuitem value="none" label="&sowatchmk2-none;"/>
+      <menuitem value="1" label="&sowatchmk2-player;"/>
+      <menuitem value="2" label="&sowatchmk2-filter;"/>
+      <menuitem value="0" label="&sowatchmk2-none;"/>
     </menupopup>
   </menulist>
 </setting>
 <setting pref="extensions.sowatchmk2.rule.pptv.defined" type="menulist" title="&sowatchmk2-pptv;">
   <menulist>
     <menupopup id="sowatchmk2-pptv">
-      <menuitem value="player" label="&sowatchmk2-player;"/>
-      <menuitem value="filter" label="&sowatchmk2-filter;"/>
-      <menuitem value="none" label="&sowatchmk2-none;"/>
+      <menuitem value="1" label="&sowatchmk2-player;"/>
+      <menuitem value="2" label="&sowatchmk2-filter;"/>
+      <menuitem value="0" label="&sowatchmk2-none;"/>
     </menupopup>
   </menulist>
 </setting>
 <setting pref="extensions.sowatchmk2.rule.qq.defined" type="menulist" title="&sowatchmk2-qq;">
   <menulist>
     <menupopup id="sowatchmk2-qq">
-      <menuitem value="player" label="&sowatchmk2-player;" disabled="true"/>
-      <menuitem value="filter" label="&sowatchmk2-filter;"/>
-      <menuitem value="none" label="&sowatchmk2-none;"/>
+      <menuitem value="1" label="&sowatchmk2-player;" disabled="true"/>
+      <menuitem value="2" label="&sowatchmk2-filter;"/>
+      <menuitem value="0" label="&sowatchmk2-none;"/>
     </menupopup>
   </menulist>
 </setting>
 <setting pref="extensions.sowatchmk2.rule.163.defined" type="menulist" title="&sowatchmk2-163;">
   <menulist>
     <menupopup id="sowatchmk2-163">
-      <menuitem value="player" label="&sowatchmk2-player;" disabled="true"/>
-      <menuitem value="filter" label="&sowatchmk2-filter;"/>
-      <menuitem value="none" label="&sowatchmk2-none;"/>
+      <menuitem value="1" label="&sowatchmk2-player;" disabled="true"/>
+      <menuitem value="2" label="&sowatchmk2-filter;"/>
+      <menuitem value="0" label="&sowatchmk2-none;"/>
     </menupopup>
   </menulist>
 </setting>
 <setting pref="extensions.sowatchmk2.rule.sina.defined" type="menulist" title="&sowatchmk2-sina;">
   <menulist>
     <menupopup id="sowatchmk2-sina">
-      <menuitem value="player" label="&sowatchmk2-player;" disabled="true"/>
-      <menuitem value="filter" label="&sowatchmk2-filter;"/>
-      <menuitem value="none" label="&sowatchmk2-none;"/>
+      <menuitem value="1" label="&sowatchmk2-player;" disabled="true"/>
+      <menuitem value="2" label="&sowatchmk2-filter;"/>
+      <menuitem value="0" label="&sowatchmk2-none;"/>
     </menupopup>
   </menulist>
 </setting>
 <setting pref="extensions.sowatchmk2.referer.youku.enabled" type="radio" title="&sowatchmk2-referer-youku;">
   <radiogroup>
-    <radio value="true" label="&sowatchmk2-enable;"/>
-    <radio value="false" label="&sowatchmk2-disable;"/>
+    <radio value="true" label="&sowatchmk2-enabled;"/>
+    <radio value="false" label="&sowatchmk2-disabled;"/>
   </radiogroup>
 </setting>
 <setting pref="extensions.sowatchmk2.referer.iqiyi.enabled" type="radio" title="&sowatchmk2-referer-iqiyi;">
   <radiogroup>
-    <radio value="true" label="&sowatchmk2-enable;"/>
-    <radio value="false" label="&sowatchmk2-disable;"/>
+    <radio value="true" label="&sowatchmk2-enabled;"/>
+    <radio value="false" label="&sowatchmk2-disabled;"/>
   </radiogroup>
 </setting>
 </vbox>
